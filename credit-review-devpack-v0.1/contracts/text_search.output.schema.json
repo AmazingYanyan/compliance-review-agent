@@ -1,0 +1,131 @@
+{
+  "$defs": {
+    "CheckSearch": {
+      "additionalProperties": false,
+      "properties": {
+        "check_item_id": {
+          "title": "Check Item Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "found",
+            "not_found"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/TextEvidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "check_item_id",
+        "outcome",
+        "evidence"
+      ],
+      "title": "CheckSearch",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "format": "uuid",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "start_char": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Start Char"
+        },
+        "end_char": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "End Char"
+        }
+      },
+      "required": [
+        "block_id",
+        "start_char",
+        "end_char"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "TextEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "relation_status": {
+          "enum": [
+            "matched",
+            "needs_review"
+          ],
+          "title": "Relation Status",
+          "type": "string"
+        },
+        "relevance_reason": {
+          "maxLength": 1000,
+          "title": "Relevance Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_refs",
+        "relation_status",
+        "relevance_reason"
+      ],
+      "title": "TextEvidence",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bundle_id": {
+      "title": "Bundle Id",
+      "type": "string"
+    },
+    "check_results": {
+      "items": {
+        "$ref": "#/$defs/CheckSearch"
+      },
+      "title": "Check Results",
+      "type": "array"
+    }
+  },
+  "required": [
+    "bundle_id",
+    "check_results"
+  ],
+  "title": "TextSearchOutput",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://credit-review.example.invalid/contracts/text_search.output.schema.json"
+}

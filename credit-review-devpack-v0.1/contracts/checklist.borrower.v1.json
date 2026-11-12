@@ -1,0 +1,173 @@
+{
+  "version": "borrower-wcl-v1",
+  "product_code": "working_capital_loan",
+  "customer_role": "borrower",
+  "enabled": true,
+  "annual_policy": "extract_only",
+  "materials": [
+    {
+      "material_type": "business_license",
+      "label": "营业执照",
+      "checks": [
+        {
+          "id": "license.business_scope",
+          "label": "经营范围",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "license.operating_term",
+          "label": "营业期限",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "license.registration_status",
+          "label": "登记状态",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "material_type": "articles_of_association",
+      "label": "公司章程",
+      "checks": [
+        {
+          "id": "charter.business_scope",
+          "label": "经营范围条款",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "charter.approval_body",
+          "label": "借款与担保的决议权限／批准机构",
+          "group_label": "借款与担保的决议权限",
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "charter.voting_ratio",
+          "label": "需要多少表决权比例通过？",
+          "group_label": "借款与担保的决议权限",
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "charter.guarantee_restrictions",
+          "label": "对外担保的限制性规定",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "charter.legal_representative_signature_authority",
+          "label": "法定代表人的签字权限",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "charter.ownership_and_special_terms",
+          "label": "股权结构与特殊条款",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "material_type": "audited_financials",
+      "label": "最近一年已审计财报",
+      "checks": [
+        {
+          "id": "financial.company_name",
+          "label": "报表所属企业",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.reporting_period",
+          "label": "报告年度",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.balance_sheet",
+          "label": "资产负债表",
+          "group_label": null,
+          "result_mode": "full_table",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.income_statement",
+          "label": "利润表",
+          "group_label": null,
+          "result_mode": "full_table",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.cash_flow_statement",
+          "label": "现金流量表",
+          "group_label": null,
+          "result_mode": "full_table",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.audit_institution",
+          "label": "审计机构",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.audit_seal",
+          "label": "审计单位印章",
+          "group_label": null,
+          "result_mode": "seal",
+          "dependencies": [
+            "financial.audit_institution"
+          ],
+          "required": true
+        },
+        {
+          "id": "financial.cpa_signature",
+          "label": "注册会计师签名",
+          "group_label": null,
+          "result_mode": "signature",
+          "dependencies": [],
+          "required": true
+        },
+        {
+          "id": "financial.audit_opinion",
+          "label": "审计意见",
+          "group_label": null,
+          "result_mode": "verbatim_quotes",
+          "dependencies": [],
+          "required": true
+        }
+      ]
+    }
+  ]
+}

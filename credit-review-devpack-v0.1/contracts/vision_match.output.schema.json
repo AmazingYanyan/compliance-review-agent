@@ -1,0 +1,73 @@
+{
+  "$defs": {
+    "ImageMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "crop_id": {
+          "format": "uuid",
+          "title": "Crop Id",
+          "type": "string"
+        },
+        "recognized_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recognized Text"
+        },
+        "relation_status": {
+          "enum": [
+            "matched",
+            "needs_review"
+          ],
+          "title": "Relation Status",
+          "type": "string"
+        },
+        "relevance_reason": {
+          "maxLength": 1000,
+          "title": "Relevance Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "crop_id",
+        "recognized_text",
+        "relation_status",
+        "relevance_reason"
+      ],
+      "title": "ImageMatch",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "bundle_id": {
+      "title": "Bundle Id",
+      "type": "string"
+    },
+    "check_item_id": {
+      "title": "Check Item Id",
+      "type": "string"
+    },
+    "matches": {
+      "items": {
+        "$ref": "#/$defs/ImageMatch"
+      },
+      "title": "Matches",
+      "type": "array"
+    }
+  },
+  "required": [
+    "bundle_id",
+    "check_item_id",
+    "matches"
+  ],
+  "title": "VisionMatchOutput",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://credit-review.example.invalid/contracts/vision_match.output.schema.json"
+}

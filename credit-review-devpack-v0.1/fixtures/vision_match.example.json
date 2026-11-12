@@ -1,0 +1,12 @@
+{
+  "bundle_id": "fixture-financial-crops-0",
+  "check_item_id": "financial.audit_seal",
+  "matches": [
+    {
+      "crop_id": "ddd382a6-6fcb-56e4-b644-f49cc1e2388d",
+      "recognized_text": "示例审计机构（虚构）",
+      "relation_status": "matched",
+      "relevance_reason": "合成协议示例，并非识别结果"
+    }
+  ]
+}

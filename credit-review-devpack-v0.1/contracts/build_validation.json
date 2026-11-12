@@ -1,0 +1,15 @@
+{
+  "method": "Pydantic models generating JSON Schemas validated fixtures; local reference and domain validation in scripts/validate_pack.py",
+  "valid_fixtures": [
+    "normalized_page.example.json",
+    "classification.example.json",
+    "text_search.example.json",
+    "vision_match.example.json",
+    "review_results.example.json"
+  ],
+  "negative_cases": 7,
+  "website_or_provider_tested": false,
+  "validation_scope": "See docs/11_validation_record.md; no website or external provider test",
+  "standalone_schema_models": 5,
+  "openapi_dtos": 33
+}

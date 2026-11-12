@@ -1,0 +1,142 @@
+{
+  "$defs": {
+    "LeafCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "group_label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Group Label"
+        },
+        "result_mode": {
+          "enum": [
+            "verbatim_quotes",
+            "full_table",
+            "seal",
+            "signature"
+          ],
+          "title": "Result Mode",
+          "type": "string"
+        },
+        "dependencies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "group_label",
+        "result_mode",
+        "dependencies",
+        "required"
+      ],
+      "title": "LeafCheck",
+      "type": "object"
+    },
+    "MaterialChecklist": {
+      "additionalProperties": false,
+      "properties": {
+        "material_type": {
+          "enum": [
+            "business_license",
+            "articles_of_association",
+            "audited_financials"
+          ],
+          "title": "Material Type",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/LeafCheck"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "material_type",
+        "label",
+        "checks"
+      ],
+      "title": "MaterialChecklist",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "product_code": {
+      "const": "working_capital_loan",
+      "title": "Product Code",
+      "type": "string"
+    },
+    "customer_role": {
+      "enum": [
+        "borrower",
+        "guarantor",
+        "pledgor"
+      ],
+      "title": "Customer Role",
+      "type": "string"
+    },
+    "enabled": {
+      "title": "Enabled",
+      "type": "boolean"
+    },
+    "annual_policy": {
+      "const": "extract_only",
+      "title": "Annual Policy",
+      "type": "string"
+    },
+    "materials": {
+      "items": {
+        "$ref": "#/$defs/MaterialChecklist"
+      },
+      "minItems": 1,
+      "title": "Materials",
+      "type": "array"
+    }
+  },
+  "required": [
+    "version",
+    "product_code",
+    "customer_role",
+    "enabled",
+    "annual_policy",
+    "materials"
+  ],
+  "title": "Checklist",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://credit-review.example.invalid/contracts/checklist.schema.json"
+}

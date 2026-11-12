@@ -1,0 +1,24 @@
+{
+  "bundle_id": "fixture-financial-crops-0",
+  "check_item_id": "financial.audit_seal",
+  "target_type": "seal",
+  "matching_target": {
+    "name": "示例审计机构（虚构）",
+    "source_block_ids": [
+      "57266bf8-8c59-5559-a810-417e1ccb4360"
+    ]
+  },
+  "candidates": [
+    {
+      "crop_id": "ddd382a6-6fcb-56e4-b644-f49cc1e2388d",
+      "ocr_text": null,
+      "image_asset_id": "62fe935f-fefa-51ac-ab4c-50179d867b8d"
+    },
+    {
+      "crop_id": "cac93a56-8bd1-5a5c-a259-71910b82cd30",
+      "ocr_text": null,
+      "image_asset_id": "8a010eb9-ea71-534d-b7a7-2801d5ef546b"
+    }
+  ],
+  "synthetic": true
+}

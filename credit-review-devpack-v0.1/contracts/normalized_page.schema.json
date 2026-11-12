@@ -1,0 +1,375 @@
+{
+  "$defs": {
+    "Box": {
+      "additionalProperties": false,
+      "properties": {
+        "x0": {
+          "title": "X0",
+          "type": "number"
+        },
+        "y0": {
+          "title": "Y0",
+          "type": "number"
+        },
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x0",
+        "y0",
+        "x1",
+        "y1"
+      ],
+      "title": "Box",
+      "type": "object"
+    },
+    "NormalizedBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "format": "uuid",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "provider_block_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Provider Block Id"
+        },
+        "provider_group_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Provider Group Id"
+        },
+        "sequence_index": {
+          "minimum": 0,
+          "title": "Sequence Index",
+          "type": "integer"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "canonical_text": {
+          "title": "Canonical Text",
+          "type": "string"
+        },
+        "table_html": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Table Html"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Box"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "polygon": {
+          "anyOf": [
+            {
+              "items": {
+                "$ref": "#/$defs/Point"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Polygon"
+        },
+        "crop_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Crop Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "block_id",
+        "provider_block_id",
+        "provider_group_id",
+        "sequence_index",
+        "label",
+        "canonical_text",
+        "table_html",
+        "bbox",
+        "polygon",
+        "crop_ids"
+      ],
+      "title": "NormalizedBlock",
+      "type": "object"
+    },
+    "NormalizedCrop": {
+      "additionalProperties": false,
+      "properties": {
+        "crop_id": {
+          "format": "uuid",
+          "title": "Crop Id",
+          "type": "string"
+        },
+        "block_id": {
+          "format": "uuid",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "provider_label": {
+          "title": "Provider Label",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "seal",
+            "signature",
+            "image",
+            "unknown"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "recognized_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Recognized Text"
+        },
+        "image_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Image Key"
+        },
+        "image_asset_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Image Asset Id"
+        },
+        "image_status": {
+          "enum": [
+            "not_downloaded",
+            "ready",
+            "failed"
+          ],
+          "title": "Image Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "crop_id",
+        "block_id",
+        "provider_label",
+        "kind",
+        "recognized_text",
+        "image_key",
+        "image_asset_id",
+        "image_status"
+      ],
+      "title": "NormalizedCrop",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "page_id": {
+      "format": "uuid",
+      "title": "Page Id",
+      "type": "string"
+    },
+    "task_id": {
+      "format": "uuid",
+      "title": "Task Id",
+      "type": "string"
+    },
+    "file_id": {
+      "format": "uuid",
+      "title": "File Id",
+      "type": "string"
+    },
+    "ocr_job_id": {
+      "format": "uuid",
+      "title": "Ocr Job Id",
+      "type": "string"
+    },
+    "provider_line_index": {
+      "minimum": 0,
+      "title": "Provider Line Index",
+      "type": "integer"
+    },
+    "provider_item_index": {
+      "minimum": 0,
+      "title": "Provider Item Index",
+      "type": "integer"
+    },
+    "ocr_page_index": {
+      "minimum": 0,
+      "title": "Ocr Page Index",
+      "type": "integer"
+    },
+    "source_page_number": {
+      "anyOf": [
+        {
+          "minimum": 1,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Page Number"
+    },
+    "mapping_status": {
+      "enum": [
+        "verified",
+        "unverified"
+      ],
+      "title": "Mapping Status",
+      "type": "string"
+    },
+    "raster_asset_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Raster Asset Id"
+    },
+    "width_px": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Width Px"
+    },
+    "height_px": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Height Px"
+    },
+    "coordinate_space": {
+      "enum": [
+        "ocr_input_image_pixels",
+        "unknown"
+      ],
+      "title": "Coordinate Space",
+      "type": "string"
+    },
+    "blocks": {
+      "items": {
+        "$ref": "#/$defs/NormalizedBlock"
+      },
+      "title": "Blocks",
+      "type": "array"
+    },
+    "crops": {
+      "items": {
+        "$ref": "#/$defs/NormalizedCrop"
+      },
+      "title": "Crops",
+      "type": "array"
+    }
+  },
+  "required": [
+    "page_id",
+    "task_id",
+    "file_id",
+    "ocr_job_id",
+    "provider_line_index",
+    "provider_item_index",
+    "ocr_page_index",
+    "source_page_number",
+    "mapping_status",
+    "raster_asset_id",
+    "width_px",
+    "height_px",
+    "coordinate_space",
+    "blocks",
+    "crops"
+  ],
+  "title": "NormalizedPage",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://credit-review.example.invalid/contracts/normalized_page.schema.json"
+}

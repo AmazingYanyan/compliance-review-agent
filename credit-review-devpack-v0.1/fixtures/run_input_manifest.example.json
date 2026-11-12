@@ -1,0 +1,21 @@
+{
+  "task_id": "2cdbd6d8-1efe-5efe-84fa-7ae30706c280",
+  "run_id": "79229013-adf5-528d-8065-e4730655e3f1",
+  "input_revision": 3,
+  "checklist_version": "borrower-wcl-v1",
+  "files": [
+    {
+      "file_id": "c606bd5d-80b2-568f-abb8-67942311a35a",
+      "material_type": "business_license"
+    },
+    {
+      "file_id": "58bec440-ced2-5117-b4ab-53dd27df98ee",
+      "material_type": "articles_of_association"
+    },
+    {
+      "file_id": "0a20e29a-0f4d-591f-bca0-b6396f60304c",
+      "material_type": "audited_financials"
+    }
+  ],
+  "synthetic": true
+}

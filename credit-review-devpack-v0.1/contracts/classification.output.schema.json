@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "bundle_id": {
+      "title": "Bundle Id",
+      "type": "string"
+    },
+    "material_type": {
+      "enum": [
+        "business_license",
+        "articles_of_association",
+        "audited_financials",
+        "unknown"
+      ],
+      "title": "Material Type",
+      "type": "string"
+    },
+    "mixed": {
+      "title": "Mixed",
+      "type": "boolean"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "reason": {
+      "maxLength": 1000,
+      "title": "Reason",
+      "type": "string"
+    },
+    "source_block_ids": {
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Source Block Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "bundle_id",
+    "material_type",
+    "mixed",
+    "confidence",
+    "reason",
+    "source_block_ids"
+  ],
+  "title": "ClassificationOutput",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://credit-review.example.invalid/contracts/classification.output.schema.json"
+}

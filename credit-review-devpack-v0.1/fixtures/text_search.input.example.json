@@ -1,0 +1,23 @@
+{
+  "bundle_id": "fixture-charter-window-0",
+  "checks": [
+    {
+      "id": "charter.approval_body",
+      "label": "借款与担保的决议权限／批准机构",
+      "result_mode": "verbatim_quotes"
+    }
+  ],
+  "blocks": [
+    {
+      "block_id": "d5b52192-c77e-5d2f-b44e-fe87163f62f1",
+      "label": "text",
+      "canonical_text": "第十二条 公司向金融机构申请借款，由董事会审议。"
+    },
+    {
+      "block_id": "31fd547f-a049-5511-acec-77d28620f787",
+      "label": "text",
+      "canonical_text": "第十八条 单笔借款金额超过人民币三千万元的，应提交股东会审议。"
+    }
+  ],
+  "synthetic": true
+}

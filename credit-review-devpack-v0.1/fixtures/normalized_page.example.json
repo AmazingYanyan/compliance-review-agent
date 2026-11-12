@@ -1,0 +1,65 @@
+{
+  "page_id": "5cf59001-6fe3-5bd2-9482-a214959515d2",
+  "task_id": "2cdbd6d8-1efe-5efe-84fa-7ae30706c280",
+  "file_id": "c606bd5d-80b2-568f-abb8-67942311a35a",
+  "ocr_job_id": "dd1421b5-c252-5b15-af7c-ae87aa7041cb",
+  "provider_line_index": 0,
+  "provider_item_index": 0,
+  "ocr_page_index": 0,
+  "source_page_number": null,
+  "mapping_status": "unverified",
+  "raster_asset_id": null,
+  "width_px": null,
+  "height_px": null,
+  "coordinate_space": "unknown",
+  "blocks": [
+    {
+      "block_id": "33104897-a395-5de7-b270-2338391c1eae",
+      "provider_block_id": 15,
+      "provider_group_id": 15,
+      "sequence_index": 15,
+      "label": "seal",
+      "canonical_text": "北京市朝阳区市场监督管理局\n110505098",
+      "table_html": null,
+      "bbox": {
+        "x0": 608,
+        "y0": 398,
+        "x1": 721,
+        "y1": 519
+      },
+      "polygon": [
+        {
+          "x": 608,
+          "y": 398
+        },
+        {
+          "x": 721,
+          "y": 398
+        },
+        {
+          "x": 721,
+          "y": 519
+        },
+        {
+          "x": 608,
+          "y": 519
+        }
+      ],
+      "crop_ids": [
+        "e026a581-8670-5a18-93f2-2b9e96f75c79"
+      ]
+    }
+  ],
+  "crops": [
+    {
+      "crop_id": "e026a581-8670-5a18-93f2-2b9e96f75c79",
+      "block_id": "33104897-a395-5de7-b270-2338391c1eae",
+      "provider_label": "seal",
+      "kind": "seal",
+      "recognized_text": "北京市朝阳区市场监督管理局\n110505098",
+      "image_key": "imgs/img_in_seal_box_608_398_721_519.jpg",
+      "image_asset_id": null,
+      "image_status": "not_downloaded"
+    }
+  ]
+}

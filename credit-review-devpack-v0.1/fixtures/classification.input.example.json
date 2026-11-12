@@ -1,0 +1,13 @@
+{
+  "bundle_id": "fixture-license-window-0",
+  "file_id": "c606bd5d-80b2-568f-abb8-67942311a35a",
+  "filename_hint": "sample.png",
+  "blocks": [
+    {
+      "block_id": "437b846d-4bcd-5fb0-b45c-de721fc2c0ff",
+      "label": "doc_title",
+      "text": "营业执照（虚构分类协议示例）"
+    }
+  ],
+  "synthetic": true
+}

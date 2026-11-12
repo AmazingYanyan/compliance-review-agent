@@ -1,0 +1,25 @@
+{
+  "roles": [
+    {
+      "code": "borrower",
+      "label": "借款人",
+      "enabled": true,
+      "checklist_version": "borrower-wcl-v1",
+      "disabled_reason": null
+    },
+    {
+      "code": "guarantor",
+      "label": "保证人",
+      "enabled": false,
+      "checklist_version": null,
+      "disabled_reason": "检查清单待配置"
+    },
+    {
+      "code": "pledgor",
+      "label": "抵（质）押人",
+      "enabled": false,
+      "checklist_version": null,
+      "disabled_reason": "检查清单待配置"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "submit": {
+    "data": {
+      "jobId": "synthetic-external-job"
+    }
+  },
+  "pending": {
+    "data": {
+      "state": "pending"
+    }
+  },
+  "running": {
+    "data": {
+      "state": "running",
+      "extractProgress": {
+        "totalPages": 1,
+        "extractedPages": 0
+      }
+    }
+  },
+  "done": {
+    "data": {
+      "state": "done",
+      "resultUrl": {
+        "jsonUrl": "https://ocr-assets.example.invalid/result.jsonl"
+      },
+      "extractProgress": {
+        "totalPages": 1,
+        "extractedPages": 1
+      }
+    }
+  },
+  "failed": {
+    "data": {
+      "state": "failed",
+      "errorMsg": "synthetic provider error"
+    }
+  },
+  "synthetic": true
+}

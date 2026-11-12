@@ -1,0 +1,33 @@
+{
+  "bundle_id": "fixture-charter-window-0",
+  "check_results": [
+    {
+      "check_item_id": "charter.approval_body",
+      "outcome": "found",
+      "evidence": [
+        {
+          "source_refs": [
+            {
+              "block_id": "d5b52192-c77e-5d2f-b44e-fe87163f62f1",
+              "start_char": null,
+              "end_char": null
+            }
+          ],
+          "relation_status": "matched",
+          "relevance_reason": "示例第十二条"
+        },
+        {
+          "source_refs": [
+            {
+              "block_id": "31fd547f-a049-5511-acec-77d28620f787",
+              "start_char": null,
+              "end_char": null
+            }
+          ],
+          "relation_status": "matched",
+          "relevance_reason": "示例第十八条"
+        }
+      ]
+    }
+  ]
+}

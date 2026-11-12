@@ -1,0 +1,10 @@
+{
+  "bundle_id": "fixture-license-window-0",
+  "material_type": "business_license",
+  "mixed": false,
+  "confidence": 0.99,
+  "reason": "合成协议示例：营业执照标题与登记字段",
+  "source_block_ids": [
+    "437b846d-4bcd-5fb0-b45c-de721fc2c0ff"
+  ]
+}

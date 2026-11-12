@@ -1,0 +1,80 @@
+[
+  {
+    "name": "all_unselected",
+    "expected": {
+      "total": 19,
+      "unselected": 19,
+      "accepted": 0,
+      "rejected": 0,
+      "missing_reason": 0,
+      "accept_rate": 0.0,
+      "reject_rate": 0.0,
+      "can_complete": false
+    }
+  },
+  {
+    "name": "all_accepted",
+    "expected": {
+      "total": 19,
+      "unselected": 0,
+      "accepted": 19,
+      "rejected": 0,
+      "missing_reason": 0,
+      "accept_rate": 1.0,
+      "reject_rate": 0.0,
+      "can_complete": true
+    }
+  },
+  {
+    "name": "one_rejected_missing_reason",
+    "expected": {
+      "total": 19,
+      "unselected": 0,
+      "accepted": 18,
+      "rejected": 1,
+      "missing_reason": 1,
+      "accept_rate": 0.9473684210526315,
+      "reject_rate": 0.05263157894736842,
+      "can_complete": false
+    }
+  },
+  {
+    "name": "one_rejected_with_reason",
+    "expected": {
+      "total": 19,
+      "unselected": 0,
+      "accepted": 18,
+      "rejected": 1,
+      "missing_reason": 0,
+      "accept_rate": 0.9473684210526315,
+      "reject_rate": 0.05263157894736842,
+      "can_complete": true
+    }
+  },
+  {
+    "name": "reset_one",
+    "expected": {
+      "total": 19,
+      "unselected": 1,
+      "accepted": 18,
+      "rejected": 0,
+      "missing_reason": 0,
+      "accept_rate": 0.9473684210526315,
+      "reject_rate": 0.0,
+      "can_complete": false
+    }
+  },
+  {
+    "name": "empty",
+    "expected": {
+      "total": 0,
+      "unselected": 0,
+      "accepted": 0,
+      "rejected": 0,
+      "missing_reason": 0,
+      "accept_rate": null,
+      "reject_rate": null,
+      "can_complete": false
+    }
+  }
+]
