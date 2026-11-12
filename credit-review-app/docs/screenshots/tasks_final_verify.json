@@ -1,0 +1,455 @@
+{
+  "ran_at": "2026-11-12T02:48:56.273Z",
+  "base_url": "http://localhost:8080",
+  "scope": "最后一轮定向收尾：仅场景 1/2/3，沿用上一轮结果与 fixture",
+  "previous_round": {
+    "file": "docs/screenshots/tasks_table_verify.json",
+    "summary": {
+      "PASS": 40,
+      "FAIL": 0,
+      "PENDING": 0
+    },
+    "fixture_count": 23
+  },
+  "fixture": "frontend/tests/fixtures/tasks-23.json",
+  "fixture_count": 23,
+  "evidence": {
+    "upload_id": {
+      "filter": "待核对",
+      "row_name": "资料核对 2026-11-11 09:53",
+      "row_task_id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+      "request_path": "/api/v1/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/files",
+      "path_task_id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+      "match": true
+    },
+    "completed_menu_items": [
+      {
+        "text": "已完成任务不可修改",
+        "disabled": true
+      }
+    ],
+    "pending_menu_items": [
+      "删除任务"
+    ],
+    "material_area": {
+      "text": "材料文件· 只读\n2 份文件\nzhangcheng.pdf\n已识别\n公司章程\n营业执照测试.png\n已识别\n营业执照",
+      "select_count": 2,
+      "select_disabled": [
+        true,
+        true
+      ],
+      "delete_button_count": 2,
+      "delete_button_disabled": [
+        true,
+        true
+      ]
+    },
+    "contrast_metrics": [
+      {
+        "name": "页级·新建核对任务",
+        "color": "oklch(0.985 0 0)",
+        "background": "rgb(11, 79, 82)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          250,
+          250,
+          250
+        ],
+        "rgb_bg": [
+          11,
+          79,
+          82
+        ],
+        "ratio": 8.92
+      },
+      {
+        "name": "行内·继续核对",
+        "color": "rgb(11, 79, 82)",
+        "background": "oklab(0.5982 -0.106771 -0.00460383 / 0.1)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          11,
+          79,
+          82
+        ],
+        "rgb_bg": [
+          229,
+          244,
+          242
+        ],
+        "ratio": 8.23
+      },
+      {
+        "name": "行内·查看结果",
+        "color": "rgb(11, 79, 82)",
+        "background": "oklab(0.5982 -0.106771 -0.00460383 / 0.1)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          11,
+          79,
+          82
+        ],
+        "rgb_bg": [
+          229,
+          244,
+          242
+        ],
+        "ratio": 8.23
+      },
+      {
+        "name": "行内·上传材料",
+        "color": "oklch(0.145 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          10,
+          10,
+          10
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 19.8
+      },
+      {
+        "name": "表头·任务名称",
+        "color": "oklch(0.556 0 0)",
+        "background": "oklab(0.97 0 0 / 0.5)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "rgb_fg": [
+          115,
+          115,
+          115
+        ],
+        "rgb_bg": [
+          250,
+          250,
+          250
+        ],
+        "ratio": 4.54
+      },
+      {
+        "name": "表头·操作",
+        "color": "oklch(0.556 0 0)",
+        "background": "oklab(0.97 0 0 / 0.5)",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "rgb_fg": [
+          115,
+          115,
+          115
+        ],
+        "rgb_bg": [
+          250,
+          250,
+          250
+        ],
+        "ratio": 4.54
+      },
+      {
+        "name": "正文·任务名称",
+        "color": "oklch(0.145 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          10,
+          10,
+          10
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 19.8
+      },
+      {
+        "name": "正文·客户类型",
+        "color": "oklch(0.145 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "rgb_fg": [
+          10,
+          10,
+          10
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 19.8
+      },
+      {
+        "name": "正文·识别进度",
+        "color": "oklch(0.556 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "rgb_fg": [
+          115,
+          115,
+          115
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 4.74
+      },
+      {
+        "name": "正文·更新时间",
+        "color": "oklch(0.556 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "rgb_fg": [
+          115,
+          115,
+          115
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 4.74
+      },
+      {
+        "name": "状态·待核对",
+        "color": "oklch(0.555 0.163 48.998)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "rgb_fg": [
+          187,
+          77,
+          0
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 5.03
+      },
+      {
+        "name": "正文·任务名称(已完成行)",
+        "color": "oklch(0.145 0 0)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "rgb_fg": [
+          10,
+          10,
+          10
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 19.8
+      },
+      {
+        "name": "状态·已完成",
+        "color": "oklch(0.527 0.154 150.069)",
+        "background": "oklch(1 0 0)",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "rgb_fg": [
+          0,
+          130,
+          54
+        ],
+        "rgb_bg": [
+          255,
+          255,
+          255
+        ],
+        "ratio": 4.95
+      }
+    ],
+    "screenshot": "docs/screenshots/tasks_actions_two_states.png"
+  },
+  "intercepted_request_count": 5,
+  "intercepted_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/files"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/files"
+    }
+  ],
+  "summary": {
+    "PASS": 28,
+    "FAIL": 0,
+    "PENDING": 0
+  },
+  "results": [
+    {
+      "status": "PASS",
+      "name": "F1 状态筛选「待核对」命中 6 条",
+      "detail": "实际 6 行"
+    },
+    {
+      "status": "PASS",
+      "name": "F2 行任务 ID 来自该行入口且命中 fixture",
+      "detail": "行=资料核对 2026-11-11 09:53 行任务ID=607e6d41-4d47-4582-a5ad-07313b6c17bd fixtureID=607e6d41-4d47-4582-a5ad-07313b6c17bd"
+    },
+    {
+      "status": "PASS",
+      "name": "F3 筛选结果行未展开即有上传入口",
+      "detail": "「上传材料」槽位可用"
+    },
+    {
+      "status": "PASS",
+      "name": "F4 上传 POST 路径任务 ID === 行任务 ID",
+      "detail": "行任务ID=607e6d41-4d47-4582-a5ad-07313b6c17bd 请求路径=/api/v1/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/files 路径任务ID=607e6d41-4d47-4582-a5ad-07313b6c17bd"
+    },
+    {
+      "status": "PASS",
+      "name": "F5 上传后筛选结果与条数保持不变",
+      "detail": "实际 6 行"
+    },
+    {
+      "status": "PASS",
+      "name": "F0 真实服务登录",
+      "detail": "HTTP 200"
+    },
+    {
+      "status": "PASS",
+      "name": "F6 已完成行「更多」菜单实际项",
+      "detail": "菜单项=[\"已完成任务不可修改\"]"
+    },
+    {
+      "status": "PASS",
+      "name": "F7 已完成行菜单无可用写操作",
+      "detail": "全部禁用=true 明细=[{\"text\":\"已完成任务不可修改\",\"disabled\":true}]"
+    },
+    {
+      "status": "PASS",
+      "name": "F8 待核对行菜单保留「删除任务」",
+      "detail": "菜单项=[\"删除任务\"]"
+    },
+    {
+      "status": "PASS",
+      "name": "F9 材料区标注只读",
+      "detail": "片段=材料文件· 只读 / 2 份文件 / zhangcheng.pdf / 已识别 / 公司章程 / 营业执照测试.png / 已识别 / 营业执照"
+    },
+    {
+      "status": "PASS",
+      "name": "F10 材料区分类下拉全部禁用",
+      "detail": "数量=2 禁用=[true,true]"
+    },
+    {
+      "status": "PASS",
+      "name": "F11 材料区删除文件按钮全部禁用",
+      "detail": "数量=2 禁用=[true,true]"
+    },
+    {
+      "status": "PASS",
+      "name": "F12 已完成行上传槽位仍留空",
+      "detail": "无上传入口"
+    },
+    {
+      "status": "PASS",
+      "name": "F0 真实服务登录",
+      "detail": "HTTP 200"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 页级·新建核对任务 ≥ 4.5:1",
+      "detail": "8.92:1 · 14px/500 · fg=oklch(0.985 0 0) · bg=rgb(11, 79, 82) · rgb=250,250,250/11,79,82"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 行内·继续核对 ≥ 4.5:1",
+      "detail": "8.23:1 · 14px/500 · fg=rgb(11, 79, 82) · bg=oklab(0.5982 -0.106771 -0.00460383 / 0.1) · rgb=11,79,82/229,244,242"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 行内·查看结果 ≥ 4.5:1",
+      "detail": "8.23:1 · 14px/500 · fg=rgb(11, 79, 82) · bg=oklab(0.5982 -0.106771 -0.00460383 / 0.1) · rgb=11,79,82/229,244,242"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 行内·上传材料 ≥ 4.5:1",
+      "detail": "19.8:1 · 14px/500 · fg=oklch(0.145 0 0) · bg=oklch(1 0 0) · rgb=10,10,10/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 表头·任务名称 ≥ 4.5:1",
+      "detail": "4.54:1 · 12px/600 · fg=oklch(0.556 0 0) · bg=oklab(0.97 0 0 / 0.5) · rgb=115,115,115/250,250,250"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 表头·操作 ≥ 4.5:1",
+      "detail": "4.54:1 · 12px/600 · fg=oklch(0.556 0 0) · bg=oklab(0.97 0 0 / 0.5) · rgb=115,115,115/250,250,250"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 正文·任务名称 ≥ 4.5:1",
+      "detail": "19.8:1 · 14px/500 · fg=oklch(0.145 0 0) · bg=oklch(1 0 0) · rgb=10,10,10/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 正文·客户类型 ≥ 4.5:1",
+      "detail": "19.8:1 · 14px/400 · fg=oklch(0.145 0 0) · bg=oklch(1 0 0) · rgb=10,10,10/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 正文·识别进度 ≥ 4.5:1",
+      "detail": "4.74:1 · 14px/400 · fg=oklch(0.556 0 0) · bg=oklch(1 0 0) · rgb=115,115,115/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 正文·更新时间 ≥ 4.5:1",
+      "detail": "4.74:1 · 14px/400 · fg=oklch(0.556 0 0) · bg=oklch(1 0 0) · rgb=115,115,115/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 状态·待核对 ≥ 4.5:1",
+      "detail": "5.03:1 · 12px/400 · fg=oklch(0.555 0.163 48.998) · bg=oklch(1 0 0) · rgb=187,77,0/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 正文·任务名称(已完成行) ≥ 4.5:1",
+      "detail": "19.8:1 · 14px/500 · fg=oklch(0.145 0 0) · bg=oklch(1 0 0) · rgb=10,10,10/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 对比度 状态·已完成 ≥ 4.5:1",
+      "detail": "4.95:1 · 12px/400 · fg=oklch(0.527 0.154 150.069) · bg=oklch(1 0 0) · rgb=0,130,54/255,255,255"
+    },
+    {
+      "status": "PASS",
+      "name": "F 同屏截图已更新",
+      "detail": "docs/screenshots/tasks_actions_two_states.png"
+    }
+  ]
+}

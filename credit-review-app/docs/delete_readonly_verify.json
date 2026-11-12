@@ -1,0 +1,4737 @@
+{
+  "checks": [
+    {
+      "label": "登录返回 200",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "登录用户 id = 隔离数据 owner_user_id",
+      "expected": "fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例1 创建任务返回 201",
+      "expected": 201,
+      "actual": 201,
+      "pass": true
+    },
+    {
+      "label": "用例1 任务 owner 为当前用户",
+      "expected": "fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例1 持久化 state = COMPLETED|deleted_at NULL",
+      "expected": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例1 删除前 GET /tasks/{id} 返回 200",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例1 删除前对外 state = COMPLETED",
+      "expected": "COMPLETED",
+      "actual": "COMPLETED",
+      "pass": true
+    },
+    {
+      "label": "用例1 DELETE 返回 409",
+      "expected": 409,
+      "actual": 409,
+      "pass": true
+    },
+    {
+      "label": "用例1 detail.code = TASK_READ_ONLY",
+      "expected": "TASK_READ_ONLY",
+      "actual": "TASK_READ_ONLY",
+      "pass": true
+    },
+    {
+      "label": "用例1 detail.message",
+      "expected": "任务已完成，不可删除",
+      "actual": "任务已完成，不可删除",
+      "pass": true
+    },
+    {
+      "label": "用例1 响应体完整结构",
+      "expected": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可删除"
+        }
+      },
+      "actual": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可删除"
+        }
+      },
+      "pass": true
+    },
+    {
+      "label": "用例1 删除被拒后 deleted_at 仍为 NULL（零写入）",
+      "expected": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例1 删除被拒后 GET /tasks/{id} = 200（任务可读）",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例1 详情 state 仍为 COMPLETED",
+      "expected": "COMPLETED",
+      "actual": "COMPLETED",
+      "pass": true
+    },
+    {
+      "label": "用例1 删除被拒后 GET /tasks/{id}/files = 200（材料可读）",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例1 材料列表含 1 条隔离材料",
+      "expected": 1,
+      "actual": 1,
+      "pass": true
+    },
+    {
+      "label": "用例1 删除被拒后 GET /tasks/{id}/results = 200（核对结果可读）",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例1 results 无 run 时 run_id = None",
+      "expected": null,
+      "actual": null,
+      "pass": true
+    },
+    {
+      "label": "用例1 results items = []",
+      "expected": [],
+      "actual": [],
+      "pass": true
+    },
+    {
+      "label": "用例1 GET /tasks = 200",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例1 任务详情仍在列表中",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "label": "用例1 列表任务 state = COMPLETED",
+      "expected": "COMPLETED",
+      "actual": "COMPLETED",
+      "pass": true
+    },
+    {
+      "label": "用例1 列表复核后 deleted_at 仍未变",
+      "expected": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "COMPLETED|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例2 创建任务返回 201",
+      "expected": 201,
+      "actual": 201,
+      "pass": true
+    },
+    {
+      "label": "用例2 持久化 state = REVIEWING|deleted_at NULL",
+      "expected": "REVIEWING|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "actual": "REVIEWING|NULL|fdb34c0f-efdd-415d-ad90-583515d54999",
+      "pass": true
+    },
+    {
+      "label": "用例2 删除前 GET /tasks/{id} 返回 200",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例2 删除前对外推导 state = REVIEWING",
+      "expected": "REVIEWING",
+      "actual": "REVIEWING",
+      "pass": true
+    },
+    {
+      "label": "用例2 DELETE 返回 204",
+      "expected": 204,
+      "actual": 204,
+      "pass": true
+    },
+    {
+      "label": "用例2 204 响应体为空",
+      "expected": null,
+      "actual": null,
+      "pass": true
+    },
+    {
+      "label": "用例2 deleted_at 已写入（非 NULL）",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "label": "用例2 持久化 state 仍为 REVIEWING",
+      "expected": "REVIEWING",
+      "actual": "REVIEWING",
+      "pass": true
+    },
+    {
+      "label": "用例2 删除后 GET /tasks/{id} 返回 404",
+      "expected": 404,
+      "actual": 404,
+      "pass": true
+    },
+    {
+      "label": "用例2 404 detail.code = RESOURCE_NOT_FOUND",
+      "expected": "RESOURCE_NOT_FOUND",
+      "actual": "RESOURCE_NOT_FOUND",
+      "pass": true
+    },
+    {
+      "label": "用例2 GET /tasks = 200",
+      "expected": 200,
+      "actual": 200,
+      "pass": true
+    },
+    {
+      "label": "用例2 列表不再包含该任务",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "label": "用例2 列表仍包含用例1任务（对照）",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "label": "清理后列表不含用例1隔离任务",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "label": "清理后列表不含用例2隔离任务",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "label": "清理后列表仍含真实 REVIEWING 任务",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "label": "清理后列表仍含真实 COMPLETED 任务",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "response": {
+        "user": {
+          "id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+          "username": "liyanyan",
+          "is_active": true,
+          "created_at": "2026-11-11T02:59:23.371935Z"
+        },
+        "csrf_token": "<masked:43chars>"
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "POST",
+      "path": "/tasks",
+      "status": 201,
+      "response": {
+        "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+        "name": "QA 删除只读-已完成",
+        "product_code": "working_capital_loan",
+        "customer_role": "borrower",
+        "checklist_version": "borrower-wcl-v1",
+        "state": "DRAFT",
+        "input_revision": 0,
+        "created_at": "2026-11-12T03:12:18.269712Z",
+        "updated_at": "2026-11-12T03:12:18.269718Z",
+        "completed_at": null,
+        "file_count": 0,
+        "ocr_done_count": 0,
+        "ocr_processing_count": 0,
+        "ocr_failed_count": 0
+      },
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "status": 200,
+      "response": {
+        "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+        "name": "QA 删除只读-已完成",
+        "product_code": "working_capital_loan",
+        "customer_role": "borrower",
+        "checklist_version": "borrower-wcl-v1",
+        "state": "COMPLETED",
+        "input_revision": 0,
+        "created_at": "2026-11-12T03:12:18.269712Z",
+        "updated_at": "2026-11-12T03:12:18.380295Z",
+        "completed_at": "2026-11-12T03:12:18.380295Z",
+        "file_count": 1,
+        "ocr_done_count": 1,
+        "ocr_processing_count": 0,
+        "ocr_failed_count": 0
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/tasks/42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "status": 409,
+      "response": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可删除"
+        }
+      },
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "status": 200,
+      "response": {
+        "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+        "name": "QA 删除只读-已完成",
+        "product_code": "working_capital_loan",
+        "customer_role": "borrower",
+        "checklist_version": "borrower-wcl-v1",
+        "state": "COMPLETED",
+        "input_revision": 0,
+        "created_at": "2026-11-12T03:12:18.269712Z",
+        "updated_at": "2026-11-12T03:12:18.380295Z",
+        "completed_at": "2026-11-12T03:12:18.380295Z",
+        "file_count": 1,
+        "ocr_done_count": 1,
+        "ocr_processing_count": 0,
+        "ocr_failed_count": 0
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/42b0b193-d367-4b23-b4e6-5e348e46531c/files",
+      "status": 200,
+      "response": [
+        {
+          "id": "294c0194-fc93-49bc-81eb-5753c689fa71",
+          "original_name": "QA-C1-材料.pdf",
+          "media_type": "application/pdf",
+          "size_bytes": 1024,
+          "sha256": "ab861dc170dc2e43224e45278d3d31a675b9ebc34c9b0f48c066ca1eeaed8ee6",
+          "original_asset_id": null,
+          "material_type": null,
+          "page_count": null,
+          "ocr_status": "done",
+          "created_at": "2026-11-12T03:12:18.436831Z"
+        }
+      ],
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/42b0b193-d367-4b23-b4e6-5e348e46531c/results",
+      "status": 200,
+      "response": {
+        "run_id": null,
+        "is_stale": false,
+        "editable": false,
+        "statistics": null,
+        "items": [],
+        "next_cursor": null
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks",
+      "status": 200,
+      "response": [
+        {
+          "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+          "name": "QA 删除只读-已完成",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "COMPLETED",
+          "input_revision": 0,
+          "created_at": "2026-11-12T03:12:18.269712Z",
+          "updated_at": "2026-11-12T03:12:18.380295Z",
+          "completed_at": "2026-11-12T03:12:18.380295Z",
+          "file_count": 1,
+          "ocr_done_count": 1,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        },
+        {
+          "id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+          "name": "资料核对 2026-11-11 09:53",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "REVIEWING",
+          "input_revision": 0,
+          "created_at": "2026-11-11T09:53:32.639062Z",
+          "updated_at": "2026-11-11T09:53:32.710179Z",
+          "completed_at": null,
+          "file_count": 1,
+          "ocr_done_count": 1,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        },
+        {
+          "id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+          "name": "资料核对 2026-11-11 03:03",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "COMPLETED",
+          "input_revision": 0,
+          "created_at": "2026-11-11T03:03:02.255129Z",
+          "updated_at": "2026-11-11T06:47:31.800145Z",
+          "completed_at": "2026-11-11T08:44:28.627726Z",
+          "file_count": 2,
+          "ocr_done_count": 2,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        }
+      ],
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "POST",
+      "path": "/tasks",
+      "status": 201,
+      "response": {
+        "id": "7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+        "name": "QA 删除只读-待核对",
+        "product_code": "working_capital_loan",
+        "customer_role": "borrower",
+        "checklist_version": "borrower-wcl-v1",
+        "state": "DRAFT",
+        "input_revision": 0,
+        "created_at": "2026-11-12T03:12:18.719839Z",
+        "updated_at": "2026-11-12T03:12:18.719846Z",
+        "completed_at": null,
+        "file_count": 0,
+        "ocr_done_count": 0,
+        "ocr_processing_count": 0,
+        "ocr_failed_count": 0
+      },
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+      "status": 200,
+      "response": {
+        "id": "7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+        "name": "QA 删除只读-待核对",
+        "product_code": "working_capital_loan",
+        "customer_role": "borrower",
+        "checklist_version": "borrower-wcl-v1",
+        "state": "REVIEWING",
+        "input_revision": 0,
+        "created_at": "2026-11-12T03:12:18.719839Z",
+        "updated_at": "2026-11-12T03:12:18.779228Z",
+        "completed_at": null,
+        "file_count": 1,
+        "ocr_done_count": 1,
+        "ocr_processing_count": 0,
+        "ocr_failed_count": 0
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "DELETE",
+      "path": "/tasks/7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+      "status": 204,
+      "response": null,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+      "status": 404,
+      "response": {
+        "detail": {
+          "code": "RESOURCE_NOT_FOUND",
+          "message": "任务不存在"
+        }
+      },
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks",
+      "status": 200,
+      "response": [
+        {
+          "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+          "name": "QA 删除只读-已完成",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "COMPLETED",
+          "input_revision": 0,
+          "created_at": "2026-11-12T03:12:18.269712Z",
+          "updated_at": "2026-11-12T03:12:18.380295Z",
+          "completed_at": "2026-11-12T03:12:18.380295Z",
+          "file_count": 1,
+          "ocr_done_count": 1,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        },
+        {
+          "id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+          "name": "资料核对 2026-11-11 09:53",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "REVIEWING",
+          "input_revision": 0,
+          "created_at": "2026-11-11T09:53:32.639062Z",
+          "updated_at": "2026-11-11T09:53:32.710179Z",
+          "completed_at": null,
+          "file_count": 1,
+          "ocr_done_count": 1,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        },
+        {
+          "id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+          "name": "资料核对 2026-11-11 03:03",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "COMPLETED",
+          "input_revision": 0,
+          "created_at": "2026-11-11T03:03:02.255129Z",
+          "updated_at": "2026-11-11T06:47:31.800145Z",
+          "completed_at": "2026-11-11T08:44:28.627726Z",
+          "file_count": 2,
+          "ocr_done_count": 2,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        }
+      ],
+      "csrf_header": false,
+      "origin": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks",
+      "status": 200,
+      "response": [
+        {
+          "id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+          "name": "资料核对 2026-11-11 09:53",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "REVIEWING",
+          "input_revision": 0,
+          "created_at": "2026-11-11T09:53:32.639062Z",
+          "updated_at": "2026-11-11T09:53:32.710179Z",
+          "completed_at": null,
+          "file_count": 1,
+          "ocr_done_count": 1,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        },
+        {
+          "id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+          "name": "资料核对 2026-11-11 03:03",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "COMPLETED",
+          "input_revision": 0,
+          "created_at": "2026-11-11T03:03:02.255129Z",
+          "updated_at": "2026-11-11T06:47:31.800145Z",
+          "completed_at": "2026-11-11T08:44:28.627726Z",
+          "file_count": 2,
+          "ocr_done_count": 2,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        }
+      ],
+      "csrf_header": false,
+      "origin": null
+    }
+  ],
+  "facts": {
+    "case1_task_id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+    "case1_pre_delete_public_state": "COMPLETED",
+    "case1_pre_delete_file_count": 1,
+    "case1_after_get_task": {
+      "status": 200,
+      "state": "COMPLETED",
+      "name": "QA 删除只读-已完成"
+    },
+    "case1_after_get_files": {
+      "status": 200,
+      "count": 1,
+      "file": {
+        "id": "294c0194-fc93-49bc-81eb-5753c689fa71",
+        "original_name": "QA-C1-材料.pdf",
+        "media_type": "application/pdf",
+        "ocr_status": "done"
+      }
+    },
+    "case1_after_get_results": {
+      "status": 200,
+      "body": {
+        "run_id": null,
+        "is_stale": false,
+        "editable": false,
+        "statistics": null,
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    "case1_list_ids": [
+      "42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+    ],
+    "case1_list_item": {
+      "id": "42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "name": "QA 删除只读-已完成",
+      "product_code": "working_capital_loan",
+      "customer_role": "borrower",
+      "checklist_version": "borrower-wcl-v1",
+      "state": "COMPLETED",
+      "input_revision": 0,
+      "created_at": "2026-11-12T03:12:18.269712Z",
+      "updated_at": "2026-11-12T03:12:18.380295Z",
+      "completed_at": "2026-11-12T03:12:18.380295Z",
+      "file_count": 1,
+      "ocr_done_count": 1,
+      "ocr_processing_count": 0,
+      "ocr_failed_count": 0
+    },
+    "case2_task_id": "7d68995f-b94a-4914-ba2d-da68b0e6bdf8",
+    "case2_pre_delete_public_state": "REVIEWING",
+    "case2_pre_delete_progress": {
+      "file_count": 1,
+      "ocr_done_count": 1,
+      "ocr_processing_count": 0,
+      "ocr_failed_count": 0
+    },
+    "case2_deleted_at": "2026-11-12 03:12:18.965212+00",
+    "case2_after_delete_get": {
+      "status": 404,
+      "body": {
+        "detail": {
+          "code": "RESOURCE_NOT_FOUND",
+          "message": "任务不存在"
+        }
+      }
+    },
+    "case2_list_ids": [
+      "42b0b193-d367-4b23-b4e6-5e348e46531c",
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+    ],
+    "final_db_state_raw": "42b0b193-d367-4b23-b4e6-5e348e46531c|QA 删除只读-已完成|COMPLETED|2026-11-12 03:12:19.084722+00\n7d68995f-b94a-4914-ba2d-da68b0e6bdf8|QA 删除只读-待核对|REVIEWING|2026-11-12 03:12:18.965212+00\nee59108d-e4f1-4aa8-bf2e-afe07d457384|资料核对 2026-11-11 03:03|COMPLETED|NULL\n607e6d41-4d47-4582-a5ad-07313b6c17bd|资料核对 2026-11-11 09:53|REVIEWING|NULL",
+    "final_list_ids": [
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+    ],
+    "final_list_status": 200
+  },
+  "summary": {
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "requests": 14
+  },
+  "case3_results_consistency": {
+    "description": "带非空核对结果的隔离 COMPLETED 任务：DELETE 409 前后 /results 完全一致",
+    "scope": "只补这一条接口回归；前端与待核对任务软删除用例沿用既有结果，未重跑",
+    "isolated_data": {
+      "task_id": "ee347bb8-ec27-49b6-ba05-7f517f48a129",
+      "name": "QA 删除只读-带非空结果",
+      "state": "COMPLETED",
+      "cloned_run_id": "f65001b7-01c0-4902-836e-4409af5e148e",
+      "source": {
+        "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+        "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+        "note": "克隆现成最新 READY run 的 results/decisions，不调用 files/runs/complete，不触发 OCR/LLM"
+      },
+      "counts": {
+        "runs": 1,
+        "results": 77,
+        "decisions": 77
+      }
+    },
+    "before": {
+      "status": 200,
+      "run_id": "f65001b7-01c0-4902-836e-4409af5e148e",
+      "editable": false,
+      "is_stale": false,
+      "item_count": 77,
+      "accepted": 76,
+      "rejected": 1,
+      "has_reject_reason": true,
+      "statistics": {
+        "overall": {
+          "total": 77,
+          "unselected": 0,
+          "accepted": 76,
+          "rejected": 1,
+          "missing_reason": 0,
+          "accept_rate": 0.987012987012987,
+          "reject_rate": 0.012987012987012988,
+          "can_complete": true
+        },
+        "materials": [
+          {
+            "material_type": "articles_of_association",
+            "statistics": {
+              "total": 65,
+              "unselected": 0,
+              "accepted": 64,
+              "rejected": 1,
+              "missing_reason": 0,
+              "accept_rate": 0.9846153846153847,
+              "reject_rate": 0.015384615384615385,
+              "can_complete": true
+            }
+          },
+          {
+            "material_type": "audited_financials",
+            "statistics": {
+              "total": 9,
+              "unselected": 0,
+              "accepted": 9,
+              "rejected": 0,
+              "missing_reason": 0,
+              "accept_rate": 1.0,
+              "reject_rate": 0.0,
+              "can_complete": true
+            }
+          },
+          {
+            "material_type": "business_license",
+            "statistics": {
+              "total": 3,
+              "unselected": 0,
+              "accepted": 3,
+              "rejected": 0,
+              "missing_reason": 0,
+              "accept_rate": 1.0,
+              "reject_rate": 0.0,
+              "can_complete": true
+            }
+          }
+        ]
+      },
+      "response_sha256": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+      "item_fingerprint_sha256": "a8a1d65043cd7509302c514ef4054b6fa7288900af88d77c4175bc008c730a4b",
+      "item_fingerprints": [
+        {
+          "id": "91708449-892a-4f7f-9d17-1a62dd45d657",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 115,
+          "text_sha256_16": "d9e2e42619ad53ca",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 6,
+            "updated_at": "2026-11-11T08:43:32.250052Z"
+          }
+        },
+        {
+          "id": "7dcf0461-5556-4f84-bc65-2ce7b2ce7f2e",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 1,
+          "text_length": 63,
+          "text_sha256_16": "58aefa9541c8b349",
+          "decision": {
+            "decision": "rejected",
+            "reject_reason": "材料识别有误，需人工复核",
+            "version": 3,
+            "updated_at": "2026-11-11T08:43:51.861034Z"
+          }
+        },
+        {
+          "id": "ba60fb49-a615-4c2f-9db3-64b5ea807652",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 2,
+          "text_length": 52,
+          "text_sha256_16": "8e986ff217c14c00",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.759655Z"
+          }
+        },
+        {
+          "id": "2449db74-7a01-4d5d-96fb-45e2af1665be",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 3,
+          "text_length": 18,
+          "text_sha256_16": "fa31348b57793f83",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.778422Z"
+          }
+        },
+        {
+          "id": "531a1160-240d-4199-9370-5f0f195777f2",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 4,
+          "text_length": 21,
+          "text_sha256_16": "8d8df55ed13831eb",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.795540Z"
+          }
+        },
+        {
+          "id": "60c2408a-c644-4a82-83f1-e635baecb3cc",
+          "check_item_id": "charter.approval_body",
+          "kind": "text",
+          "rank": 5,
+          "text_length": 44,
+          "text_sha256_16": "0c01946063317cd8",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.813749Z"
+          }
+        },
+        {
+          "id": "0b805cdd-293d-47d1-8ba4-f541a23d8aa4",
+          "check_item_id": "charter.business_scope",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 437,
+          "text_sha256_16": "e10b63af96543e63",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.830436Z"
+          }
+        },
+        {
+          "id": "1d6eacb5-ea4f-416c-b129-5c6a9b99960d",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 61,
+          "text_sha256_16": "8255b0df7df9a08e",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.848909Z"
+          }
+        },
+        {
+          "id": "a98d4e95-000d-4773-aa02-b86bccc559c3",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 1,
+          "text_length": 122,
+          "text_sha256_16": "43b78a0525fd2cb5",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.866531Z"
+          }
+        },
+        {
+          "id": "5aad35ac-c7c4-4b56-8b8a-57eb43332ffe",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 2,
+          "text_length": 6,
+          "text_sha256_16": "cf0d5601c4be2347",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.883964Z"
+          }
+        },
+        {
+          "id": "55546b5b-985f-455c-a197-530320bc8087",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 3,
+          "text_length": 6,
+          "text_sha256_16": "141c1fc8158e219e",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.901534Z"
+          }
+        },
+        {
+          "id": "56b7da1b-017f-4d7b-bb77-7d72a627a80a",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 4,
+          "text_length": 52,
+          "text_sha256_16": "8e986ff217c14c00",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.919296Z"
+          }
+        },
+        {
+          "id": "d3e50f5f-cff1-4f3d-a779-fac286337863",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 5,
+          "text_length": 21,
+          "text_sha256_16": "8d8df55ed13831eb",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.937340Z"
+          }
+        },
+        {
+          "id": "9dca8c3f-b468-4e0b-a2e4-52a17e2b1610",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 6,
+          "text_length": 43,
+          "text_sha256_16": "3c1efee36d302bee",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.955159Z"
+          }
+        },
+        {
+          "id": "4d42bb3c-0a66-4a22-8e30-8befe10bd586",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 7,
+          "text_length": 43,
+          "text_sha256_16": "7bbc9c4eaf3b20bb",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.972415Z"
+          }
+        },
+        {
+          "id": "86df2b23-025f-446d-8142-d09b10f49e41",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 8,
+          "text_length": 55,
+          "text_sha256_16": "25b263435c144287",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:11.990611Z"
+          }
+        },
+        {
+          "id": "30a962b0-6e2e-4af2-a21f-4aaa168e492b",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 9,
+          "text_length": 42,
+          "text_sha256_16": "8ff3d9d0ee70c589",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.007348Z"
+          }
+        },
+        {
+          "id": "95804eeb-b709-45ad-934b-945887b3fd3c",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 10,
+          "text_length": 25,
+          "text_sha256_16": "d94c3a9dc6e1724b",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.024019Z"
+          }
+        },
+        {
+          "id": "b3af4906-6f3f-4c12-842e-240ed1cc74b6",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 11,
+          "text_length": 27,
+          "text_sha256_16": "e0535bbe50f851d2",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.039825Z"
+          }
+        },
+        {
+          "id": "03c975d4-233b-4eee-bc11-e6f9548e761c",
+          "check_item_id": "charter.guarantee_restrictions",
+          "kind": "text",
+          "rank": 12,
+          "text_length": 23,
+          "text_sha256_16": "fca8af9333c273ba",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.056821Z"
+          }
+        },
+        {
+          "id": "3b9ee1c2-aa4d-4d92-9b51-ce133aabaa98",
+          "check_item_id": "charter.legal_representative_signature_authority",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.073809Z"
+          }
+        },
+        {
+          "id": "64d323dc-8195-4e94-b532-c8961f5e4bb7",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 93,
+          "text_sha256_16": "7b836397723707c4",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.090488Z"
+          }
+        },
+        {
+          "id": "010286a3-7130-4d06-801b-98b292fb12c4",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 1,
+          "text_length": 62,
+          "text_sha256_16": "3a663e2941268609",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.106798Z"
+          }
+        },
+        {
+          "id": "17ecb34f-75f5-4467-a41c-511d2ff76820",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 2,
+          "text_length": 38,
+          "text_sha256_16": "2cf8871d8e3f7c2d",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.124023Z"
+          }
+        },
+        {
+          "id": "4ad0274a-0fd5-4c3e-a5ff-0d873b0850fb",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 3,
+          "text_length": 125,
+          "text_sha256_16": "b487816fd4c86b7c",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.140520Z"
+          }
+        },
+        {
+          "id": "32e430a2-a9a2-4aff-a43f-140bef827c4e",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 4,
+          "text_length": 44,
+          "text_sha256_16": "c7b940f408de2706",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.157146Z"
+          }
+        },
+        {
+          "id": "ecff2462-960d-443f-94e6-51be916639e9",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 5,
+          "text_length": 91,
+          "text_sha256_16": "b6c45cd28ac5636e",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.174259Z"
+          }
+        },
+        {
+          "id": "02bddfeb-6e62-4255-9df8-e2b1635f8abd",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 6,
+          "text_length": 76,
+          "text_sha256_16": "5acc265d7defc1eb",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.190873Z"
+          }
+        },
+        {
+          "id": "6be0c948-f9fa-4a1b-b5af-cdb4c9ce3d7f",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 7,
+          "text_length": 28,
+          "text_sha256_16": "69ea50371246784e",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.208127Z"
+          }
+        },
+        {
+          "id": "011db25e-c98d-4a67-9cfa-841263cf4e5b",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 8,
+          "text_length": 83,
+          "text_sha256_16": "23232c50a7783d45",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.225046Z"
+          }
+        },
+        {
+          "id": "d35d3b8e-7302-46e7-b4f8-5b732d026698",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 9,
+          "text_length": 67,
+          "text_sha256_16": "35d31ba173782e0f",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.241819Z"
+          }
+        },
+        {
+          "id": "ec2970da-de86-4eb1-ada4-f91ea7bc7531",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 10,
+          "text_length": 32,
+          "text_sha256_16": "245b14d17b0bd088",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.258579Z"
+          }
+        },
+        {
+          "id": "b03bd15c-1505-4501-8edb-d19c2a559270",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 11,
+          "text_length": 61,
+          "text_sha256_16": "97ed55a856a589b4",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.275681Z"
+          }
+        },
+        {
+          "id": "63079fa7-0ae7-4e53-9b46-50c0e8bcdc35",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 12,
+          "text_length": 37,
+          "text_sha256_16": "5a7efde657a0a42a",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.292650Z"
+          }
+        },
+        {
+          "id": "bee2b459-d191-4bd7-b12a-57f23b407e9e",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 13,
+          "text_length": 143,
+          "text_sha256_16": "0961b37806d424a0",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.309829Z"
+          }
+        },
+        {
+          "id": "6ae58231-4ed6-4d93-85a9-551d34af2912",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 14,
+          "text_length": 41,
+          "text_sha256_16": "3958e33a72dc5d81",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.327162Z"
+          }
+        },
+        {
+          "id": "44a05051-a901-4a48-8ded-fcf058880ebc",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 15,
+          "text_length": 60,
+          "text_sha256_16": "43612fbd1772bbc1",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.344866Z"
+          }
+        },
+        {
+          "id": "24d89ad3-87eb-463b-bd58-0109f7279b7d",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 16,
+          "text_length": 18,
+          "text_sha256_16": "e9be7a9ae90ed42f",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.362365Z"
+          }
+        },
+        {
+          "id": "a322b7ce-5c1f-4029-b3af-d10b0092b93a",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 17,
+          "text_length": 26,
+          "text_sha256_16": "cb41363809eed7f3",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.379323Z"
+          }
+        },
+        {
+          "id": "d5669f3f-59da-4c7c-b97f-f0c830c6b7a7",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 18,
+          "text_length": 4,
+          "text_sha256_16": "05c4348f856040d5",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.396869Z"
+          }
+        },
+        {
+          "id": "e068d72c-d691-40ce-ab9e-6175fc5febbc",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 19,
+          "text_length": 32,
+          "text_sha256_16": "fd76040acdbd2f06",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.413531Z"
+          }
+        },
+        {
+          "id": "aaeec4ee-9b7c-4b2d-b7dd-4c3a1fff2398",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 20,
+          "text_length": 65,
+          "text_sha256_16": "d4aad802c1bbce22",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.431001Z"
+          }
+        },
+        {
+          "id": "df1de7ee-56c4-425e-960a-149fc5422bea",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 21,
+          "text_length": 110,
+          "text_sha256_16": "c3886c53c03d2267",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.448186Z"
+          }
+        },
+        {
+          "id": "83099e80-399e-4a76-af94-f1ee7e162ad5",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 22,
+          "text_length": 63,
+          "text_sha256_16": "8a2658adb767b7b4",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.465533Z"
+          }
+        },
+        {
+          "id": "6f4915bc-ac46-40ec-8bfc-0f50978cb2c3",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 23,
+          "text_length": 83,
+          "text_sha256_16": "6f5691959c8b034f",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.482741Z"
+          }
+        },
+        {
+          "id": "e05779e7-82bf-44be-bafc-4b1882c6492e",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 24,
+          "text_length": 50,
+          "text_sha256_16": "d3f7df55c5af0639",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.499473Z"
+          }
+        },
+        {
+          "id": "3ced01d1-d1e2-4fb4-9353-845ddfb0b723",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 25,
+          "text_length": 70,
+          "text_sha256_16": "0500babf2da99684",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.516906Z"
+          }
+        },
+        {
+          "id": "af055660-d4ec-43cf-863c-ce48c31db00b",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 26,
+          "text_length": 89,
+          "text_sha256_16": "352d36f63ab5a618",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.533821Z"
+          }
+        },
+        {
+          "id": "78620b68-c69f-4e14-a374-2989614a8f9e",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 27,
+          "text_length": 63,
+          "text_sha256_16": "dfb2377078bb47d5",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.551123Z"
+          }
+        },
+        {
+          "id": "25f53425-6a95-4918-9205-7af8819d3a78",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 28,
+          "text_length": 26,
+          "text_sha256_16": "d666157276ca1e7b",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.568367Z"
+          }
+        },
+        {
+          "id": "30ab5126-ad0d-4a73-90d9-966d4cf77abf",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 29,
+          "text_length": 129,
+          "text_sha256_16": "6356f7a9cfaaa316",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.585367Z"
+          }
+        },
+        {
+          "id": "9b8af1ce-4e87-4552-a0a7-33f79c6ac660",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 30,
+          "text_length": 66,
+          "text_sha256_16": "71363d5bc0608373",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.601972Z"
+          }
+        },
+        {
+          "id": "ca1fa52f-3021-4e6c-b835-8d57ab1b9a66",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 31,
+          "text_length": 129,
+          "text_sha256_16": "7eeb4f4886c3663b",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.619153Z"
+          }
+        },
+        {
+          "id": "fe3e8d90-b6af-4628-a0d6-e5bfd2553e1a",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 32,
+          "text_length": 31,
+          "text_sha256_16": "6522f882a3bad009",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.636051Z"
+          }
+        },
+        {
+          "id": "97a7d42e-d887-416d-abae-d0060c3fcd3c",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 33,
+          "text_length": 12,
+          "text_sha256_16": "5ade0b7e88df5034",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.652756Z"
+          }
+        },
+        {
+          "id": "cf711f57-6b99-4492-8243-2fc71dfe0a13",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "kind": "text",
+          "rank": 34,
+          "text_length": 136,
+          "text_sha256_16": "3b04e7134425d9ed",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.670096Z"
+          }
+        },
+        {
+          "id": "ccd16b8f-794c-4710-bd85-168e7c090181",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 48,
+          "text_sha256_16": "58e4faefa01b0111",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.687222Z"
+          }
+        },
+        {
+          "id": "84b935e7-6610-4ff4-aa5d-3fdea22dc675",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 1,
+          "text_length": 13,
+          "text_sha256_16": "24b10a8c79d86d04",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.705116Z"
+          }
+        },
+        {
+          "id": "ab473f82-97cc-4540-aa7c-f68bf289f4d4",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 2,
+          "text_length": 22,
+          "text_sha256_16": "19bf1c1d4af36053",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.722220Z"
+          }
+        },
+        {
+          "id": "317bfe0f-527a-492b-966e-a83e144fe7b2",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 3,
+          "text_length": 88,
+          "text_sha256_16": "d3f62716bf8dd7a9",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.739632Z"
+          }
+        },
+        {
+          "id": "f8d0aa42-895e-442e-8901-bea78dccd4db",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 4,
+          "text_length": 57,
+          "text_sha256_16": "cf91da721e17ad8f",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.756552Z"
+          }
+        },
+        {
+          "id": "ee068dc4-f1a9-413e-91ba-0d34a8dcc107",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 5,
+          "text_length": 59,
+          "text_sha256_16": "6f732395224eac06",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.773686Z"
+          }
+        },
+        {
+          "id": "d8c6260f-1df3-4a5a-9eb7-46946b652ae7",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 6,
+          "text_length": 50,
+          "text_sha256_16": "dee0d620440d12b0",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.791109Z"
+          }
+        },
+        {
+          "id": "95fde69b-450f-4b21-bbfd-c60aa5e4eeea",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 7,
+          "text_length": 22,
+          "text_sha256_16": "a4f9770de706dd49",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.808207Z"
+          }
+        },
+        {
+          "id": "d8737a6d-8560-4ecc-b24b-4c5a251af5cd",
+          "check_item_id": "charter.voting_ratio",
+          "kind": "text",
+          "rank": 8,
+          "text_length": 21,
+          "text_sha256_16": "8f913da626c31985",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.825199Z"
+          }
+        },
+        {
+          "id": "d23e1747-ed30-4261-a28e-c93d0553c284",
+          "check_item_id": "financial.audit_institution",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.842513Z"
+          }
+        },
+        {
+          "id": "d2174c9a-46c2-4af9-9fea-61e5902e991b",
+          "check_item_id": "financial.audit_opinion",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.859782Z"
+          }
+        },
+        {
+          "id": "af85c411-207d-4f2b-adaa-754d1e89ae98",
+          "check_item_id": "financial.audit_seal",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.878214Z"
+          }
+        },
+        {
+          "id": "21ccfaba-d8c8-4143-9794-a0650ccf78f3",
+          "check_item_id": "financial.balance_sheet",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.895260Z"
+          }
+        },
+        {
+          "id": "baa03477-dd4e-48b3-9733-98043aa0f01b",
+          "check_item_id": "financial.cash_flow_statement",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.912536Z"
+          }
+        },
+        {
+          "id": "9b8dc757-2ba4-46bb-b548-92b415e8ba2f",
+          "check_item_id": "financial.company_name",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.930245Z"
+          }
+        },
+        {
+          "id": "e54cd510-a5f4-4ce9-90e0-82b4ec8f3c58",
+          "check_item_id": "financial.cpa_signature",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.948139Z"
+          }
+        },
+        {
+          "id": "62b25417-e07a-4752-bf4c-7acf10c896b4",
+          "check_item_id": "financial.income_statement",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.965099Z"
+          }
+        },
+        {
+          "id": "50561bdc-1849-4332-8688-e11629d3dfc9",
+          "check_item_id": "financial.reporting_period",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:12.982215Z"
+          }
+        },
+        {
+          "id": "8f9fd8da-d303-47a4-be23-240264680afb",
+          "check_item_id": "license.business_scope",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 274,
+          "text_sha256_16": "810a36d9cea000f9",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:13.000179Z"
+          }
+        },
+        {
+          "id": "b0543c2d-f888-4c2a-b7be-e579e8b0d804",
+          "check_item_id": "license.operating_term",
+          "kind": "text",
+          "rank": 0,
+          "text_length": 18,
+          "text_sha256_16": "3f06d97fff17dfa7",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:13.017821Z"
+          }
+        },
+        {
+          "id": "f9852e56-4777-45a5-b507-db238cb828d6",
+          "check_item_id": "license.registration_status",
+          "kind": "not_found",
+          "rank": 0,
+          "text_length": 0,
+          "text_sha256_16": "e3b0c44298fc1c14",
+          "decision": {
+            "decision": "accepted",
+            "reject_reason": null,
+            "version": 1,
+            "updated_at": "2026-11-11T08:44:28.496827Z"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "status": 409,
+      "body": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可删除"
+        }
+      }
+    },
+    "after": {
+      "status": 200,
+      "run_id": "f65001b7-01c0-4902-836e-4409af5e148e",
+      "editable": false,
+      "is_stale": false,
+      "item_count": 77,
+      "statistics": {
+        "overall": {
+          "total": 77,
+          "unselected": 0,
+          "accepted": 76,
+          "rejected": 1,
+          "missing_reason": 0,
+          "accept_rate": 0.987012987012987,
+          "reject_rate": 0.012987012987012988,
+          "can_complete": true
+        },
+        "materials": [
+          {
+            "material_type": "articles_of_association",
+            "statistics": {
+              "total": 65,
+              "unselected": 0,
+              "accepted": 64,
+              "rejected": 1,
+              "missing_reason": 0,
+              "accept_rate": 0.9846153846153847,
+              "reject_rate": 0.015384615384615385,
+              "can_complete": true
+            }
+          },
+          {
+            "material_type": "audited_financials",
+            "statistics": {
+              "total": 9,
+              "unselected": 0,
+              "accepted": 9,
+              "rejected": 0,
+              "missing_reason": 0,
+              "accept_rate": 1.0,
+              "reject_rate": 0.0,
+              "can_complete": true
+            }
+          },
+          {
+            "material_type": "business_license",
+            "statistics": {
+              "total": 3,
+              "unselected": 0,
+              "accepted": 3,
+              "rejected": 0,
+              "missing_reason": 0,
+              "accept_rate": 1.0,
+              "reject_rate": 0.0,
+              "can_complete": true
+            }
+          }
+        ]
+      },
+      "response_sha256": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+      "item_fingerprint_sha256": "a8a1d65043cd7509302c514ef4054b6fa7288900af88d77c4175bc008c730a4b"
+    },
+    "comparison": {
+      "run_id_equal": true,
+      "item_count_equal": true,
+      "item_keys_equal": true,
+      "statistics_equal": true,
+      "full_response_identical": true,
+      "deleted_at_after": "NULL",
+      "item_fingerprints_equal": true
+    },
+    "checks": [
+      {
+        "label": "登录返回 200",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "label": "登录返回 csrf_token",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "创建隔离任务返回 201",
+        "expected": 201,
+        "actual": 201,
+        "pass": true
+      },
+      {
+        "label": "克隆出 1 个 READY run",
+        "expected": 1,
+        "actual": 1,
+        "pass": true
+      },
+      {
+        "label": "克隆结果条目非空",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "克隆人工决定非空",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "删除前 GET /results 返回 200",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "label": "删除前结果条目非空",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "删除前 run_id 非空",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "存在已接受的人工决定",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "存在已拒绝的人工决定",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "存在非空的拒绝原因",
+        "expected": true,
+        "actual": true,
+        "pass": true
+      },
+      {
+        "label": "COMPLETED 任务 editable=false",
+        "expected": false,
+        "actual": false,
+        "pass": true
+      },
+      {
+        "label": "DELETE 返回 409",
+        "expected": 409,
+        "actual": 409,
+        "pass": true
+      },
+      {
+        "label": "错误码 = TASK_READ_ONLY",
+        "expected": "TASK_READ_ONLY",
+        "actual": "TASK_READ_ONLY",
+        "pass": true
+      },
+      {
+        "label": "错误消息",
+        "expected": "任务已完成，不可删除",
+        "actual": "任务已完成，不可删除",
+        "pass": true
+      },
+      {
+        "label": "删除后 GET /results 返回 200",
+        "expected": 200,
+        "actual": 200,
+        "pass": true
+      },
+      {
+        "label": "run_id 前后一致",
+        "expected": "f65001b7-01c0-4902-836e-4409af5e148e",
+        "actual": "f65001b7-01c0-4902-836e-4409af5e148e",
+        "pass": true
+      },
+      {
+        "label": "结果条目数量前后一致",
+        "expected": 77,
+        "actual": 77,
+        "pass": true
+      },
+      {
+        "label": "结果条目 id 序列前后一致",
+        "expected": [
+          "91708449-892a-4f7f-9d17-1a62dd45d657",
+          "7dcf0461-5556-4f84-bc65-2ce7b2ce7f2e",
+          "ba60fb49-a615-4c2f-9db3-64b5ea807652",
+          "2449db74-7a01-4d5d-96fb-45e2af1665be",
+          "531a1160-240d-4199-9370-5f0f195777f2",
+          "60c2408a-c644-4a82-83f1-e635baecb3cc",
+          "0b805cdd-293d-47d1-8ba4-f541a23d8aa4",
+          "1d6eacb5-ea4f-416c-b129-5c6a9b99960d",
+          "a98d4e95-000d-4773-aa02-b86bccc559c3",
+          "5aad35ac-c7c4-4b56-8b8a-57eb43332ffe",
+          "55546b5b-985f-455c-a197-530320bc8087",
+          "56b7da1b-017f-4d7b-bb77-7d72a627a80a",
+          "d3e50f5f-cff1-4f3d-a779-fac286337863",
+          "9dca8c3f-b468-4e0b-a2e4-52a17e2b1610",
+          "4d42bb3c-0a66-4a22-8e30-8befe10bd586",
+          "86df2b23-025f-446d-8142-d09b10f49e41",
+          "30a962b0-6e2e-4af2-a21f-4aaa168e492b",
+          "95804eeb-b709-45ad-934b-945887b3fd3c",
+          "b3af4906-6f3f-4c12-842e-240ed1cc74b6",
+          "03c975d4-233b-4eee-bc11-e6f9548e761c",
+          "3b9ee1c2-aa4d-4d92-9b51-ce133aabaa98",
+          "64d323dc-8195-4e94-b532-c8961f5e4bb7",
+          "010286a3-7130-4d06-801b-98b292fb12c4",
+          "17ecb34f-75f5-4467-a41c-511d2ff76820",
+          "4ad0274a-0fd5-4c3e-a5ff-0d873b0850fb",
+          "32e430a2-a9a2-4aff-a43f-140bef827c4e",
+          "ecff2462-960d-443f-94e6-51be916639e9",
+          "02bddfeb-6e62-4255-9df8-e2b1635f8abd",
+          "6be0c948-f9fa-4a1b-b5af-cdb4c9ce3d7f",
+          "011db25e-c98d-4a67-9cfa-841263cf4e5b",
+          "d35d3b8e-7302-46e7-b4f8-5b732d026698",
+          "ec2970da-de86-4eb1-ada4-f91ea7bc7531",
+          "b03bd15c-1505-4501-8edb-d19c2a559270",
+          "63079fa7-0ae7-4e53-9b46-50c0e8bcdc35",
+          "bee2b459-d191-4bd7-b12a-57f23b407e9e",
+          "6ae58231-4ed6-4d93-85a9-551d34af2912",
+          "44a05051-a901-4a48-8ded-fcf058880ebc",
+          "24d89ad3-87eb-463b-bd58-0109f7279b7d",
+          "a322b7ce-5c1f-4029-b3af-d10b0092b93a",
+          "d5669f3f-59da-4c7c-b97f-f0c830c6b7a7",
+          "e068d72c-d691-40ce-ab9e-6175fc5febbc",
+          "aaeec4ee-9b7c-4b2d-b7dd-4c3a1fff2398",
+          "df1de7ee-56c4-425e-960a-149fc5422bea",
+          "83099e80-399e-4a76-af94-f1ee7e162ad5",
+          "6f4915bc-ac46-40ec-8bfc-0f50978cb2c3",
+          "e05779e7-82bf-44be-bafc-4b1882c6492e",
+          "3ced01d1-d1e2-4fb4-9353-845ddfb0b723",
+          "af055660-d4ec-43cf-863c-ce48c31db00b",
+          "78620b68-c69f-4e14-a374-2989614a8f9e",
+          "25f53425-6a95-4918-9205-7af8819d3a78",
+          "30ab5126-ad0d-4a73-90d9-966d4cf77abf",
+          "9b8af1ce-4e87-4552-a0a7-33f79c6ac660",
+          "ca1fa52f-3021-4e6c-b835-8d57ab1b9a66",
+          "fe3e8d90-b6af-4628-a0d6-e5bfd2553e1a",
+          "97a7d42e-d887-416d-abae-d0060c3fcd3c",
+          "cf711f57-6b99-4492-8243-2fc71dfe0a13",
+          "ccd16b8f-794c-4710-bd85-168e7c090181",
+          "84b935e7-6610-4ff4-aa5d-3fdea22dc675",
+          "ab473f82-97cc-4540-aa7c-f68bf289f4d4",
+          "317bfe0f-527a-492b-966e-a83e144fe7b2",
+          "f8d0aa42-895e-442e-8901-bea78dccd4db",
+          "ee068dc4-f1a9-413e-91ba-0d34a8dcc107",
+          "d8c6260f-1df3-4a5a-9eb7-46946b652ae7",
+          "95fde69b-450f-4b21-bbfd-c60aa5e4eeea",
+          "d8737a6d-8560-4ecc-b24b-4c5a251af5cd",
+          "d23e1747-ed30-4261-a28e-c93d0553c284",
+          "d2174c9a-46c2-4af9-9fea-61e5902e991b",
+          "af85c411-207d-4f2b-adaa-754d1e89ae98",
+          "21ccfaba-d8c8-4143-9794-a0650ccf78f3",
+          "baa03477-dd4e-48b3-9733-98043aa0f01b",
+          "9b8dc757-2ba4-46bb-b548-92b415e8ba2f",
+          "e54cd510-a5f4-4ce9-90e0-82b4ec8f3c58",
+          "62b25417-e07a-4752-bf4c-7acf10c896b4",
+          "50561bdc-1849-4332-8688-e11629d3dfc9",
+          "8f9fd8da-d303-47a4-be23-240264680afb",
+          "b0543c2d-f888-4c2a-b7be-e579e8b0d804",
+          "f9852e56-4777-45a5-b507-db238cb828d6"
+        ],
+        "actual": [
+          "91708449-892a-4f7f-9d17-1a62dd45d657",
+          "7dcf0461-5556-4f84-bc65-2ce7b2ce7f2e",
+          "ba60fb49-a615-4c2f-9db3-64b5ea807652",
+          "2449db74-7a01-4d5d-96fb-45e2af1665be",
+          "531a1160-240d-4199-9370-5f0f195777f2",
+          "60c2408a-c644-4a82-83f1-e635baecb3cc",
+          "0b805cdd-293d-47d1-8ba4-f541a23d8aa4",
+          "1d6eacb5-ea4f-416c-b129-5c6a9b99960d",
+          "a98d4e95-000d-4773-aa02-b86bccc559c3",
+          "5aad35ac-c7c4-4b56-8b8a-57eb43332ffe",
+          "55546b5b-985f-455c-a197-530320bc8087",
+          "56b7da1b-017f-4d7b-bb77-7d72a627a80a",
+          "d3e50f5f-cff1-4f3d-a779-fac286337863",
+          "9dca8c3f-b468-4e0b-a2e4-52a17e2b1610",
+          "4d42bb3c-0a66-4a22-8e30-8befe10bd586",
+          "86df2b23-025f-446d-8142-d09b10f49e41",
+          "30a962b0-6e2e-4af2-a21f-4aaa168e492b",
+          "95804eeb-b709-45ad-934b-945887b3fd3c",
+          "b3af4906-6f3f-4c12-842e-240ed1cc74b6",
+          "03c975d4-233b-4eee-bc11-e6f9548e761c",
+          "3b9ee1c2-aa4d-4d92-9b51-ce133aabaa98",
+          "64d323dc-8195-4e94-b532-c8961f5e4bb7",
+          "010286a3-7130-4d06-801b-98b292fb12c4",
+          "17ecb34f-75f5-4467-a41c-511d2ff76820",
+          "4ad0274a-0fd5-4c3e-a5ff-0d873b0850fb",
+          "32e430a2-a9a2-4aff-a43f-140bef827c4e",
+          "ecff2462-960d-443f-94e6-51be916639e9",
+          "02bddfeb-6e62-4255-9df8-e2b1635f8abd",
+          "6be0c948-f9fa-4a1b-b5af-cdb4c9ce3d7f",
+          "011db25e-c98d-4a67-9cfa-841263cf4e5b",
+          "d35d3b8e-7302-46e7-b4f8-5b732d026698",
+          "ec2970da-de86-4eb1-ada4-f91ea7bc7531",
+          "b03bd15c-1505-4501-8edb-d19c2a559270",
+          "63079fa7-0ae7-4e53-9b46-50c0e8bcdc35",
+          "bee2b459-d191-4bd7-b12a-57f23b407e9e",
+          "6ae58231-4ed6-4d93-85a9-551d34af2912",
+          "44a05051-a901-4a48-8ded-fcf058880ebc",
+          "24d89ad3-87eb-463b-bd58-0109f7279b7d",
+          "a322b7ce-5c1f-4029-b3af-d10b0092b93a",
+          "d5669f3f-59da-4c7c-b97f-f0c830c6b7a7",
+          "e068d72c-d691-40ce-ab9e-6175fc5febbc",
+          "aaeec4ee-9b7c-4b2d-b7dd-4c3a1fff2398",
+          "df1de7ee-56c4-425e-960a-149fc5422bea",
+          "83099e80-399e-4a76-af94-f1ee7e162ad5",
+          "6f4915bc-ac46-40ec-8bfc-0f50978cb2c3",
+          "e05779e7-82bf-44be-bafc-4b1882c6492e",
+          "3ced01d1-d1e2-4fb4-9353-845ddfb0b723",
+          "af055660-d4ec-43cf-863c-ce48c31db00b",
+          "78620b68-c69f-4e14-a374-2989614a8f9e",
+          "25f53425-6a95-4918-9205-7af8819d3a78",
+          "30ab5126-ad0d-4a73-90d9-966d4cf77abf",
+          "9b8af1ce-4e87-4552-a0a7-33f79c6ac660",
+          "ca1fa52f-3021-4e6c-b835-8d57ab1b9a66",
+          "fe3e8d90-b6af-4628-a0d6-e5bfd2553e1a",
+          "97a7d42e-d887-416d-abae-d0060c3fcd3c",
+          "cf711f57-6b99-4492-8243-2fc71dfe0a13",
+          "ccd16b8f-794c-4710-bd85-168e7c090181",
+          "84b935e7-6610-4ff4-aa5d-3fdea22dc675",
+          "ab473f82-97cc-4540-aa7c-f68bf289f4d4",
+          "317bfe0f-527a-492b-966e-a83e144fe7b2",
+          "f8d0aa42-895e-442e-8901-bea78dccd4db",
+          "ee068dc4-f1a9-413e-91ba-0d34a8dcc107",
+          "d8c6260f-1df3-4a5a-9eb7-46946b652ae7",
+          "95fde69b-450f-4b21-bbfd-c60aa5e4eeea",
+          "d8737a6d-8560-4ecc-b24b-4c5a251af5cd",
+          "d23e1747-ed30-4261-a28e-c93d0553c284",
+          "d2174c9a-46c2-4af9-9fea-61e5902e991b",
+          "af85c411-207d-4f2b-adaa-754d1e89ae98",
+          "21ccfaba-d8c8-4143-9794-a0650ccf78f3",
+          "baa03477-dd4e-48b3-9733-98043aa0f01b",
+          "9b8dc757-2ba4-46bb-b548-92b415e8ba2f",
+          "e54cd510-a5f4-4ce9-90e0-82b4ec8f3c58",
+          "62b25417-e07a-4752-bf4c-7acf10c896b4",
+          "50561bdc-1849-4332-8688-e11629d3dfc9",
+          "8f9fd8da-d303-47a4-be23-240264680afb",
+          "b0543c2d-f888-4c2a-b7be-e579e8b0d804",
+          "f9852e56-4777-45a5-b507-db238cb828d6"
+        ],
+        "pass": true
+      },
+      {
+        "label": "结果条目与人工决定关键字段逐条一致",
+        "expected": [
+          [
+            "91708449-892a-4f7f-9d17-1a62dd45d657",
+            "charter.approval_body",
+            "text",
+            0,
+            "第一百三十七条 董事会应当确定对外投资、收购出售资产、资产抵押、对外担保事项、委托理财、关联交易的权限，建立严格的审查和决策程序；重大投资项目应当组织有关专家、专业人员进行评审，并按本章程规定对需要报股东大会的事项报股东大会批准。",
+            null,
+            null,
+            "accepted",
+            null,
+            6,
+            "2026-11-11T08:43:32.250052Z",
+            null
+          ],
+          [
+            "7dcf0461-5556-4f84-bc65-2ce7b2ce7f2e",
+            "charter.approval_body",
+            "text",
+            1,
+            "（九）在股东大会授权范围内，决定本行对外投资、收购出售与核销资产、资产抵押、对外担保事项、委托理财、关联交易、数据治理等事项；",
+            null,
+            null,
+            "rejected",
+            "材料识别有误，需人工复核",
+            3,
+            "2026-11-11T08:43:51.861034Z",
+            null
+          ],
+          [
+            "ba60fb49-a615-4c2f-9db3-64b5ea807652",
+            "charter.approval_body",
+            "text",
+            2,
+            "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.759655Z",
+            null
+          ],
+          [
+            "2449db74-7a01-4d5d-96fb-45e2af1665be",
+            "charter.approval_body",
+            "text",
+            3,
+            "第一百三十四条 董事会行使下列职权：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.778422Z",
+            null
+          ],
+          [
+            "531a1160-240d-4199-9370-5f0f195777f2",
+            "charter.approval_body",
+            "text",
+            4,
+            "（十二）审议批准第四十七条规定的担保事项；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.795540Z",
+            null
+          ],
+          [
+            "60c2408a-c644-4a82-83f1-e635baecb3cc",
+            "charter.approval_body",
+            "text",
+            5,
+            "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.813749Z",
+            null
+          ],
+          [
+            "0b805cdd-293d-47d1-8ba4-f541a23d8aa4",
+            "charter.business_scope",
+            "text",
+            0,
+            "第十七条 经依法登记，本行的业务范围是：办理人民币存款、贷款；同业拆借业务；国内外结算；办理票据承兑、贴现、转贴现；各类汇兑业务；代理资金清算；提供信用证服务及担保；代理销售业务；代理发行、代理承销、代理兑付政府债券、金融债券、企业短期融资券；代收代付业务；代理证券资金清算业务（银证转账）；代理债券结算；代理保险业务；代理政策性银行、外国政府和国际金融机构贷款业务；保管箱服务；发行金融债券；买卖政府债券、金融债券、企业短期融资券；企业年金托管业务；开放式基金的注册登记、认购、申购和赎回业务；资信调查、咨询、见证业务；贷款承诺；企业、个人财务顾问服务、理财业务；组织或参加银团贷款；外汇存款；外汇贷款；外币兑换；出口托收及进口代收；外汇票据承兑和贴现；外汇借款；外汇担保；买卖或代理买卖股票以外的外币有价证券；自营、代客外汇买卖；金融衍生业务；银行卡业务；电话银行、网上银行、手机银行业务；办理结汇、售汇业务；代客境外理财业务；经国务院银行业监督管理机构核准的其他业务。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.830436Z",
+            null
+          ],
+          [
+            "1d6eacb5-ea4f-416c-b129-5c6a9b99960d",
+            "charter.guarantee_restrictions",
+            "text",
+            0,
+            "股东以本行股权出质为自己或他人担保的，应当严格遵守法律法规和监管部门要求，并事前书面告知本行董事会。董事会办公室或董事会指",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.848909Z",
+            null
+          ],
+          [
+            "a98d4e95-000d-4773-aa02-b86bccc559c3",
+            "charter.guarantee_restrictions",
+            "text",
+            1,
+            "拥有本行董、监事席位的股东，或直接、间接、共同持有或控制本行2%以上股份或表决权的股东出质本行股份，事前须向本行董事会申请备案，说明出质的原因、股权数额、质押期限、质押权人等基本情况。凡董事会认定对本行股权稳定、公司治理、风险与关联交易控制等存",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.866531Z",
+            null
+          ],
+          [
+            "5aad35ac-c7c4-4b56-8b8a-57eb43332ffe",
+            "charter.guarantee_restrictions",
+            "text",
+            2,
+            "担保事项、委",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.883964Z",
+            null
+          ],
+          [
+            "55546b5b-985f-455c-a197-530320bc8087",
+            "charter.guarantee_restrictions",
+            "text",
+            3,
+            "与核销资产、",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.901534Z",
+            null
+          ],
+          [
+            "56b7da1b-017f-4d7b-bb77-7d72a627a80a",
+            "charter.guarantee_restrictions",
+            "text",
+            4,
+            "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.919296Z",
+            null
+          ],
+          [
+            "d3e50f5f-cff1-4f3d-a779-fac286337863",
+            "charter.guarantee_restrictions",
+            "text",
+            5,
+            "（十二）审议批准第四十七条规定的担保事项；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.937340Z",
+            null
+          ],
+          [
+            "9dca8c3f-b468-4e0b-a2e4-52a17e2b1610",
+            "charter.guarantee_restrictions",
+            "text",
+            6,
+            "（五）本行在一年内购买、出售重大资产或者担保金额超过本行最近一期经审计总资产30%的；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.955159Z",
+            null
+          ],
+          [
+            "4d42bb3c-0a66-4a22-8e30-8befe10bd586",
+            "charter.guarantee_restrictions",
+            "text",
+            7,
+            "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.972415Z",
+            null
+          ],
+          [
+            "86df2b23-025f-446d-8142-d09b10f49e41",
+            "charter.guarantee_restrictions",
+            "text",
+            8,
+            "（一）本行及本行控股子公司（子银行）的对外担保总额，达到或超过最近一期经审计净资产的50%以后提供的任何担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.990611Z",
+            null
+          ],
+          [
+            "30a962b0-6e2e-4af2-a21f-4aaa168e492b",
+            "charter.guarantee_restrictions",
+            "text",
+            9,
+            "（二）本行的对外担保总额，达到或超过最近一期经审计总资产的30%以后提供的任何担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.007348Z",
+            null
+          ],
+          [
+            "95804eeb-b709-45ad-934b-945887b3fd3c",
+            "charter.guarantee_restrictions",
+            "text",
+            10,
+            "（三）为资产负债率超过70%的担保对象提供的担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.024019Z",
+            null
+          ],
+          [
+            "b3af4906-6f3f-4c12-842e-240ed1cc74b6",
+            "charter.guarantee_restrictions",
+            "text",
+            11,
+            "（四）单笔担保额超过最近一期经审计净资产10%的担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.039825Z",
+            null
+          ],
+          [
+            "03c975d4-233b-4eee-bc11-e6f9548e761c",
+            "charter.guarantee_restrictions",
+            "text",
+            12,
+            "（五）对股东、实际控制人及其关联方提供的担保。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.056821Z",
+            null
+          ],
+          [
+            "3b9ee1c2-aa4d-4d92-9b51-ce133aabaa98",
+            "charter.legal_representative_signature_authority",
+            "not_found",
+            0,
+            null,
+            null,
+            "no_matching_evidence",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.073809Z",
+            null
+          ],
+          [
+            "64d323dc-8195-4e94-b532-c8961f5e4bb7",
+            "charter.ownership_and_special_terms",
+            "text",
+            0,
+            "第二十三条 本行普通股股份总数为21,142,984,272股，每股面值人民币壹元；本行优先股股份总数为179,000,000股，每股面值人民币壹佰元。本行的股本结构为：普通股和优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.090488Z",
+            null
+          ],
+          [
+            "010286a3-7130-4d06-801b-98b292fb12c4",
+            "charter.ownership_and_special_terms",
+            "text",
+            1,
+            "本行发行的优先股采用非累积股息支付方式，即在特定年度未向优先股股东足额派发的股息的差额部分，不累积到下一年度，且不构成违约事",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.106798Z",
+            null
+          ],
+          [
+            "17ecb34f-75f5-4467-a41c-511d2ff76820",
+            "charter.ownership_and_special_terms",
+            "text",
+            2,
+            "优先股股东按照约定的票面股息率获得分配后，不再同普通股股东一起参加剩余利润分",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.124023Z",
+            null
+          ],
+          [
+            "4ad0274a-0fd5-4c3e-a5ff-0d873b0850fb",
+            "charter.ownership_and_special_terms",
+            "text",
+            3,
+            "第二百六十六条 本行可根据有关法律、行政法规、部门规章的规定，发行强制转股触发事件发生时强制转换为普通股的优先股。当法律、行政法规、部门规章规定或优先股发行时约定的触发事件发生时，经国家有关主管机关批准，本行发行的优先股将全部或部分强制转换为普通股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.140520Z",
+            null
+          ],
+          [
+            "32e430a2-a9a2-4aff-a43f-140bef827c4e",
+            "charter.ownership_and_special_terms",
+            "text",
+            4,
+            "第二百六十七条 以下事项计算股东持股比例、持股数额时，仅计算普通股和表决权恢复的优先股：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.157146Z",
+            null
+          ],
+          [
+            "ecff2462-960d-443f-94e6-51be916639e9",
+            "charter.ownership_and_special_terms",
+            "text",
+            5,
+            "第五条 本行于2007年8月31日经中国证券监督管理委员会证监发行字[2007]259号文件核准，首次向社会公众发行人民币普通股12亿股，于2007年9月19日在上海证券交易所上市。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.174259Z",
+            null
+          ],
+          [
+            "02bddfeb-6e62-4255-9df8-e2b1635f8abd",
+            "charter.ownership_and_special_terms",
+            "text",
+            6,
+            "本行于2015年11月25日经中国证券监督管理委员会以[2015]2720文核准，首次发行优先股49,000,000股，并于2016年1月4日在上海证券",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.190873Z",
+            null
+          ],
+          [
+            "6be0c948-f9fa-4a1b-b5af-cdb4c9ce3d7f",
+            "charter.ownership_and_special_terms",
+            "text",
+            7,
+            "普通股是指本行所发行的《公司法》一般规定的普通种类股份。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.208127Z",
+            null
+          ],
+          [
+            "011db25e-c98d-4a67-9cfa-841263cf4e5b",
+            "charter.ownership_and_special_terms",
+            "text",
+            8,
+            "优先股是指依照《公司法》，在一般规定的普通种类股份之外本行所发行的其他种类股份，其股份持有人优先于普通股股东分配本行利润和剩余财产，但参与本行决策管理等权利受到限制。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.225046Z",
+            null
+          ],
+          [
+            "d35d3b8e-7302-46e7-b4f8-5b732d026698",
+            "charter.ownership_and_special_terms",
+            "text",
+            9,
+            "第二百六十条 本行已发行的优先股不得超过本行普通股股份总数的50%，且筹资金额不得超过发行前净资产的50%，已赎回、转换的优先股不纳入",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.241819Z",
+            null
+          ],
+          [
+            "ec2970da-de86-4eb1-ada4-f91ea7bc7531",
+            "charter.ownership_and_special_terms",
+            "text",
+            10,
+            "第二百六十三条 除以下事项外，优先股股东不出席股东大会，所持股份",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.258579Z",
+            null
+          ],
+          [
+            "b03bd15c-1505-4501-8edb-d19c2a559270",
+            "charter.ownership_and_special_terms",
+            "text",
+            11,
+            "股东质押本行股份数量达到或超过其持有本行股份的50%时，应当限制其在股东大会的表决权，并限制其提名或派出的董事在董事会的表",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.275681Z",
+            null
+          ],
+          [
+            "63079fa7-0ae7-4e53-9b46-50c0e8bcdc35",
+            "charter.ownership_and_special_terms",
+            "text",
+            12,
+            "股东在本行借款余额超过其持有经审计的本行上一年度股权净值的，不得将本行股权",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.292650Z",
+            null
+          ],
+          [
+            "bee2b459-d191-4bd7-b12a-57f23b407e9e",
+            "charter.ownership_and_special_terms",
+            "text",
+            13,
+            "第三十三条 本行依据证券登记机构提供的凭证建立股东名册，股东名册是证明股东持有本行股份的充分证据。股东按其所持有股份的种类享有权利，承担义务；持有同一种类股份的股东，享有同等权利，承担同种义务。本行发行的优先股在股息分配和剩余财产分配上具有相同优先顺序，但在其他条款上可以具有不同设置。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.309829Z",
+            null
+          ],
+          [
+            "6ae58231-4ed6-4d93-85a9-551d34af2912",
+            "charter.ownership_and_special_terms",
+            "text",
+            14,
+            "第十九条 本行股份的发行，实行公平、公正的原则，同种类的每一股份应当具有同等权利。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.327162Z",
+            null
+          ],
+          [
+            "44a05051-a901-4a48-8ded-fcf058880ebc",
+            "charter.ownership_and_special_terms",
+            "text",
+            15,
+            "除另有说明外，本章程所称“股份”、“股票”、“股本”、“股东”等，分别指普通股股份、普通股股票、普通股股本、普通股股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.344866Z",
+            null
+          ],
+          [
+            "24d89ad3-87eb-463b-bd58-0109f7279b7d",
+            "charter.ownership_and_special_terms",
+            "text",
+            16,
+            "（一）优先于普通股股东分配本行利润；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.362365Z",
+            null
+          ],
+          [
+            "a322b7ce-5c1f-4029-b3af-d10b0092b93a",
+            "charter.ownership_and_special_terms",
+            "text",
+            17,
+            "（二）本行清算时，优先于普通股股东分配本行剩余财产；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.379323Z",
+            null
+          ],
+          [
+            "d5669f3f-59da-4c7c-b97f-f0c830c6b7a7",
+            "charter.ownership_and_special_terms",
+            "text",
+            18,
+            "股权结构",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.396869Z",
+            null
+          ],
+          [
+            "e068d72c-d691-40ce-ab9e-6175fc5febbc",
+            "charter.ownership_and_special_terms",
+            "text",
+            19,
+            "除前述事项外，计算股东人数和持股比例时应分别计算普通股和优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.413531Z",
+            null
+          ],
+          [
+            "aaeec4ee-9b7c-4b2d-b7dd-4c3a1fff2398",
+            "charter.ownership_and_special_terms",
+            "text",
+            20,
+            "第二百六十二条 优先股股东按照约定的票面股息率，优先于普通股股东分配利润。本行以现金形式向优先股股东支付股息，在完全支付约定的股息",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.431001Z",
+            null
+          ],
+          [
+            "df1de7ee-56c4-425e-960a-149fc5422bea",
+            "charter.ownership_and_special_terms",
+            "text",
+            21,
+            "第二百六十四条 本行累计三个会计年度或连续两个会计年度未按约定支付优先股股息的，自股东大会批准当年不按约定分配利润的方案次日起，优先股股东有权出席股东大会与普通股股东共同表决。每一股优先股享有的表决权根据法律、行政法规、",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.448186Z",
+            null
+          ],
+          [
+            "83099e80-399e-4a76-af94-f1ee7e162ad5",
+            "charter.ownership_and_special_terms",
+            "text",
+            22,
+            "第十一条 本行资本划分为股份，同种类股份每股金额相等。股东以其认购股份为限对本行承担责任，本行以全部资产对本行的债务承担责任。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.465533Z",
+            null
+          ],
+          [
+            "6f4915bc-ac46-40ec-8bfc-0f50978cb2c3",
+            "charter.ownership_and_special_terms",
+            "text",
+            23,
+            "（一）控股股东，是指其持有的股份占本行股本总额50%以上的股东；持有股份的比例虽然不足50%，但依其持有的股份所享有的表决权已足以对股东大会的决议产生重大影响的股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.482741Z",
+            null
+          ],
+          [
+            "e05779e7-82bf-44be-bafc-4b1882c6492e",
+            "charter.ownership_and_special_terms",
+            "text",
+            24,
+            "（二）实际控制人，是指虽不是本行的股东，但通过投资关系、协议或者其他安排，能够实际支配公司行为的人。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.499473Z",
+            null
+          ],
+          [
+            "3ced01d1-d1e2-4fb4-9353-845ddfb0b723",
+            "charter.ownership_and_special_terms",
+            "text",
+            25,
+            "（八）股东的控股股东、实际控制人、关联方、一致行动人、最终受益人发生变化的，相关股东应当按照法律法规及监管规定，及时将变更情况书面告知本行；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.516906Z",
+            null
+          ],
+          [
+            "af055660-d4ec-43cf-863c-ce48c31db00b",
+            "charter.ownership_and_special_terms",
+            "text",
+            26,
+            "第八十五条 普通股股东（包括股东代理人）以其所代表的有表决权的股份数额行使表决权，每一普通股股份享有一票表决权。表决权恢复的每股优先股所享有的表决权按具体发行条款中相关约定计算。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.533821Z",
+            null
+          ],
+          [
+            "78620b68-c69f-4e14-a374-2989614a8f9e",
+            "charter.ownership_and_special_terms",
+            "text",
+            27,
+            "本行发行的优先股采用固定股息率或浮动股息率，固定股息率水平及浮动股息率计算方法由本行根据法律、行政法规、部门规章相关规定确定。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.551123Z",
+            null
+          ],
+          [
+            "25f53425-6a95-4918-9205-7af8819d3a78",
+            "charter.ownership_and_special_terms",
+            "text",
+            28,
+            "优先股表决权恢复直至本行全额支付当年度股息之日终止。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.568367Z",
+            null
+          ],
+          [
+            "30ab5126-ad0d-4a73-90d9-966d4cf77abf",
+            "charter.ownership_and_special_terms",
+            "text",
+            29,
+            "本行有权全部或部分取消优先股股息的宣派和支付，本行可以自由支配取消的收益用于偿付其他到期债务。取消优先股股息的宣派和支付除构成对普通股的收益分配限制以外，不构成本行的其他限制。本行决定取消优先股股息的宣派和支付的，将在付息日前至少10个工作日通知优先股股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.585367Z",
+            null
+          ],
+          [
+            "9b8af1ce-4e87-4552-a0a7-33f79c6ac660",
+            "charter.ownership_and_special_terms",
+            "text",
+            30,
+            "第二百六十五条 经国家有关主管机关批准，本行可按优先股发行时约定的条件赎回已发行的优先股；优先股股东无权向本行回售其所持有的优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.601972Z",
+            null
+          ],
+          [
+            "ca1fa52f-3021-4e6c-b835-8d57ab1b9a66",
+            "charter.ownership_and_special_terms",
+            "text",
+            31,
+            "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.619153Z",
+            null
+          ],
+          [
+            "fe3e8d90-b6af-4628-a0d6-e5bfd2553e1a",
+            "charter.ownership_and_special_terms",
+            "text",
+            32,
+            "## 第三十条 本行不接受本行的普通股和优先股作为质押权的标的",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.636051Z",
+            null
+          ],
+          [
+            "97a7d42e-d887-416d-abae-d0060c3fcd3c",
+            "charter.ownership_and_special_terms",
+            "text",
+            33,
+            "（五）优先股转换为普通股",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.652756Z",
+            null
+          ],
+          [
+            "cf711f57-6b99-4492-8243-2fc71dfe0a13",
+            "charter.ownership_and_special_terms",
+            "text",
+            34,
+            "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东持股比例分配。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.670096Z",
+            null
+          ],
+          [
+            "ccd16b8f-794c-4710-bd85-168e7c090181",
+            "charter.voting_ratio",
+            "text",
+            0,
+            "第一百五十二条 董事会审议以下事项时应当由三分之二以上董事表决通过且不能以书面传签表决方式召开：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.687222Z",
+            null
+          ],
+          [
+            "84b935e7-6610-4ff4-aa5d-3fdea22dc675",
+            "charter.voting_ratio",
+            "text",
+            1,
+            "，以全体董事的过半数选举产",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.705116Z",
+            null
+          ],
+          [
+            "ab473f82-97cc-4540-aa7c-f68bf289f4d4",
+            "charter.voting_ratio",
+            "text",
+            2,
+            "决权过半数的股东同意，股东大会可推举一人担任",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.722220Z",
+            null
+          ],
+          [
+            "317bfe0f-527a-492b-966e-a83e144fe7b2",
+            "charter.voting_ratio",
+            "text",
+            3,
+            "上述事项除须经出席会议的普通股股东（含表决权恢复的优先股股东）所持表决权的三分之二以上通过之外，还须经出席会议的优先股股东（不含表决权恢复的优先股股东）所持表决权的三分之二以上",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.739632Z",
+            null
+          ],
+          [
+            "f8d0aa42-895e-442e-8901-bea78dccd4db",
+            "charter.voting_ratio",
+            "text",
+            4,
+            "股东大会作出普通决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的过半数通过",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.756552Z",
+            null
+          ],
+          [
+            "ee068dc4-f1a9-413e-91ba-0d34a8dcc107",
+            "charter.voting_ratio",
+            "text",
+            5,
+            "股东大会作出特别决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的三分之二以上通",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.773686Z",
+            null
+          ],
+          [
+            "d8c6260f-1df3-4a5a-9eb7-46946b652ae7",
+            "charter.voting_ratio",
+            "text",
+            6,
+            "第一百四十六条 董事会会议应有过半数的董事出席方可举行。董事会作出决议，必须经全体董事的过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.791109Z",
+            null
+          ],
+          [
+            "95fde69b-450f-4b21-bbfd-c60aa5e4eeea",
+            "charter.voting_ratio",
+            "text",
+            7,
+            "董事会作出决议，必须经全体董事的过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.808207Z",
+            null
+          ],
+          [
+            "d8737a6d-8560-4ecc-b24b-4c5a251af5cd",
+            "charter.voting_ratio",
+            "text",
+            8,
+            "监事会作出决议，必须经全体监事过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.825199Z",
+            null
+          ],
+          [
+            "d23e1747-ed30-4261-a28e-c93d0553c284",
+            "financial.audit_institution",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.842513Z",
+            null
+          ],
+          [
+            "d2174c9a-46c2-4af9-9fea-61e5902e991b",
+            "financial.audit_opinion",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.859782Z",
+            null
+          ],
+          [
+            "af85c411-207d-4f2b-adaa-754d1e89ae98",
+            "financial.audit_seal",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.878214Z",
+            null
+          ],
+          [
+            "21ccfaba-d8c8-4143-9794-a0650ccf78f3",
+            "financial.balance_sheet",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.895260Z",
+            null
+          ],
+          [
+            "baa03477-dd4e-48b3-9733-98043aa0f01b",
+            "financial.cash_flow_statement",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.912536Z",
+            null
+          ],
+          [
+            "9b8dc757-2ba4-46bb-b548-92b415e8ba2f",
+            "financial.company_name",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.930245Z",
+            null
+          ],
+          [
+            "e54cd510-a5f4-4ce9-90e0-82b4ec8f3c58",
+            "financial.cpa_signature",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.948139Z",
+            null
+          ],
+          [
+            "62b25417-e07a-4752-bf4c-7acf10c896b4",
+            "financial.income_statement",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.965099Z",
+            null
+          ],
+          [
+            "50561bdc-1849-4332-8688-e11629d3dfc9",
+            "financial.reporting_period",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.982215Z",
+            null
+          ],
+          [
+            "8f9fd8da-d303-47a4-be23-240264680afb",
+            "license.business_scope",
+            "text",
+            0,
+            "经营范围 托育服务（不含幼儿园、托儿所），技术开发、技术转让、技术咨询、技术服务、技术推广；组织文化艺术交流活动（不含营业性演出）；设计、制作、代理、发布广告；企业管理；企业管理咨询；经济贸易咨询；文化咨询；教育咨询（中介服务除外），体育咨询；市场调查；文艺创作；承办展览展示活动；翻译服务；公共关系服务；会议服务。（企业依法自主选择经营项目，开展经营活动，托育服务（不含幼儿园、托儿所）以及依法须经批准的项目，经相关部门批准后依批准的内容开展经营活动，不得从事本市产业政策禁止和限制类项目的经营活动。）\n住所 北京市朝阳区师家坟村156号3幢1层",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:13.000179Z",
+            null
+          ],
+          [
+            "b0543c2d-f888-4c2a-b7be-e579e8b0d804",
+            "license.operating_term",
+            "text",
+            0,
+            "营业期限2018年08月29日至长期",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:13.017821Z",
+            null
+          ],
+          [
+            "f9852e56-4777-45a5-b507-db238cb828d6",
+            "license.registration_status",
+            "not_found",
+            0,
+            null,
+            null,
+            "no_matching_evidence",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:28.496827Z",
+            null
+          ]
+        ],
+        "actual": [
+          [
+            "91708449-892a-4f7f-9d17-1a62dd45d657",
+            "charter.approval_body",
+            "text",
+            0,
+            "第一百三十七条 董事会应当确定对外投资、收购出售资产、资产抵押、对外担保事项、委托理财、关联交易的权限，建立严格的审查和决策程序；重大投资项目应当组织有关专家、专业人员进行评审，并按本章程规定对需要报股东大会的事项报股东大会批准。",
+            null,
+            null,
+            "accepted",
+            null,
+            6,
+            "2026-11-11T08:43:32.250052Z",
+            null
+          ],
+          [
+            "7dcf0461-5556-4f84-bc65-2ce7b2ce7f2e",
+            "charter.approval_body",
+            "text",
+            1,
+            "（九）在股东大会授权范围内，决定本行对外投资、收购出售与核销资产、资产抵押、对外担保事项、委托理财、关联交易、数据治理等事项；",
+            null,
+            null,
+            "rejected",
+            "材料识别有误，需人工复核",
+            3,
+            "2026-11-11T08:43:51.861034Z",
+            null
+          ],
+          [
+            "ba60fb49-a615-4c2f-9db3-64b5ea807652",
+            "charter.approval_body",
+            "text",
+            2,
+            "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.759655Z",
+            null
+          ],
+          [
+            "2449db74-7a01-4d5d-96fb-45e2af1665be",
+            "charter.approval_body",
+            "text",
+            3,
+            "第一百三十四条 董事会行使下列职权：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.778422Z",
+            null
+          ],
+          [
+            "531a1160-240d-4199-9370-5f0f195777f2",
+            "charter.approval_body",
+            "text",
+            4,
+            "（十二）审议批准第四十七条规定的担保事项；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.795540Z",
+            null
+          ],
+          [
+            "60c2408a-c644-4a82-83f1-e635baecb3cc",
+            "charter.approval_body",
+            "text",
+            5,
+            "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.813749Z",
+            null
+          ],
+          [
+            "0b805cdd-293d-47d1-8ba4-f541a23d8aa4",
+            "charter.business_scope",
+            "text",
+            0,
+            "第十七条 经依法登记，本行的业务范围是：办理人民币存款、贷款；同业拆借业务；国内外结算；办理票据承兑、贴现、转贴现；各类汇兑业务；代理资金清算；提供信用证服务及担保；代理销售业务；代理发行、代理承销、代理兑付政府债券、金融债券、企业短期融资券；代收代付业务；代理证券资金清算业务（银证转账）；代理债券结算；代理保险业务；代理政策性银行、外国政府和国际金融机构贷款业务；保管箱服务；发行金融债券；买卖政府债券、金融债券、企业短期融资券；企业年金托管业务；开放式基金的注册登记、认购、申购和赎回业务；资信调查、咨询、见证业务；贷款承诺；企业、个人财务顾问服务、理财业务；组织或参加银团贷款；外汇存款；外汇贷款；外币兑换；出口托收及进口代收；外汇票据承兑和贴现；外汇借款；外汇担保；买卖或代理买卖股票以外的外币有价证券；自营、代客外汇买卖；金融衍生业务；银行卡业务；电话银行、网上银行、手机银行业务；办理结汇、售汇业务；代客境外理财业务；经国务院银行业监督管理机构核准的其他业务。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.830436Z",
+            null
+          ],
+          [
+            "1d6eacb5-ea4f-416c-b129-5c6a9b99960d",
+            "charter.guarantee_restrictions",
+            "text",
+            0,
+            "股东以本行股权出质为自己或他人担保的，应当严格遵守法律法规和监管部门要求，并事前书面告知本行董事会。董事会办公室或董事会指",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.848909Z",
+            null
+          ],
+          [
+            "a98d4e95-000d-4773-aa02-b86bccc559c3",
+            "charter.guarantee_restrictions",
+            "text",
+            1,
+            "拥有本行董、监事席位的股东，或直接、间接、共同持有或控制本行2%以上股份或表决权的股东出质本行股份，事前须向本行董事会申请备案，说明出质的原因、股权数额、质押期限、质押权人等基本情况。凡董事会认定对本行股权稳定、公司治理、风险与关联交易控制等存",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.866531Z",
+            null
+          ],
+          [
+            "5aad35ac-c7c4-4b56-8b8a-57eb43332ffe",
+            "charter.guarantee_restrictions",
+            "text",
+            2,
+            "担保事项、委",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.883964Z",
+            null
+          ],
+          [
+            "55546b5b-985f-455c-a197-530320bc8087",
+            "charter.guarantee_restrictions",
+            "text",
+            3,
+            "与核销资产、",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.901534Z",
+            null
+          ],
+          [
+            "56b7da1b-017f-4d7b-bb77-7d72a627a80a",
+            "charter.guarantee_restrictions",
+            "text",
+            4,
+            "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.919296Z",
+            null
+          ],
+          [
+            "d3e50f5f-cff1-4f3d-a779-fac286337863",
+            "charter.guarantee_restrictions",
+            "text",
+            5,
+            "（十二）审议批准第四十七条规定的担保事项；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.937340Z",
+            null
+          ],
+          [
+            "9dca8c3f-b468-4e0b-a2e4-52a17e2b1610",
+            "charter.guarantee_restrictions",
+            "text",
+            6,
+            "（五）本行在一年内购买、出售重大资产或者担保金额超过本行最近一期经审计总资产30%的；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.955159Z",
+            null
+          ],
+          [
+            "4d42bb3c-0a66-4a22-8e30-8befe10bd586",
+            "charter.guarantee_restrictions",
+            "text",
+            7,
+            "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.972415Z",
+            null
+          ],
+          [
+            "86df2b23-025f-446d-8142-d09b10f49e41",
+            "charter.guarantee_restrictions",
+            "text",
+            8,
+            "（一）本行及本行控股子公司（子银行）的对外担保总额，达到或超过最近一期经审计净资产的50%以后提供的任何担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:11.990611Z",
+            null
+          ],
+          [
+            "30a962b0-6e2e-4af2-a21f-4aaa168e492b",
+            "charter.guarantee_restrictions",
+            "text",
+            9,
+            "（二）本行的对外担保总额，达到或超过最近一期经审计总资产的30%以后提供的任何担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.007348Z",
+            null
+          ],
+          [
+            "95804eeb-b709-45ad-934b-945887b3fd3c",
+            "charter.guarantee_restrictions",
+            "text",
+            10,
+            "（三）为资产负债率超过70%的担保对象提供的担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.024019Z",
+            null
+          ],
+          [
+            "b3af4906-6f3f-4c12-842e-240ed1cc74b6",
+            "charter.guarantee_restrictions",
+            "text",
+            11,
+            "（四）单笔担保额超过最近一期经审计净资产10%的担保；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.039825Z",
+            null
+          ],
+          [
+            "03c975d4-233b-4eee-bc11-e6f9548e761c",
+            "charter.guarantee_restrictions",
+            "text",
+            12,
+            "（五）对股东、实际控制人及其关联方提供的担保。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.056821Z",
+            null
+          ],
+          [
+            "3b9ee1c2-aa4d-4d92-9b51-ce133aabaa98",
+            "charter.legal_representative_signature_authority",
+            "not_found",
+            0,
+            null,
+            null,
+            "no_matching_evidence",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.073809Z",
+            null
+          ],
+          [
+            "64d323dc-8195-4e94-b532-c8961f5e4bb7",
+            "charter.ownership_and_special_terms",
+            "text",
+            0,
+            "第二十三条 本行普通股股份总数为21,142,984,272股，每股面值人民币壹元；本行优先股股份总数为179,000,000股，每股面值人民币壹佰元。本行的股本结构为：普通股和优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.090488Z",
+            null
+          ],
+          [
+            "010286a3-7130-4d06-801b-98b292fb12c4",
+            "charter.ownership_and_special_terms",
+            "text",
+            1,
+            "本行发行的优先股采用非累积股息支付方式，即在特定年度未向优先股股东足额派发的股息的差额部分，不累积到下一年度，且不构成违约事",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.106798Z",
+            null
+          ],
+          [
+            "17ecb34f-75f5-4467-a41c-511d2ff76820",
+            "charter.ownership_and_special_terms",
+            "text",
+            2,
+            "优先股股东按照约定的票面股息率获得分配后，不再同普通股股东一起参加剩余利润分",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.124023Z",
+            null
+          ],
+          [
+            "4ad0274a-0fd5-4c3e-a5ff-0d873b0850fb",
+            "charter.ownership_and_special_terms",
+            "text",
+            3,
+            "第二百六十六条 本行可根据有关法律、行政法规、部门规章的规定，发行强制转股触发事件发生时强制转换为普通股的优先股。当法律、行政法规、部门规章规定或优先股发行时约定的触发事件发生时，经国家有关主管机关批准，本行发行的优先股将全部或部分强制转换为普通股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.140520Z",
+            null
+          ],
+          [
+            "32e430a2-a9a2-4aff-a43f-140bef827c4e",
+            "charter.ownership_and_special_terms",
+            "text",
+            4,
+            "第二百六十七条 以下事项计算股东持股比例、持股数额时，仅计算普通股和表决权恢复的优先股：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.157146Z",
+            null
+          ],
+          [
+            "ecff2462-960d-443f-94e6-51be916639e9",
+            "charter.ownership_and_special_terms",
+            "text",
+            5,
+            "第五条 本行于2007年8月31日经中国证券监督管理委员会证监发行字[2007]259号文件核准，首次向社会公众发行人民币普通股12亿股，于2007年9月19日在上海证券交易所上市。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.174259Z",
+            null
+          ],
+          [
+            "02bddfeb-6e62-4255-9df8-e2b1635f8abd",
+            "charter.ownership_and_special_terms",
+            "text",
+            6,
+            "本行于2015年11月25日经中国证券监督管理委员会以[2015]2720文核准，首次发行优先股49,000,000股，并于2016年1月4日在上海证券",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.190873Z",
+            null
+          ],
+          [
+            "6be0c948-f9fa-4a1b-b5af-cdb4c9ce3d7f",
+            "charter.ownership_and_special_terms",
+            "text",
+            7,
+            "普通股是指本行所发行的《公司法》一般规定的普通种类股份。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.208127Z",
+            null
+          ],
+          [
+            "011db25e-c98d-4a67-9cfa-841263cf4e5b",
+            "charter.ownership_and_special_terms",
+            "text",
+            8,
+            "优先股是指依照《公司法》，在一般规定的普通种类股份之外本行所发行的其他种类股份，其股份持有人优先于普通股股东分配本行利润和剩余财产，但参与本行决策管理等权利受到限制。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.225046Z",
+            null
+          ],
+          [
+            "d35d3b8e-7302-46e7-b4f8-5b732d026698",
+            "charter.ownership_and_special_terms",
+            "text",
+            9,
+            "第二百六十条 本行已发行的优先股不得超过本行普通股股份总数的50%，且筹资金额不得超过发行前净资产的50%，已赎回、转换的优先股不纳入",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.241819Z",
+            null
+          ],
+          [
+            "ec2970da-de86-4eb1-ada4-f91ea7bc7531",
+            "charter.ownership_and_special_terms",
+            "text",
+            10,
+            "第二百六十三条 除以下事项外，优先股股东不出席股东大会，所持股份",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.258579Z",
+            null
+          ],
+          [
+            "b03bd15c-1505-4501-8edb-d19c2a559270",
+            "charter.ownership_and_special_terms",
+            "text",
+            11,
+            "股东质押本行股份数量达到或超过其持有本行股份的50%时，应当限制其在股东大会的表决权，并限制其提名或派出的董事在董事会的表",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.275681Z",
+            null
+          ],
+          [
+            "63079fa7-0ae7-4e53-9b46-50c0e8bcdc35",
+            "charter.ownership_and_special_terms",
+            "text",
+            12,
+            "股东在本行借款余额超过其持有经审计的本行上一年度股权净值的，不得将本行股权",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.292650Z",
+            null
+          ],
+          [
+            "bee2b459-d191-4bd7-b12a-57f23b407e9e",
+            "charter.ownership_and_special_terms",
+            "text",
+            13,
+            "第三十三条 本行依据证券登记机构提供的凭证建立股东名册，股东名册是证明股东持有本行股份的充分证据。股东按其所持有股份的种类享有权利，承担义务；持有同一种类股份的股东，享有同等权利，承担同种义务。本行发行的优先股在股息分配和剩余财产分配上具有相同优先顺序，但在其他条款上可以具有不同设置。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.309829Z",
+            null
+          ],
+          [
+            "6ae58231-4ed6-4d93-85a9-551d34af2912",
+            "charter.ownership_and_special_terms",
+            "text",
+            14,
+            "第十九条 本行股份的发行，实行公平、公正的原则，同种类的每一股份应当具有同等权利。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.327162Z",
+            null
+          ],
+          [
+            "44a05051-a901-4a48-8ded-fcf058880ebc",
+            "charter.ownership_and_special_terms",
+            "text",
+            15,
+            "除另有说明外，本章程所称“股份”、“股票”、“股本”、“股东”等，分别指普通股股份、普通股股票、普通股股本、普通股股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.344866Z",
+            null
+          ],
+          [
+            "24d89ad3-87eb-463b-bd58-0109f7279b7d",
+            "charter.ownership_and_special_terms",
+            "text",
+            16,
+            "（一）优先于普通股股东分配本行利润；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.362365Z",
+            null
+          ],
+          [
+            "a322b7ce-5c1f-4029-b3af-d10b0092b93a",
+            "charter.ownership_and_special_terms",
+            "text",
+            17,
+            "（二）本行清算时，优先于普通股股东分配本行剩余财产；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.379323Z",
+            null
+          ],
+          [
+            "d5669f3f-59da-4c7c-b97f-f0c830c6b7a7",
+            "charter.ownership_and_special_terms",
+            "text",
+            18,
+            "股权结构",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.396869Z",
+            null
+          ],
+          [
+            "e068d72c-d691-40ce-ab9e-6175fc5febbc",
+            "charter.ownership_and_special_terms",
+            "text",
+            19,
+            "除前述事项外，计算股东人数和持股比例时应分别计算普通股和优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.413531Z",
+            null
+          ],
+          [
+            "aaeec4ee-9b7c-4b2d-b7dd-4c3a1fff2398",
+            "charter.ownership_and_special_terms",
+            "text",
+            20,
+            "第二百六十二条 优先股股东按照约定的票面股息率，优先于普通股股东分配利润。本行以现金形式向优先股股东支付股息，在完全支付约定的股息",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.431001Z",
+            null
+          ],
+          [
+            "df1de7ee-56c4-425e-960a-149fc5422bea",
+            "charter.ownership_and_special_terms",
+            "text",
+            21,
+            "第二百六十四条 本行累计三个会计年度或连续两个会计年度未按约定支付优先股股息的，自股东大会批准当年不按约定分配利润的方案次日起，优先股股东有权出席股东大会与普通股股东共同表决。每一股优先股享有的表决权根据法律、行政法规、",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.448186Z",
+            null
+          ],
+          [
+            "83099e80-399e-4a76-af94-f1ee7e162ad5",
+            "charter.ownership_and_special_terms",
+            "text",
+            22,
+            "第十一条 本行资本划分为股份，同种类股份每股金额相等。股东以其认购股份为限对本行承担责任，本行以全部资产对本行的债务承担责任。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.465533Z",
+            null
+          ],
+          [
+            "6f4915bc-ac46-40ec-8bfc-0f50978cb2c3",
+            "charter.ownership_and_special_terms",
+            "text",
+            23,
+            "（一）控股股东，是指其持有的股份占本行股本总额50%以上的股东；持有股份的比例虽然不足50%，但依其持有的股份所享有的表决权已足以对股东大会的决议产生重大影响的股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.482741Z",
+            null
+          ],
+          [
+            "e05779e7-82bf-44be-bafc-4b1882c6492e",
+            "charter.ownership_and_special_terms",
+            "text",
+            24,
+            "（二）实际控制人，是指虽不是本行的股东，但通过投资关系、协议或者其他安排，能够实际支配公司行为的人。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.499473Z",
+            null
+          ],
+          [
+            "3ced01d1-d1e2-4fb4-9353-845ddfb0b723",
+            "charter.ownership_and_special_terms",
+            "text",
+            25,
+            "（八）股东的控股股东、实际控制人、关联方、一致行动人、最终受益人发生变化的，相关股东应当按照法律法规及监管规定，及时将变更情况书面告知本行；",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.516906Z",
+            null
+          ],
+          [
+            "af055660-d4ec-43cf-863c-ce48c31db00b",
+            "charter.ownership_and_special_terms",
+            "text",
+            26,
+            "第八十五条 普通股股东（包括股东代理人）以其所代表的有表决权的股份数额行使表决权，每一普通股股份享有一票表决权。表决权恢复的每股优先股所享有的表决权按具体发行条款中相关约定计算。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.533821Z",
+            null
+          ],
+          [
+            "78620b68-c69f-4e14-a374-2989614a8f9e",
+            "charter.ownership_and_special_terms",
+            "text",
+            27,
+            "本行发行的优先股采用固定股息率或浮动股息率，固定股息率水平及浮动股息率计算方法由本行根据法律、行政法规、部门规章相关规定确定。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.551123Z",
+            null
+          ],
+          [
+            "25f53425-6a95-4918-9205-7af8819d3a78",
+            "charter.ownership_and_special_terms",
+            "text",
+            28,
+            "优先股表决权恢复直至本行全额支付当年度股息之日终止。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.568367Z",
+            null
+          ],
+          [
+            "30ab5126-ad0d-4a73-90d9-966d4cf77abf",
+            "charter.ownership_and_special_terms",
+            "text",
+            29,
+            "本行有权全部或部分取消优先股股息的宣派和支付，本行可以自由支配取消的收益用于偿付其他到期债务。取消优先股股息的宣派和支付除构成对普通股的收益分配限制以外，不构成本行的其他限制。本行决定取消优先股股息的宣派和支付的，将在付息日前至少10个工作日通知优先股股东。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.585367Z",
+            null
+          ],
+          [
+            "9b8af1ce-4e87-4552-a0a7-33f79c6ac660",
+            "charter.ownership_and_special_terms",
+            "text",
+            30,
+            "第二百六十五条 经国家有关主管机关批准，本行可按优先股发行时约定的条件赎回已发行的优先股；优先股股东无权向本行回售其所持有的优先股。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.601972Z",
+            null
+          ],
+          [
+            "ca1fa52f-3021-4e6c-b835-8d57ab1b9a66",
+            "charter.ownership_and_special_terms",
+            "text",
+            31,
+            "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.619153Z",
+            null
+          ],
+          [
+            "fe3e8d90-b6af-4628-a0d6-e5bfd2553e1a",
+            "charter.ownership_and_special_terms",
+            "text",
+            32,
+            "## 第三十条 本行不接受本行的普通股和优先股作为质押权的标的",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.636051Z",
+            null
+          ],
+          [
+            "97a7d42e-d887-416d-abae-d0060c3fcd3c",
+            "charter.ownership_and_special_terms",
+            "text",
+            33,
+            "（五）优先股转换为普通股",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.652756Z",
+            null
+          ],
+          [
+            "cf711f57-6b99-4492-8243-2fc71dfe0a13",
+            "charter.ownership_and_special_terms",
+            "text",
+            34,
+            "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东持股比例分配。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.670096Z",
+            null
+          ],
+          [
+            "ccd16b8f-794c-4710-bd85-168e7c090181",
+            "charter.voting_ratio",
+            "text",
+            0,
+            "第一百五十二条 董事会审议以下事项时应当由三分之二以上董事表决通过且不能以书面传签表决方式召开：",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.687222Z",
+            null
+          ],
+          [
+            "84b935e7-6610-4ff4-aa5d-3fdea22dc675",
+            "charter.voting_ratio",
+            "text",
+            1,
+            "，以全体董事的过半数选举产",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.705116Z",
+            null
+          ],
+          [
+            "ab473f82-97cc-4540-aa7c-f68bf289f4d4",
+            "charter.voting_ratio",
+            "text",
+            2,
+            "决权过半数的股东同意，股东大会可推举一人担任",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.722220Z",
+            null
+          ],
+          [
+            "317bfe0f-527a-492b-966e-a83e144fe7b2",
+            "charter.voting_ratio",
+            "text",
+            3,
+            "上述事项除须经出席会议的普通股股东（含表决权恢复的优先股股东）所持表决权的三分之二以上通过之外，还须经出席会议的优先股股东（不含表决权恢复的优先股股东）所持表决权的三分之二以上",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.739632Z",
+            null
+          ],
+          [
+            "f8d0aa42-895e-442e-8901-bea78dccd4db",
+            "charter.voting_ratio",
+            "text",
+            4,
+            "股东大会作出普通决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的过半数通过",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.756552Z",
+            null
+          ],
+          [
+            "ee068dc4-f1a9-413e-91ba-0d34a8dcc107",
+            "charter.voting_ratio",
+            "text",
+            5,
+            "股东大会作出特别决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的三分之二以上通",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.773686Z",
+            null
+          ],
+          [
+            "d8c6260f-1df3-4a5a-9eb7-46946b652ae7",
+            "charter.voting_ratio",
+            "text",
+            6,
+            "第一百四十六条 董事会会议应有过半数的董事出席方可举行。董事会作出决议，必须经全体董事的过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.791109Z",
+            null
+          ],
+          [
+            "95fde69b-450f-4b21-bbfd-c60aa5e4eeea",
+            "charter.voting_ratio",
+            "text",
+            7,
+            "董事会作出决议，必须经全体董事的过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.808207Z",
+            null
+          ],
+          [
+            "d8737a6d-8560-4ecc-b24b-4c5a251af5cd",
+            "charter.voting_ratio",
+            "text",
+            8,
+            "监事会作出决议，必须经全体监事过半数通过。",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.825199Z",
+            null
+          ],
+          [
+            "d23e1747-ed30-4261-a28e-c93d0553c284",
+            "financial.audit_institution",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.842513Z",
+            null
+          ],
+          [
+            "d2174c9a-46c2-4af9-9fea-61e5902e991b",
+            "financial.audit_opinion",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.859782Z",
+            null
+          ],
+          [
+            "af85c411-207d-4f2b-adaa-754d1e89ae98",
+            "financial.audit_seal",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.878214Z",
+            null
+          ],
+          [
+            "21ccfaba-d8c8-4143-9794-a0650ccf78f3",
+            "financial.balance_sheet",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.895260Z",
+            null
+          ],
+          [
+            "baa03477-dd4e-48b3-9733-98043aa0f01b",
+            "financial.cash_flow_statement",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.912536Z",
+            null
+          ],
+          [
+            "9b8dc757-2ba4-46bb-b548-92b415e8ba2f",
+            "financial.company_name",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.930245Z",
+            null
+          ],
+          [
+            "e54cd510-a5f4-4ce9-90e0-82b4ec8f3c58",
+            "financial.cpa_signature",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.948139Z",
+            null
+          ],
+          [
+            "62b25417-e07a-4752-bf4c-7acf10c896b4",
+            "financial.income_statement",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.965099Z",
+            null
+          ],
+          [
+            "50561bdc-1849-4332-8688-e11629d3dfc9",
+            "financial.reporting_period",
+            "not_found",
+            0,
+            null,
+            null,
+            "material_missing",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:12.982215Z",
+            null
+          ],
+          [
+            "8f9fd8da-d303-47a4-be23-240264680afb",
+            "license.business_scope",
+            "text",
+            0,
+            "经营范围 托育服务（不含幼儿园、托儿所），技术开发、技术转让、技术咨询、技术服务、技术推广；组织文化艺术交流活动（不含营业性演出）；设计、制作、代理、发布广告；企业管理；企业管理咨询；经济贸易咨询；文化咨询；教育咨询（中介服务除外），体育咨询；市场调查；文艺创作；承办展览展示活动；翻译服务；公共关系服务；会议服务。（企业依法自主选择经营项目，开展经营活动，托育服务（不含幼儿园、托儿所）以及依法须经批准的项目，经相关部门批准后依批准的内容开展经营活动，不得从事本市产业政策禁止和限制类项目的经营活动。）\n住所 北京市朝阳区师家坟村156号3幢1层",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:13.000179Z",
+            null
+          ],
+          [
+            "b0543c2d-f888-4c2a-b7be-e579e8b0d804",
+            "license.operating_term",
+            "text",
+            0,
+            "营业期限2018年08月29日至长期",
+            null,
+            null,
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:13.017821Z",
+            null
+          ],
+          [
+            "f9852e56-4777-45a5-b507-db238cb828d6",
+            "license.registration_status",
+            "not_found",
+            0,
+            null,
+            null,
+            "no_matching_evidence",
+            "accepted",
+            null,
+            1,
+            "2026-11-11T08:44:28.496827Z",
+            null
+          ]
+        ],
+        "pass": true
+      },
+      {
+        "label": "statistics 前后一致",
+        "expected": {
+          "overall": {
+            "total": 77,
+            "unselected": 0,
+            "accepted": 76,
+            "rejected": 1,
+            "missing_reason": 0,
+            "accept_rate": 0.987012987012987,
+            "reject_rate": 0.012987012987012988,
+            "can_complete": true
+          },
+          "materials": [
+            {
+              "material_type": "articles_of_association",
+              "statistics": {
+                "total": 65,
+                "unselected": 0,
+                "accepted": 64,
+                "rejected": 1,
+                "missing_reason": 0,
+                "accept_rate": 0.9846153846153847,
+                "reject_rate": 0.015384615384615385,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "audited_financials",
+              "statistics": {
+                "total": 9,
+                "unselected": 0,
+                "accepted": 9,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "business_license",
+              "statistics": {
+                "total": 3,
+                "unselected": 0,
+                "accepted": 3,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            }
+          ]
+        },
+        "actual": {
+          "overall": {
+            "total": 77,
+            "unselected": 0,
+            "accepted": 76,
+            "rejected": 1,
+            "missing_reason": 0,
+            "accept_rate": 0.987012987012987,
+            "reject_rate": 0.012987012987012988,
+            "can_complete": true
+          },
+          "materials": [
+            {
+              "material_type": "articles_of_association",
+              "statistics": {
+                "total": 65,
+                "unselected": 0,
+                "accepted": 64,
+                "rejected": 1,
+                "missing_reason": 0,
+                "accept_rate": 0.9846153846153847,
+                "reject_rate": 0.015384615384615385,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "audited_financials",
+              "statistics": {
+                "total": 9,
+                "unselected": 0,
+                "accepted": 9,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "business_license",
+              "statistics": {
+                "total": 3,
+                "unselected": 0,
+                "accepted": 3,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            }
+          ]
+        },
+        "pass": true
+      },
+      {
+        "label": "editable 前后一致",
+        "expected": false,
+        "actual": false,
+        "pass": true
+      },
+      {
+        "label": "完整响应字节级一致（SHA256）",
+        "expected": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+        "actual": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+        "pass": true
+      },
+      {
+        "label": "DELETE 被拒后 deleted_at 仍为 NULL",
+        "expected": "NULL",
+        "actual": "NULL",
+        "pass": true
+      },
+      {
+        "label": "测试窗口内无新增 OCR job（未触发外部服务）",
+        "expected": 0,
+        "actual": 0,
+        "pass": true
+      },
+      {
+        "label": "清理后隔离任务不在列表",
+        "expected": false,
+        "actual": false,
+        "pass": true
+      }
+    ],
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "status": 200,
+        "headers": {
+          "Origin": "http://localhost:8080",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "<masked>"
+        },
+        "body": {
+          "user": {
+            "id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+            "username": "liyanyan",
+            "is_active": true,
+            "created_at": "2026-11-11T02:59:23.371935Z"
+          },
+          "csrf_token": "qc1amyFhuixNT3s8xVgBmL7hgOFcSyUb5mwp5swFEXk"
+        }
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/tasks",
+        "status": 201,
+        "headers": {
+          "Origin": "http://localhost:8080",
+          "Content-Type": "application/json",
+          "X-CSRF-Token": "<masked>"
+        },
+        "body": {
+          "id": "ee347bb8-ec27-49b6-ba05-7f517f48a129",
+          "name": "QA 删除只读-带非空结果",
+          "product_code": "working_capital_loan",
+          "customer_role": "borrower",
+          "checklist_version": "borrower-wcl-v1",
+          "state": "DRAFT",
+          "input_revision": 0,
+          "created_at": "2026-11-12T03:29:14.820958Z",
+          "updated_at": "2026-11-12T03:29:14.820964Z",
+          "completed_at": null,
+          "file_count": 0,
+          "ocr_done_count": 0,
+          "ocr_processing_count": 0,
+          "ocr_failed_count": 0
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tasks/ee347bb8-ec27-49b6-ba05-7f517f48a129/results",
+        "status": 200,
+        "headers": {
+          "Origin": "http://localhost:8080"
+        },
+        "body": {
+          "run_id": "f65001b7-01c0-4902-836e-4409af5e148e",
+          "item_count": 77,
+          "editable": false,
+          "response_sha256": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+          "note": "完整 items 已精简；逐条证据见 before/after.item_fingerprints，字节级一致性见 response_sha256"
+        }
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/v1/tasks/ee347bb8-ec27-49b6-ba05-7f517f48a129",
+        "status": 409,
+        "headers": {
+          "Origin": "http://localhost:8080",
+          "X-CSRF-Token": "<masked>"
+        },
+        "body": {
+          "detail": {
+            "code": "TASK_READ_ONLY",
+            "message": "任务已完成，不可删除"
+          }
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tasks/ee347bb8-ec27-49b6-ba05-7f517f48a129/results",
+        "status": 200,
+        "headers": {
+          "Origin": "http://localhost:8080"
+        },
+        "body": {
+          "run_id": "f65001b7-01c0-4902-836e-4409af5e148e",
+          "item_count": 77,
+          "editable": false,
+          "response_sha256": "d78af252c57715d76f3a55fcf421782b13b2867533a8925d15bc2492155d0d03",
+          "note": "完整 items 已精简；逐条证据见 before/after.item_fingerprints，字节级一致性见 response_sha256"
+        }
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tasks",
+        "status": 200,
+        "headers": {
+          "Origin": "http://localhost:8080"
+        },
+        "body": [
+          {
+            "id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+            "name": "资料核对 2026-11-11 09:53",
+            "product_code": "working_capital_loan",
+            "customer_role": "borrower",
+            "checklist_version": "borrower-wcl-v1",
+            "state": "REVIEWING",
+            "input_revision": 0,
+            "created_at": "2026-11-11T09:53:32.639062Z",
+            "updated_at": "2026-11-11T09:53:32.710179Z",
+            "completed_at": null,
+            "file_count": 1,
+            "ocr_done_count": 1,
+            "ocr_processing_count": 0,
+            "ocr_failed_count": 0
+          },
+          {
+            "id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "name": "资料核对 2026-11-11 03:03",
+            "product_code": "working_capital_loan",
+            "customer_role": "borrower",
+            "checklist_version": "borrower-wcl-v1",
+            "state": "COMPLETED",
+            "input_revision": 0,
+            "created_at": "2026-11-11T03:03:02.255129Z",
+            "updated_at": "2026-11-11T06:47:31.800145Z",
+            "completed_at": "2026-11-11T08:44:28.627726Z",
+            "file_count": 2,
+            "ocr_done_count": 2,
+            "ocr_processing_count": 0,
+            "ocr_failed_count": 0
+          }
+        ]
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/tasks",
+        "status": 200,
+        "headers": {
+          "Origin": "http://localhost:8080"
+        },
+        "body": [
+          {
+            "id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+            "name": "资料核对 2026-11-11 09:53",
+            "product_code": "working_capital_loan",
+            "customer_role": "borrower",
+            "checklist_version": "borrower-wcl-v1",
+            "state": "REVIEWING",
+            "input_revision": 0,
+            "created_at": "2026-11-11T09:53:32.639062Z",
+            "updated_at": "2026-11-11T09:53:32.710179Z",
+            "completed_at": null,
+            "file_count": 1,
+            "ocr_done_count": 1,
+            "ocr_processing_count": 0,
+            "ocr_failed_count": 0
+          },
+          {
+            "id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "name": "资料核对 2026-11-11 03:03",
+            "product_code": "working_capital_loan",
+            "customer_role": "borrower",
+            "checklist_version": "borrower-wcl-v1",
+            "state": "COMPLETED",
+            "input_revision": 0,
+            "created_at": "2026-11-11T03:03:02.255129Z",
+            "updated_at": "2026-11-11T06:47:31.800145Z",
+            "completed_at": "2026-11-11T08:44:28.627726Z",
+            "file_count": 2,
+            "ocr_done_count": 2,
+            "ocr_processing_count": 0,
+            "ocr_failed_count": 0
+          }
+        ]
+      }
+    ],
+    "cleanup": {
+      "method": "SQL UPDATE tasks SET deleted_at=now()（COMPLETED 不能走 DELETE）",
+      "final_list_status": 200,
+      "final_list_ids": [
+        "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+        "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+      ],
+      "cloned_child_rows": "保留以便追溯，任务软删后经 API 不可见"
+    },
+    "summary": {
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "requests": 7
+    },
+    "evidence_note": "before/after 的完整 /results 响应各含 77 条 items（原文较长），此处以逐条 fingerprint + 整份响应 SHA256 作为可核验证据；两者 SHA256 相同即字节级完全一致。"
+  },
+  "combined_summary": {
+    "rounds": 3,
+    "case1_case2_original": {
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "requests": 14
+    },
+    "case3_added": {
+      "total": 27,
+      "passed": 27,
+      "failed": 0,
+      "requests": 7
+    },
+    "total_checks": 67,
+    "passed": 67,
+    "failed": 0,
+    "total_requests": 21
+  }
+}

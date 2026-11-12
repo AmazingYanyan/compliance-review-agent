@@ -1,0 +1,3566 @@
+{
+  "schema_version": "baseline-serial-1",
+  "baseline_date": "2026-11-12",
+  "generated_at": "2026-11-12T05:09:17.540473+00:00",
+  "status": "measured",
+  "execution": {
+    "mode": "in_container_synchronous_call",
+    "container": "credit-review-app-worker-1",
+    "entry_point": "run_pipeline.func(str(run_id))",
+    "script": "scripts/baseline_serial.py",
+    "via_procrastinate_queue": false,
+    "queue_job_id": null,
+    "queue_scheduling_overhead_included": false,
+    "execution_note": "在 worker 容器内同步直接调用 Procrastinate Task 的原始函数 run_pipeline.func，未调用 defer/enqueue，不经过队列调度，故队列轮询与调度开销不计入本基线；Result / ResultSource / RunStep / ProcessingRun 均由业务代码正常真实落库。",
+    "observation_method": "脚本层 monkeypatch：LLMClient._chat、LLMClient.complete_json、text_search.chunk_source_blocks、classification.chunk_blocks、processing_pipeline.search_check_item 与四个阶段函数；未改业务代码、未改 models.py、未加迁移、未加接口、未重建 worker 镜像。",
+    "docker_exec_stdin_flag": "-i",
+    "evidence_container_path": "/tmp/baseline_evidence.json",
+    "evidence_retrieval_fallback": "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json",
+    "probe_only": false
+  },
+  "fingerprints": {
+    "ocr_json": {
+      "host_absolute_path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json",
+      "container_path": "/tmp/baseline_ocr_slice.json",
+      "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "size_bytes": 143880,
+      "page_count": 15,
+      "note": "原《北京银行股份有限公司章程》PDF 物理第 1–15 页，1:1 对应；原 PDF 共 62 页",
+      "sha256_matches_fixed_constant": true
+    },
+    "checklist": {
+      "version": "borrower-wcl-v1",
+      "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+      "leaf_count": 18,
+      "charter_leaf_ids": [
+        "charter.business_scope",
+        "charter.approval_body",
+        "charter.voting_ratio",
+        "charter.guarantee_restrictions",
+        "charter.legal_representative_signature_authority",
+        "charter.ownership_and_special_terms"
+      ]
+    },
+    "models": {
+      "llm_text_model": "qwen3.8-max-0902",
+      "llm_vision_model": "qwen3.8-max-0902"
+    },
+    "prompts": {
+      "SEARCH_SYSTEM": {
+        "sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "chars": 220
+      },
+      "CLASSIFY_SYSTEM": {
+        "sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "chars": 213
+      },
+      "VISION_SYSTEM": {
+        "sha256": "ceda71c329b68205892464b37f4b8af3a4e94c1c2bb51f8afadfd00b2f46602a",
+        "chars": 116
+      },
+      "TEXT_SEARCH_SCHEMA": {
+        "sha256": "110b105b0fba242140a6eb2ecd5248f90140e17ca04ca407a985d2fb8e911fde"
+      },
+      "CLASSIFICATION_SCHEMA": {
+        "sha256": "4e87413875f53aac8c2b198df842e0b2a6845447a6446e71a431f16730c30daf"
+      },
+      "VISION_MATCH_SCHEMA": {
+        "sha256": "5fdf211739b0353e3f92fda103e41545d8917f19a585a5ee77fb8aa605f6a28e"
+      }
+    },
+    "window": {
+      "llm_window_characters": 8000,
+      "llm_window_overlap_characters": 500,
+      "runtime_settings_match_constants": true
+    },
+    "runtime_llm": {
+      "llm_request_timeout_seconds": 180,
+      "llm_max_transient_retries": 2,
+      "llm_max_concurrency": 2,
+      "llm_max_output_tokens": 4096,
+      "llm_max_format_repairs": 1,
+      "app_mode": "real",
+      "pipeline_config_version": "pipeline-v1"
+    }
+  },
+  "configuration": {
+    "ocr_recognition": "未执行（复用既有 OCR JSON，非本轮计时对象）",
+    "ocr_reuse_note": "本轮没有调用外部 OCR 服务、没有重新识别；OCR 识别耗时不参与本基线。OCR JSON 导入落库耗时与后处理耗时严格分栏。",
+    "fixed_items": "见 fingerprints；并发对照须逐项比对输入 sha256，但固定项一致只保证输入相同，不保证窗口边界 / 窗口文本 hash / Result.fingerprint 复现（见 sample_limitations.run_bound_artifacts）"
+  },
+  "reproduction": {
+    "working_directory": "credit-review-app 项目根目录（Git 根，分支 feature/credit-review）",
+    "steps": [
+      "OCR_JSON=\"/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json\"",
+      "shasum -a 256 \"$OCR_JSON\"   # 期望 8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "docker cp \"$OCR_JSON\" credit-review-app-worker-1:/tmp/baseline_ocr_slice.json",
+      "docker exec -i credit-review-app-worker-1 python - --evidence-out /tmp/baseline_evidence.json < scripts/baseline_serial.py > /tmp/baseline_stdout.json   # -i 必须；脚本同时把证据写进容器内 /tmp/baseline_evidence.json",
+      "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json   # 若宿主机 stdout 管道被断开，用这一条取回容器内落盘的同一份证据",
+      "python3 -c \"import json,pathlib; d=json.loads(pathlib.Path('/tmp/baseline_stdout.json').read_text()); pathlib.Path('/tmp/baseline_raw.json').write_text(json.dumps(d, ensure_ascii=False, indent=2)+'\\n', encoding='utf-8')\"   # 只生成脚本原始输出，不覆盖交付证据",
+      "python3 -c \"import json;d=json.load(open('docs/perf_baseline_2026-11-12.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 交付版证据自检（需该文件存在；校验的是已交付证据，非本次新产出）"
+    ],
+    "optional_single_steps": [
+      "docker exec credit-review-app-worker-1 python -m app.cli import-ocr-json --file-id <file_id> --json /tmp/baseline_ocr_slice.json   # 仅导入，不触发外部 OCR",
+      "登录 liyanyan 取 session cookie 后：GET /api/v1/tasks/<task_id>/runs/<run_id>/timing   # 只读；若隔离任务已软删需先把 tasks.deleted_at 置 NULL",
+      "docker exec credit-review-app-db-1 psql -U postgres -d app -c \"select id,state,started_at,finished_at from processing_runs where id='<run_id>';\"",
+      "python3 -c \"import json;d=json.load(open('/tmp/baseline_raw.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 本次新产出自检：读 steps[5] 产出的 /tmp/baseline_raw.json"
+    ],
+    "probe_only": "docker exec -i credit-review-app-worker-1 python - --probe-only < scripts/baseline_serial.py   # 不调用模型，只实测窗口数与指纹",
+    "note": "并发对照必须复用同一 OCR JSON（同一 SHA256）、同一清单版本与 hash、同一提示词 sha256、同一 8000/500 窗口参数与同一模型 ID；但固定项一致只保证输入相同。窗口文本 hash、逐窗口字符数、messages/user hash 与 Result.fingerprint 均绑定该次导入的 DB 行，因此必须再复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID）；跨 run 逐条比对改用 text_sha256 + source_page_number，不要用 fingerprint。（QA 独立复验后补充披露，详见 sample_limitations.run_bound_artifacts）",
+    "deliverable_note": "QA 独立复验后补充披露：steps[5] 只把脚本原始 stdout 格式化到 /tmp/baseline_raw.json，不可覆盖交付证据 docs/perf_baseline_2026-11-12.json；交付版另需按 post_processing_notes.what_changed 补回人工段（session_notes / git_state / clause_verdicts_manual / post_processing_notes / database_verification）、2 处标签修正与 QA 披露。steps[6] 自检命令针对交付版证据。 QA 第 2 轮回归后订正：steps[6] 是「交付版证据自检」，校验仓库里已交付的证据文件；本次新跑批的自检见 optional_single_steps 中读取 /tmp/baseline_raw.json 的那条（由 steps[5] 产出），两者不可混用。"
+  },
+  "blockers": [],
+  "isolation": {
+    "task_id": "ddd97b17-8bfe-4954-b7fb-3f4f8386b879",
+    "file_id": "9e4d3303-8501-46cc-bf47-a4357dcde09e",
+    "owner_user_id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+    "task_name": "QA-BASELINE-短样本串行-2026-11-12",
+    "file_name": "《北京银行股份有限公司章程》 切分15页.PDF",
+    "file_sha256_note": "隔离造数占位值（OCR JSON 非 PDF 原件），不参与任何业务判断",
+    "touched_existing_tasks": false,
+    "protected_tasks": [
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd (REVIEWING)",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384 (COMPLETED, 77 条结果)"
+    ],
+    "run_id": "5547804d-da6d-4417-8139-9dc36e3b5e3e",
+    "soft_deleted_at": "2026-11-12T05:19:18.340287+00:00",
+    "soft_delete_note": "仅软删隔离 tasks 行；run / results / result_sources / run_steps / ocr_* 全部保留可追溯。如需复验 timing 只读接口，先 UPDATE tasks SET deleted_at=NULL WHERE id='<task_id>'。"
+  },
+  "windows": {
+    "preflight": {
+      "measurement_method": "真实调用 app.text_search.chunk_source_blocks / app.classification.chunk_blocks，输入为 import-ocr-json 落库后的 OcrBlock（非预计值）",
+      "parameters": {
+        "max_chars": 8000,
+        "overlap_chars": 500
+      },
+      "source_block_count": 176,
+      "source_total_characters": 9570,
+      "classify_block_count": 176,
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "window-0",
+            "block_count": 132,
+            "char_count": 7984,
+            "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "window-1",
+            "block_count": 58,
+            "char_count": 2158,
+            "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece"
+          }
+        ]
+      },
+      "per_check_item_search": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "window-0",
+            "block_count": 132,
+            "char_count": 7984,
+            "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "window-1",
+            "block_count": 58,
+            "char_count": 2158,
+            "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece"
+          }
+        ],
+        "note": "每个文本类检查项复用同一组 file_ids 与同一组 OcrBlock，故窗口数相同"
+      }
+    },
+    "observed_during_run": {
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 0,
+            "bundle_id": "window-0",
+            "block_count": 132,
+            "char_count": 7984,
+            "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+            "source_pages": []
+          },
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 1,
+            "bundle_id": "window-1",
+            "block_count": 58,
+            "char_count": 2158,
+            "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+            "source_pages": []
+          }
+        ]
+      },
+      "per_check_item": {
+        "charter.business_scope": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.business_scope",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.business_scope",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        "charter.approval_body": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.approval_body",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.approval_body",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        "charter.voting_ratio": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.voting_ratio",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.voting_ratio",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        "charter.guarantee_restrictions": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.guarantee_restrictions",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.guarantee_restrictions",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        "charter.legal_representative_signature_authority": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.legal_representative_signature_authority",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.legal_representative_signature_authority",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        "charter.ownership_and_special_terms": {
+          "measured_window_count": 2,
+          "windows": [
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.ownership_and_special_terms",
+              "window_index": 0,
+              "bundle_id": "window-0",
+              "block_count": 132,
+              "char_count": 7984,
+              "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+              "source_pages": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "kind": "search_window",
+              "check_item_id": "charter.ownership_and_special_terms",
+              "window_index": 1,
+              "bundle_id": "window-1",
+              "block_count": 58,
+              "char_count": 2158,
+              "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+              "source_pages": [
+                5,
+                6,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            }
+          ]
+        }
+      },
+      "chunk_events": [
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": []
+        },
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": []
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.business_scope",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.business_scope",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.approval_body",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.approval_body",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.voting_ratio",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.voting_ratio",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.guarantee_restrictions",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.guarantee_restrictions",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.legal_representative_signature_authority",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.legal_representative_signature_authority",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "window_index": 0,
+          "bundle_id": "window-0",
+          "block_count": 132,
+          "char_count": 7984,
+          "window_text_sha256": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+          "source_pages": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        },
+        {
+          "kind": "search_window",
+          "check_item_id": "charter.ownership_and_special_terms",
+          "window_index": 1,
+          "bundle_id": "window-1",
+          "block_count": 58,
+          "char_count": 2158,
+          "window_text_sha256": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+          "source_pages": [
+            5,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15
+          ]
+        }
+      ]
+    },
+    "status": "实测（非预计值）",
+    "preflight_matches_observed": true
+  },
+  "timing": {
+    "setup_isolated_data_seconds": 0.021,
+    "ocr_recognition": "未执行（复用既有 JSON，非本轮计时对象）",
+    "ocr_json_import_seconds": 0.107,
+    "ocr_and_after_split_note": "OCR 识别与 OCR 之后的处理不是同一次计时：前者本轮未执行，后者为 OCR JSON 导入落库 + classify/search/vision/complete_run。",
+    "create_run_seconds": 0.002,
+    "post_processing_seconds": 600.64,
+    "total_measured_seconds": 600.78,
+    "total_scope": "从造隔离数据开始到 run_pipeline.func 返回（含造数据、OCR JSON 导入、建 run、三个阶段与 complete_run、DB 写入）；不含证据读取与软删",
+    "stages_wall_clock_seconds": {
+      "classify": 44.612,
+      "search": 555.99,
+      "vision": 0.006,
+      "complete_run": 0.005
+    },
+    "stage_events": [
+      {
+        "stage": "classify",
+        "started_at": "2026-11-12T05:09:17.699164+00:00",
+        "elapsed_seconds": 44.612,
+        "chat_call_count": 2,
+        "complete_json_call_count": 2
+      },
+      {
+        "stage": "search",
+        "started_at": "2026-11-12T05:10:02.316516+00:00",
+        "elapsed_seconds": 555.99,
+        "chat_call_count": 12,
+        "complete_json_call_count": 12
+      },
+      {
+        "stage": "vision",
+        "started_at": "2026-11-12T05:19:18.308115+00:00",
+        "elapsed_seconds": 0.006,
+        "chat_call_count": 0,
+        "complete_json_call_count": 0
+      },
+      {
+        "stage": "complete_run",
+        "started_at": "2026-11-12T05:19:18.315673+00:00",
+        "elapsed_seconds": 0.005,
+        "chat_call_count": 0,
+        "complete_json_call_count": 0
+      }
+    ],
+    "run_step_elapsed_seconds": {
+      "stage:classify": 44.615,
+      "stage:search": 555.992,
+      "check:license.business_scope": 0.004,
+      "check:license.operating_term": 0.002,
+      "check:license.registration_status": 0.003,
+      "check:charter.business_scope": 48.675,
+      "check:charter.approval_body": 124.49,
+      "check:charter.voting_ratio": 44.65,
+      "check:charter.guarantee_restrictions": 90.233,
+      "check:charter.legal_representative_signature_authority": 58.256,
+      "check:charter.ownership_and_special_terms": 189.62,
+      "check:financial.company_name": 0.002,
+      "check:financial.reporting_period": 0.002,
+      "check:financial.balance_sheet": 0.002,
+      "check:financial.income_statement": 0.001,
+      "check:financial.cash_flow_statement": 0.001,
+      "check:financial.audit_institution": 0.001,
+      "check:financial.audit_opinion": 0.001,
+      "stage:vision": 0.007
+    },
+    "run_steps": [
+      {
+        "step_key": "stage:classify",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:09:17.696304+00:00",
+        "finished_at": "2026-11-12T05:10:02.311300+00:00",
+        "elapsed_seconds": 44.615,
+        "last_error_code": null
+      },
+      {
+        "step_key": "stage:search",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:02.314501+00:00",
+        "finished_at": "2026-11-12T05:19:18.306316+00:00",
+        "elapsed_seconds": 555.992,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:license.business_scope",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:02.317370+00:00",
+        "finished_at": "2026-11-12T05:10:02.321607+00:00",
+        "elapsed_seconds": 0.004,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:license.operating_term",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:02.322875+00:00",
+        "finished_at": "2026-11-12T05:10:02.325273+00:00",
+        "elapsed_seconds": 0.002,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:license.registration_status",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:02.326674+00:00",
+        "finished_at": "2026-11-12T05:10:02.329195+00:00",
+        "elapsed_seconds": 0.003,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.business_scope",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:02.330559+00:00",
+        "finished_at": "2026-11-12T05:10:51.005762+00:00",
+        "elapsed_seconds": 48.675,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.approval_body",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:10:51.017501+00:00",
+        "finished_at": "2026-11-12T05:12:55.507778+00:00",
+        "elapsed_seconds": 124.49,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.voting_ratio",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:12:55.510615+00:00",
+        "finished_at": "2026-11-12T05:13:40.160248+00:00",
+        "elapsed_seconds": 44.65,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.guarantee_restrictions",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:13:40.166337+00:00",
+        "finished_at": "2026-11-12T05:15:10.399080+00:00",
+        "elapsed_seconds": 90.233,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.legal_representative_signature_authority",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:15:10.401648+00:00",
+        "finished_at": "2026-11-12T05:16:08.658074+00:00",
+        "elapsed_seconds": 58.256,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:charter.ownership_and_special_terms",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:16:08.662408+00:00",
+        "finished_at": "2026-11-12T05:19:18.282681+00:00",
+        "elapsed_seconds": 189.62,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.company_name",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.288000+00:00",
+        "finished_at": "2026-11-12T05:19:18.290483+00:00",
+        "elapsed_seconds": 0.002,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.reporting_period",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.291586+00:00",
+        "finished_at": "2026-11-12T05:19:18.293291+00:00",
+        "elapsed_seconds": 0.002,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.balance_sheet",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.294327+00:00",
+        "finished_at": "2026-11-12T05:19:18.296030+00:00",
+        "elapsed_seconds": 0.002,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.income_statement",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.297065+00:00",
+        "finished_at": "2026-11-12T05:19:18.298559+00:00",
+        "elapsed_seconds": 0.001,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.cash_flow_statement",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.299450+00:00",
+        "finished_at": "2026-11-12T05:19:18.300874+00:00",
+        "elapsed_seconds": 0.001,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.audit_institution",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.301803+00:00",
+        "finished_at": "2026-11-12T05:19:18.303264+00:00",
+        "elapsed_seconds": 0.001,
+        "last_error_code": null
+      },
+      {
+        "step_key": "check:financial.audit_opinion",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.304054+00:00",
+        "finished_at": "2026-11-12T05:19:18.305483+00:00",
+        "elapsed_seconds": 0.001,
+        "last_error_code": null
+      },
+      {
+        "step_key": "stage:vision",
+        "state": "SUCCEEDED",
+        "attempt": 0,
+        "started_at": "2026-11-12T05:19:18.307143+00:00",
+        "finished_at": "2026-11-12T05:19:18.314489+00:00",
+        "elapsed_seconds": 0.007,
+        "last_error_code": null
+      }
+    ],
+    "run_steps_source": "直接读 run_steps 表，与只读接口 GET /tasks/{task_id}/runs/{run_id}/timing 同源；本次未通过 HTTP 调用该接口"
+  },
+  "run": {
+    "run_id": "5547804d-da6d-4417-8139-9dc36e3b5e3e",
+    "task_id": "ddd97b17-8bfe-4954-b7fb-3f4f8386b879",
+    "state": "READY",
+    "stage": "done",
+    "coverage_complete": true,
+    "error_code": null,
+    "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+    "started_at": "2026-11-12T05:09:17.681625+00:00",
+    "finished_at": "2026-11-12T05:19:18.317537+00:00",
+    "elapsed_seconds": 600.636,
+    "database_verified": true,
+    "verification": "PostgreSQL processing_runs 表按 id 查询命中（真实存在的 ProcessingRun.id）"
+  },
+  "model_calls": {
+    "chat_request_count": 14,
+    "complete_json_call_count": 14,
+    "per_request": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T05:09:17.703040+00:00",
+        "elapsed_seconds": 21.335,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "9ba756b12228f754b6d4c90a7eb9650b684096568afbaac545a0e6651d7a31ae",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 2,
+        "started_at": "2026-11-12T05:09:39.039268+00:00",
+        "elapsed_seconds": 23.263,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "fafd4cd4b748fa920b8bcd1e9f8421c34b2db6c55f8683788864fd2bbfe5c7ff",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 3,
+        "started_at": "2026-11-12T05:10:02.338078+00:00",
+        "elapsed_seconds": 14.618,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "f2917a16f3b5f20f1853bcc8aeb61132383fb32a2d75bb05997a0f4f93a4ff52",
+        "stage": "search",
+        "check_item_id": "charter.business_scope",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 4,
+        "started_at": "2026-11-12T05:10:16.956940+00:00",
+        "elapsed_seconds": 34.033,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "2a8b334428c1dc9bb3c8e835ea90539b9848665f4c75035aa1de5a2e4d57bfbf",
+        "stage": "search",
+        "check_item_id": "charter.business_scope",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 5,
+        "started_at": "2026-11-12T05:10:51.063166+00:00",
+        "elapsed_seconds": 68.777,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "b737405788760857a2c61d19ad3d09f702dac659024d39fe00e61a1039969385",
+        "stage": "search",
+        "check_item_id": "charter.approval_body",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 6,
+        "started_at": "2026-11-12T05:11:59.841087+00:00",
+        "elapsed_seconds": 55.654,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "1ff0aa7cd15a13b506c6854a6576a56f4d91e035557dff5b8b04a8ada80ecdaf",
+        "stage": "search",
+        "check_item_id": "charter.approval_body",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 7,
+        "started_at": "2026-11-12T05:12:55.519872+00:00",
+        "elapsed_seconds": 17.79,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "f3e2c361825c5b9c48a4b2dc1a8e704c97768b70fdeebcf42b56b8e85996c7e6",
+        "stage": "search",
+        "check_item_id": "charter.voting_ratio",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 8,
+        "started_at": "2026-11-12T05:13:13.315585+00:00",
+        "elapsed_seconds": 26.838,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "6b47a95da8859c4bb0868ac6f7f619d4f4e7793b2e707658442044bcc2977f18",
+        "stage": "search",
+        "check_item_id": "charter.voting_ratio",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 9,
+        "started_at": "2026-11-12T05:13:40.176276+00:00",
+        "elapsed_seconds": 52.334,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "f1737b65d57e911eb5c8252f8869d7cb70806cdd968bd5529d1fd0c3a83ee67e",
+        "stage": "search",
+        "check_item_id": "charter.guarantee_restrictions",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 10,
+        "started_at": "2026-11-12T05:14:32.511546+00:00",
+        "elapsed_seconds": 37.869,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "72ce26a359b715c9e60dfff2317b27b13f044aa27fa069668c9551f8c983732c",
+        "stage": "search",
+        "check_item_id": "charter.guarantee_restrictions",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 11,
+        "started_at": "2026-11-12T05:15:10.410240+00:00",
+        "elapsed_seconds": 49.038,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "7918fb7a6db0559b95a4302029f50becf179768b46868607dae8cd96850cd309",
+        "stage": "search",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 12,
+        "started_at": "2026-11-12T05:15:59.449047+00:00",
+        "elapsed_seconds": 9.203,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "e42fe7023a44b0a96b8ad3df0660766ba70406bd0bd57c7aa3566f1bc32ef8e6",
+        "stage": "search",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 13,
+        "started_at": "2026-11-12T05:16:08.673961+00:00",
+        "elapsed_seconds": 140.537,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "b656d820717869a2e8ca506ec920c3e1aa08c2d414fbd1b593dccd8183375e8d",
+        "stage": "search",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 14,
+        "started_at": "2026-11-12T05:18:29.214070+00:00",
+        "elapsed_seconds": 49.034,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "d96266a7d61ea8bffe6863175f9b2bbc558cd07e9f61d139acc08aa605d089a4",
+        "stage": "search",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null,
+        "is_format_repair_attempt": false
+      }
+    ],
+    "per_complete_json": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T05:09:17.702924+00:00",
+        "elapsed_seconds": 21.336,
+        "schema_name": "classification_output",
+        "check_item_id": null,
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "user_sha256": "218b3439c84b94cf269f8faff6d3640982cb152aa0a6f9b4ceac041d457be9fd",
+        "user_chars": 14862,
+        "has_images": false,
+        "stage": "classify",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 2,
+        "started_at": "2026-11-12T05:09:39.039144+00:00",
+        "elapsed_seconds": 23.264,
+        "schema_name": "classification_output",
+        "check_item_id": null,
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "user_sha256": "df78def0ab6f0a70951d37ecefc5c447cad7a7df5b026dc1bc159eb69d172337",
+        "user_chars": 5188,
+        "has_images": false,
+        "stage": "classify",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 3,
+        "started_at": "2026-11-12T05:10:02.337833+00:00",
+        "elapsed_seconds": 14.618,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "c76a1fa10a7a2b2e08eba3ed959b159a1e44a78e80732b5fef52fbc065eac035",
+        "user_chars": 14939,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 4,
+        "started_at": "2026-11-12T05:10:16.956832+00:00",
+        "elapsed_seconds": 34.034,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "61f05a31a737e7cceb0b8bfaca0fd3be656410c14bac5bc0ac15591f450d397f",
+        "user_chars": 5265,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 5,
+        "started_at": "2026-11-12T05:10:51.063077+00:00",
+        "elapsed_seconds": 68.777,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "4abd091614f7e099b89393455157258a489f5860a332710a2efd1f7e40998a99",
+        "user_chars": 14947,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 6,
+        "started_at": "2026-11-12T05:11:59.840969+00:00",
+        "elapsed_seconds": 55.655,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "6ff8f9de763a03e9e12a6b8d24eea3ebd5d0d238ac065e294078609e8bbcfc5e",
+        "user_chars": 5273,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 7,
+        "started_at": "2026-11-12T05:12:55.519737+00:00",
+        "elapsed_seconds": 17.791,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.voting_ratio",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "fa7ac39fb57db085f8ba49ec4569db47c390a29dc01caa604d4093f7ef458d04",
+        "user_chars": 14943,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 8,
+        "started_at": "2026-11-12T05:13:13.314724+00:00",
+        "elapsed_seconds": 26.839,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.voting_ratio",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "e9c98813aeb9a4e6f04e2894d4293d2c556a2cdbd845d0776e25b55db54b828d",
+        "user_chars": 5269,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 9,
+        "started_at": "2026-11-12T05:13:40.176118+00:00",
+        "elapsed_seconds": 52.335,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.guarantee_restrictions",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "ee920154aa4e26b439d4fc066015d43a606a4bc4566fc8052ce8f6ff890f57e0",
+        "user_chars": 14951,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 10,
+        "started_at": "2026-11-12T05:14:32.511396+00:00",
+        "elapsed_seconds": 37.869,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.guarantee_restrictions",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "88b5b761445f675befd7f26e9a83afc3fd3d448999355424eb31983484c510d2",
+        "user_chars": 5277,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 11,
+        "started_at": "2026-11-12T05:15:10.410129+00:00",
+        "elapsed_seconds": 49.038,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "749197dbf79c65bac3bbf115226ba6cb1dc15d5f5c02852d374c3f34cff61806",
+        "user_chars": 14969,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 12,
+        "started_at": "2026-11-12T05:15:59.448898+00:00",
+        "elapsed_seconds": 9.203,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "87020d242d4b2e45c52881acdccabcf6a6af95659d968605833c46d085ecd7ab",
+        "user_chars": 5295,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 13,
+        "started_at": "2026-11-12T05:16:08.673807+00:00",
+        "elapsed_seconds": 140.538,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "window_index": 0,
+        "window_text_hash": "0ddb2baa245f162d53fc4ab37b2c5e164eee30b112708fb925a987e20900015a",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "6271456a0ed3f4b7de091e165bbd75becd3e838307c69763185ca3f9a283f787",
+        "user_chars": 14955,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      },
+      {
+        "seq": 14,
+        "started_at": "2026-11-12T05:18:29.213744+00:00",
+        "elapsed_seconds": 49.035,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "window_index": 1,
+        "window_text_hash": "7bc72b8a5816704fdea9639ffcd2c4bb5060a54ba32d183e45b8e229b894cece",
+        "system_sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "user_sha256": "b22e5d7c4a01383b758f5856e782da5f5b759de966f3e6daa9754549e035fefc",
+        "user_chars": 5281,
+        "has_images": false,
+        "stage": "search",
+        "ok": true,
+        "error_type": null,
+        "error_message_short": null
+      }
+    ],
+    "chat_elapsed_distribution_seconds": {
+      "count": 14,
+      "min_seconds": 9.203,
+      "max_seconds": 140.537,
+      "mean_seconds": 42.88,
+      "median_seconds": 35.951,
+      "p95_seconds": 68.777,
+      "sum_seconds": 600.323
+    },
+    "complete_json_elapsed_distribution_seconds": {
+      "count": 14,
+      "min_seconds": 9.203,
+      "max_seconds": 140.538,
+      "mean_seconds": 42.881,
+      "median_seconds": 35.951,
+      "p95_seconds": 68.777,
+      "sum_seconds": 600.332
+    },
+    "timeout_count": 0,
+    "timeout_detail": [],
+    "transient_error_count": 0,
+    "transient_error_detail": [],
+    "window_level_retry_count": 0,
+    "window_level_retry_detail": [],
+    "fatal_error_count": 0,
+    "format_error_count": 0,
+    "format_repair_chat_count": 0,
+    "note": "attempt 为 0-based 窗口级重试序号；其中 0 是首次派发，>=1 是 search_check_item 内 LLM_MAX_TRANSIENT_RETRIES 循环的重试。同一 complete_json 可能触发多次 _chat（json_schema 降级 json_object、_repair 格式修复），因此 chat_request_count >= complete_json_call_count 属正常。 P95 口径（QA 独立复验后补充披露）：_dist 用 ordered[int(round((n-1)*0.95))]，n=14 取 ordered[12]=68.777s；常规线性插值 P95=93.893s、nearest-rank=140.537s，外部复算须同口径。14 次 attempt=0 由 timing.run_steps[].attempt（19 条全 0）与三个空 detail 推得，非逐次调用直接观测。",
+    "attempt_observation": "本次 14 次 complete_json 均为各窗口首次派发（attempt=0），无 attempt>=1 记录；window_level_retry_detail 为空、timeout_detail 为空、transient_error_detail 为空、fatal_error_count=0、format_error_count=0。per_request 每条的 error_type 均为 null。（QA 独立复验后补充披露）上述 attempt=0 结论由 timing.run_steps[].attempt（19 条全 0）与 timeout_detail / transient_error_detail / window_level_retry_detail 三个空数组推得，并非逐次调用在包装器里直接观测到的 attempt 字段。（关键词：非逐次调用直接观测。）",
+    "p95_method": {
+      "added_by": "QA 独立复验后补充披露",
+      "script_method": "ordered[int(round((n-1)*0.95))]；n=14 → ordered[12] = 68.777s",
+      "linear_interpolation_p95_seconds": 93.893,
+      "nearest_rank_p95_seconds": 140.537,
+      "note": "本证据采用脚本口径 68.777s；常规线性插值与 nearest-rank 均为不同口径的复算值（推算，非实测），外部复算须同口径"
+    }
+  },
+  "search_stage_per_check_item": [
+    {
+      "check_item_id": "charter.business_scope",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 48.659,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 1,
+      "failed_reason": null
+    },
+    {
+      "check_item_id": "charter.approval_body",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 124.453,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 3,
+      "failed_reason": null
+    },
+    {
+      "check_item_id": "charter.voting_ratio",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 44.641,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 0,
+      "failed_reason": null
+    },
+    {
+      "check_item_id": "charter.guarantee_restrictions",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 90.213,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 7,
+      "failed_reason": null
+    },
+    {
+      "check_item_id": "charter.legal_representative_signature_authority",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 58.249,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 0,
+      "failed_reason": null
+    },
+    {
+      "check_item_id": "charter.ownership_and_special_terms",
+      "material_type": "articles_of_association",
+      "elapsed_seconds": 189.584,
+      "measured_window_count": 2,
+      "complete_json_call_count": 2,
+      "chat_call_count": 2,
+      "evidence_count": 19,
+      "failed_reason": null
+    }
+  ],
+  "results": {
+    "total_result_rows": 44,
+    "hit_rows": 30,
+    "not_found_rows": 14,
+    "not_found_reason_counts": {
+      "no_matching_evidence": 2,
+      "material_missing": 12
+    },
+    "by_check_item": {
+      "license.business_scope": {
+        "material_type": "business_license",
+        "label": "经营范围",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "license.operating_term": {
+        "material_type": "business_license",
+        "label": "营业期限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "license.registration_status": {
+        "material_type": "business_license",
+        "label": "登记状态",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "charter.business_scope": {
+        "material_type": "articles_of_association",
+        "label": "经营范围条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "hit",
+        "verdict_reason": "存在 text/table/seal/signature 证据行",
+        "result_count": 1,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 48.659,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "a039f7067974933e5615dc79c25600dcef9c0f05bda1f52d6811685e19914a47",
+            "text_excerpt": "第十七条 经依法登记，本行的业务范围是：办理人民币存款、贷款；同业拆借业务；国内外结算；办理票据承兑、贴现、转贴现；各类汇兑业务；代理资金清算；提供信用证服务及担保；代理销售业务；代理发行、代理承销、代理兑付政府债券、金融债券、企业短期融资券；代收代付业务；代理证券资金清算业务（银证转账）；代理债券结算；代理保险业务；代理政策性银行、外国政府和国际金融机构贷款业务；保管箱服务；发行金融债券；买卖政…",
+            "text_sha256": "e10b63af96543e637e461b642a7689311f7981df4ffcdea65b0c00523bb49933",
+            "text_length": 437,
+            "source_page_numbers": [
+              7
+            ],
+            "location_precision": [
+              "region"
+            ]
+          }
+        ]
+      },
+      "charter.approval_body": {
+        "material_type": "articles_of_association",
+        "label": "借款与担保的决议权限／批准机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "hit",
+        "verdict_reason": "存在 text/table/seal/signature 证据行",
+        "result_count": 3,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 124.453,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "92c1b013344b788b8914c2690d551000d74acccb08f76045a6bc20c544b22b59",
+            "text_excerpt": "第四十六条 股东大会是本行的权力机构，依法行使下列职权：",
+            "text_sha256": "9a9831aad550fc967492c2a75ea8176e452aeda93707baa25c8716c46b27fa37",
+            "text_length": 28,
+            "source_page_numbers": [
+              14
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 1,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "1a4c21fc5b8d06d231385bf214cba7e618d13c0c676210ab3c5f69864413033d",
+            "text_excerpt": "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）。",
+            "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556",
+            "text_length": 44,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 2,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "ac35f3c8adcbcafa1b1dfd1073b82a5ddefd729630223fb98b22c39691f59912",
+            "text_excerpt": "（十二）审议批准第四十七条规定的担保事项；",
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb",
+            "text_length": 21,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          }
+        ]
+      },
+      "charter.voting_ratio": {
+        "material_type": "articles_of_association",
+        "label": "需要多少表决权比例通过？",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "no_matching_evidence",
+        "result_count": 1,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 44.641,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "no_matching_evidence",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "charter.guarantee_restrictions": {
+        "material_type": "articles_of_association",
+        "label": "对外担保的限制性规定",
+        "result_mode": "verbatim_quotes",
+        "verdict": "hit",
+        "verdict_reason": "存在 text/table/seal/signature 证据行",
+        "result_count": 7,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 90.213,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "54f7f282a79235379a75dec4b1a510cad7f4bba53dae1d99241142c27c0bc5ef",
+            "text_excerpt": "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）。",
+            "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556",
+            "text_length": 44,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 1,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "41d337f3e3865e812efc7c6228acf0248c65e63715db9e59dae95af623d38e6a",
+            "text_excerpt": "（一）本行及本行控股子公司（子银行）的对外担保总额，达到或超过最近一期经审计净资产的50%以后提供的任何担保；",
+            "text_sha256": "25b263435c14428792913c03f784cfd8f2a774ce2eec7f4bcd6abb3b2411fd3f",
+            "text_length": 55,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 2,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "db9c41be3e0f1d26340b17443f1ab67a644c3fa342d4efb15650e03852fe4a26",
+            "text_excerpt": "（四）单笔担保额超过最近一期经审计净资产10%的担保；",
+            "text_sha256": "e0535bbe50f851d20a20cf3ead0e453ea0d19122852b139069964a7a6fb5f122",
+            "text_length": 27,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 3,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "0bf733afabfc414efee187b30970b5b0541b76acc650225e6ecc15f49215e212",
+            "text_excerpt": "（五）对股东、实际控制人及其关联方提供的担保。",
+            "text_sha256": "fca8af9333c273ba2367ed845bf36e62b5fb70a68a3d513de0b73d353b215827",
+            "text_length": 23,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 4,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "fc88e7ec773feb50afc4cfec9303ed5126d2db413e66d5982466ddda1fb16964",
+            "text_excerpt": "（三）为资产负债率超过70%的担保对象提供的担保；",
+            "text_sha256": "d94c3a9dc6e1724b24d555d7dc2d3698eb4435d968d59c9904068766a8ad7993",
+            "text_length": 25,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 5,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "95db8aa917010a6a7ad2914310883f07129dc0b19873f05a1e7612298f5dcc61",
+            "text_excerpt": "（十二）审议批准第四十七条规定的担保事项；",
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb",
+            "text_length": 21,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 6,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "9f5725e3f5dd1e4220d72e1c23d14959d1956d1021fbca73b413a4432daee91e",
+            "text_excerpt": "（二）本行的对外担保总额，达到或超过最近一期经审计总资产的30%以后提供的任何担保；",
+            "text_sha256": "8ff3d9d0ee70c589ad906df53d6950595397ccec26e3b2cd7c575484e4b2cdfc",
+            "text_length": 42,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          }
+        ]
+      },
+      "charter.legal_representative_signature_authority": {
+        "material_type": "articles_of_association",
+        "label": "法定代表人的签字权限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "no_matching_evidence",
+        "result_count": 1,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 58.249,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "no_matching_evidence",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "charter.ownership_and_special_terms": {
+        "material_type": "articles_of_association",
+        "label": "股权结构与特殊条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "hit",
+        "verdict_reason": "存在 text/table/seal/signature 证据行",
+        "result_count": 19,
+        "measured_window_count": 2,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 2,
+        "chat_call_count": 2,
+        "search_elapsed_seconds": 189.584,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "b929e32f7a6dbad4f5912227d2ba19e2c468bdb16684906d9ae327647a926282",
+            "text_excerpt": "第十一条 本行资本划分为股份，同种类股份每股金额相等。股东以其认购股份为限对本行承担责任，本行以全部资产对本行的债务承担责任。",
+            "text_sha256": "8a2658adb767b7b470eab5ce783d2bdd09a4511d70e94e1fa38f9b381e9984b8",
+            "text_length": 63,
+            "source_page_numbers": [
+              5
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 1,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "cd777a6de6d59f696496cc3cb142339b044afd749b946603485e72daf26318ad",
+            "text_excerpt": "第八条 本行注册资本为人民币21,142,984,272元。",
+            "text_sha256": "0129bb7c6e5c561c0daa38a636612a84cba321a157ea440bf9545fa2848374e9",
+            "text_length": 30,
+            "source_page_numbers": [
+              5
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 2,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "fc0901a603a658374284d272cb62c48296f2acb507317c459de64f167dba95f5",
+            "text_excerpt": "第八条 本行注册资本为人民币21,142,984,272元。",
+            "text_sha256": "0129bb7c6e5c561c0daa38a636612a84cba321a157ea440bf9545fa2848374e9",
+            "text_length": 30,
+            "source_page_numbers": [
+              5
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 3,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "c25dd2ec19476cbcc2215664fd5560fb07289961422d2549d7219b3b4f9a67b2",
+            "text_excerpt": "普通股是指本行所发行的《公司法》一般规定的普通种类股份。",
+            "text_sha256": "69ea50371246784e8365b0865b09091e461b61d4e661ff321bd6458bee0ff7c2",
+            "text_length": 28,
+            "source_page_numbers": [
+              8
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 4,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "faa5884afdaa20c9814c9ba93943c3ea388c552bcf9f4819d75e10580c3e3e4d",
+            "text_excerpt": "优先股是指依照《公司法》，在一般规定的普通种类股份之外本行所发行的其他种类股份，其股份持有人优先于普通股股东分配本行利润和剩余财产，但参与本行决策管理等权利受到限制。",
+            "text_sha256": "23232c50a7783d45447ead15beb6e534690636f8d29d709a74ce045ba2636510",
+            "text_length": 83,
+            "source_page_numbers": [
+              8
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 5,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "4bfd554d49ce3b3946ef6b674a0852c31565d5a062549bdbb90d38cfd8d919f9",
+            "text_excerpt": "第二十三条 本行普通股股份总数为21,142,984,272股，每股面值人民币壹元；本行优先股股份总数为179,000,000股，每股面值人民币壹佰元。本行的股本结构为：普通股和优先股。",
+            "text_sha256": "7b836397723707c4d672b1008f2de6528ec95be1dc5f11f65aec394a3731865b",
+            "text_length": 93,
+            "source_page_numbers": [
+              8
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 6,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "c10040b96fdada7ee301c2668e1f3a8bb5efd3cd84b4447290d68ab3ba04f95e",
+            "text_excerpt": "（五）优先股转换为普通股；",
+            "text_sha256": "286cef5272e561648a889130dda725960bb0684b447539bf6bc5266efcd072bf",
+            "text_length": 13,
+            "source_page_numbers": [
+              8
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 7,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "c096ce63e2878d16dc0922b23b987c51d82290e5b0692d0eff062a42c1e20814",
+            "text_excerpt": "第三十一条 本行公开发行股份前已发行的股份，自本行股票在证券交易所上市交易之日起1年内不得转让。",
+            "text_sha256": "21e223548fd752e686b65f3191b352056c92d61a621c9b4603bdd036ee3f0591",
+            "text_length": 48,
+            "source_page_numbers": [
+              9
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 8,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "974aa7f90f5b8dc0fea97fd6a0beb3978c5dd19bef9eb0ba87a327a49d533339",
+            "text_excerpt": "## 第三十条 本行不接受本行的普通股和优先股作为质押权的标的。",
+            "text_sha256": "7497d08ec91757baf88dbe289f2526c6d398551af0033d2d317402f5588dd732",
+            "text_length": 32,
+            "source_page_numbers": [
+              9
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 9,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "e48dd49ca85fd9569586d4d7d8a257be0d61564db5eb6eb99e2a9f938af4b123",
+            "text_excerpt": "第三十三条 本行依据证券登记机构提供的凭证建立股东名册，股东名册是证明股东持有本行股份的充分证据。股东按其所持有股份的种类享有权利，承担义务；持有同一种类股份的股东，享有同等权利，承担同种义务。本行发行的优先股在股息分配和剩余财产分配上具有相同优先顺序，但在其他条款上可以具有不同设置。",
+            "text_sha256": "0961b37806d424a0efc97d1a82292c9a72804106ddd0b2f683e0f1058336159f",
+            "text_length": 143,
+            "source_page_numbers": [
+              10
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 10,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "6e6db7191ed8f1b8b1cf606a94718dbbc5a2ae77a2977fd18025009c2db977b7",
+            "text_excerpt": "（六）对于存在虚假陈述、滥用股东权利或其他损害本行利益行为的股东，国务院银行业监督管理机构可以限制或禁止本行与其开展关联交易，限制其持有本行股权的限额、股权质押比例等，并可限制其股东大会召开请求权、表决权、提名权、提案权、处分权等权利；",
+            "text_sha256": "73c45d486165c982fef7472e4feb60b9d07acf0d0e4511ff983368484f5e7577",
+            "text_length": 118,
+            "source_page_numbers": [
+              12
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 11,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "d3511bdc49cc270deb46e5a84aef3c65a2b0cb6a2c277cbabaa92ce6e48b9e83",
+            "text_excerpt": "（七）按照法律法规及监管规定，如实向本行告知财务信息、股权结构、入股资金来源、控股股东、实际控制人、关联方、一致行动人、最终受益人、投资其他金融机构情况等信息；",
+            "text_sha256": "9509d95befd9e829c48955bed79e4d70b8f657b1b2d9ce1f7ec911276b25d192",
+            "text_length": 80,
+            "source_page_numbers": [
+              12
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 12,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "21fb30d3c3a3a4e69ca4338f974aa9c7473a2746b50dc2c2b309d5aa38e514ca",
+            "text_excerpt": "第四十三条 本行对股东贷款的条件不得优于对其他借款人同类贷款的条件。",
+            "text_sha256": "6183111016b463a6f562c6ed1efdc637c8eefc4fa2008a9e3fed19d241a14c3a",
+            "text_length": 34,
+            "source_page_numbers": [
+              13
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 13,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "bfbdb195a09d303440dbbe3d417d32a63abe83c4895dcfe4250f74525d0ed54f",
+            "text_excerpt": "第四十二条 本行的控股股东、实际控制人员不得利用其关联关系损害本行利益。违反规定的，给本行造成损失的，应当承担赔偿责任。",
+            "text_sha256": "1156e3b26e31a11e07ccadf627328242c7908d2c26a2e4a65c95fb1cd5396ce9",
+            "text_length": 60,
+            "source_page_numbers": [
+              13
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 14,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "498a69f7ff775876cd0fcad12127d8fc7a97db0a6292f2f7157668a2bd607aec",
+            "text_excerpt": "股东质押本行股份数量达到或超过其持有本行股份的50%时，应当限制其在股东大会的表决权，并限制其提名或派出的董事在董事会的表决权。",
+            "text_sha256": "8150e15c3f29bd74ca794db0c9de34a32cc93b9aeb5815d06ec2ca19c10227f9",
+            "text_length": 64,
+            "source_page_numbers": [
+              14
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 15,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "5287883daa9aabb273ba9429b5fadd660448b46f73e83cb08b5e3f438923d45d",
+            "text_excerpt": "拥有本行董、监事席位的股东，或直接、间接、共同持有或控制本行2%以上股份或表决权的股东出质本行股份，事前须向本行董事会申请备案，说明出质的原因、股权数额、质押期限、质押权人等基本情况。凡董事会认定对本行股权稳定、公司治理、风险与关联交易控制等存在重大不利影响的，应不予备案。在董事会审议相关备案事项时，由拟出质股东委派的董事应当回避。",
+            "text_sha256": "6e7756a928ec5d3900c74c8fcf95fe6164808ddca3c76170a3e4d9ecb2d1bb42",
+            "text_length": 167,
+            "source_page_numbers": [
+              14
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 16,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "537e9a4b0e4a2eacc53765db4ef5f055d0d259bb46da5a0faa1ecfcf66ebbbdf",
+            "text_excerpt": "第四十五条 主要股东应当以书面形式向本行作出在必要时向本行补充资本的长期承诺，并作为本行资本规划的一部分。",
+            "text_sha256": "238b7c8126da381972aae86d621f74c2a0e24f7e5be2fc709d441be59a1b2cdd",
+            "text_length": 53,
+            "source_page_numbers": [
+              14
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 17,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "30b693ef1bdf7b090318af846a155624c19b445a2a635a8e2876a6f97f319143",
+            "text_excerpt": "股东在本行借款余额超过其持有经审计的本行上一年度股权净值的，不得将本行股权进行质押。",
+            "text_sha256": "ccb0d598486bcd52eb659743aa378390067d890ca9090c3d318553092298f5af",
+            "text_length": 42,
+            "source_page_numbers": [
+              14
+            ],
+            "location_precision": [
+              "region"
+            ]
+          },
+          {
+            "rank": 18,
+            "kind": "text",
+            "not_found_reason": null,
+            "fingerprint": "f39f3b20ba46661358cd1051561badc9cdc2952fccfd7c3fbbadb8d14ce18507",
+            "text_excerpt": "（十七）决定或授权董事会决定与本行已发行优先股的相关事项，包括但不限于决定是否回购、转换、派息等；",
+            "text_sha256": "a933b640f7d511d4e4be946f6dc87391923e5ae371024c5478b333bc89f5403f",
+            "text_length": 49,
+            "source_page_numbers": [
+              15
+            ],
+            "location_precision": [
+              "region"
+            ]
+          }
+        ]
+      },
+      "financial.company_name": {
+        "material_type": "audited_financials",
+        "label": "报表所属企业",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.reporting_period": {
+        "material_type": "audited_financials",
+        "label": "报告年度",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.balance_sheet": {
+        "material_type": "audited_financials",
+        "label": "资产负债表",
+        "result_mode": "full_table",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.income_statement": {
+        "material_type": "audited_financials",
+        "label": "利润表",
+        "result_mode": "full_table",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.cash_flow_statement": {
+        "material_type": "audited_financials",
+        "label": "现金流量表",
+        "result_mode": "full_table",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.audit_institution": {
+        "material_type": "audited_financials",
+        "label": "审计机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.audit_seal": {
+        "material_type": "audited_financials",
+        "label": "审计单位印章",
+        "result_mode": "seal",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.cpa_signature": {
+        "material_type": "audited_financials",
+        "label": "注册会计师签名",
+        "result_mode": "signature",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      },
+      "financial.audit_opinion": {
+        "material_type": "audited_financials",
+        "label": "审计意见",
+        "result_mode": "verbatim_quotes",
+        "verdict": "not_found",
+        "verdict_reason": "material_missing",
+        "result_count": 1,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": [
+          {
+            "rank": 0,
+            "kind": "not_found",
+            "not_found_reason": "material_missing",
+            "fingerprint": null,
+            "text_excerpt": "",
+            "text_sha256": null,
+            "text_length": 0,
+            "source_page_numbers": [],
+            "location_precision": []
+          }
+        ]
+      }
+    },
+    "text_policy": "大段原文只存 200 字摘要 + SHA256 + fingerprint + 出处页码；未整份塞入证据"
+  },
+  "clause_matrix": {
+    "matching_rule": "对 OCR 原文与 Result.text 去空白后做精确短语子串匹配，出处页码取 ResultSource.source_page_number",
+    "matrix": [
+      {
+        "id": "C1",
+        "physical_page": 7,
+        "title": "第十七条 业务范围（含外汇借款 / 外汇担保 / 提供信用证服务及担保 / 贷款）",
+        "target_check_id": "charter.business_scope",
+        "keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "ocr_pages_scanned": [
+          7
+        ],
+        "source_ocr_matched_keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [
+          {
+            "check_item_id": "charter.business_scope",
+            "rank": 0,
+            "kind": "text",
+            "source_page_numbers": [
+              7
+            ],
+            "matched_keywords": [
+              "第十七条",
+              "外汇借款",
+              "外汇担保",
+              "提供信用证服务及担保"
+            ],
+            "text_sha256": "e10b63af96543e637e461b642a7689311f7981df4ffcdea65b0c00523bb49933"
+          }
+        ],
+        "target_check_result_rows": 1,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "命中",
+        "note": "经营范围条款；担保类检查项若引用本页即属误命中",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C2",
+        "physical_page": 8,
+        "title": "第二十四条 不以赠与/垫资/担保/补偿/贷款等形式资助购股人",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [],
+        "target_check_result_rows": 19,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「担保」字样，但属于股权资助限制，非对外担保规则",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C3",
+        "physical_page": 8,
+        "title": "第二十五条 增加注册资本须经股东大会分别作出决议",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [],
+        "target_check_result_rows": 3,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "决议机构证据",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C4",
+        "physical_page": 13,
+        "title": "第四十一条 5% 以上有表决权股份股东质押书面报告 / 控股股东借款担保",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [],
+        "target_check_result_rows": 19,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「借款担保」字样，属股东行为规范，非对外担保决议规则",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C5",
+        "physical_page": 13,
+        "title": "第四十三条 本行对股东贷款的条件不得优于其他借款人同类贷款的条件",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [
+          {
+            "check_item_id": "charter.ownership_and_special_terms",
+            "rank": 12,
+            "kind": "text",
+            "source_page_numbers": [
+              13
+            ],
+            "matched_keywords": [
+              "第四十三条",
+              "本行对股东贷款的条件不得优于"
+            ],
+            "text_sha256": "6183111016b463a6f562c6ed1efdc637c8eefc4fa2008a9e3fed19d241a14c3a"
+          }
+        ],
+        "target_check_result_rows": 19,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "命中",
+        "note": "关联交易限制",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C6",
+        "physical_page": 13,
+        "title": "第四十四条 授信逾期应限制其在股东大会的表决权",
+        "target_check_id": "charter.voting_ratio",
+        "keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [],
+        "target_check_result_rows": 1,
+        "target_check_not_found_reasons": [
+          "no_matching_evidence"
+        ],
+        "auto_verdict": "未命中：样本内存在但本次未被模型摘录召回（非技术失败）",
+        "note": "表决权限制",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C7",
+        "physical_page": 14,
+        "title": "股权出质事前书面告知董事会 / 借款余额超股权净值不得质押 / 质押达 50% 限制表决权",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "事前书面告知董事会",
+          "借款余额超过其持有经审计的上一年度股权净值",
+          "50%"
+        ],
+        "ocr_pages_scanned": [
+          14
+        ],
+        "source_ocr_matched_keywords": [
+          "50%"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 1,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "50%"
+            ],
+            "text_sha256": "25b263435c14428792913c03f784cfd8f2a774ce2eec7f4bcd6abb3b2411fd3f"
+          },
+          {
+            "check_item_id": "charter.ownership_and_special_terms",
+            "rank": 14,
+            "kind": "text",
+            "source_page_numbers": [
+              14
+            ],
+            "matched_keywords": [
+              "50%"
+            ],
+            "text_sha256": "8150e15c3f29bd74ca794db0c9de34a32cc93b9aeb5815d06ec2ca19c10227f9"
+          }
+        ],
+        "target_check_result_rows": 19,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "命中",
+        "note": "股权结构与特殊条款",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C8",
+        "physical_page": 15,
+        "title": "第四十六条 股东大会职权（十二）审议批准第四十七条担保事项 / 3% 提案 / 不得授权董事会",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第四十六条",
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [
+          {
+            "check_item_id": "charter.approval_body",
+            "rank": 0,
+            "kind": "text",
+            "source_page_numbers": [
+              14
+            ],
+            "matched_keywords": [
+              "第四十六条"
+            ],
+            "text_sha256": "9a9831aad550fc967492c2a75ea8176e452aeda93707baa25c8716c46b27fa37"
+          },
+          {
+            "check_item_id": "charter.approval_body",
+            "rank": 2,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "审议批准第四十七条规定的担保事项"
+            ],
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 5,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "审议批准第四十七条规定的担保事项"
+            ],
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+          }
+        ],
+        "target_check_result_rows": 3,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "命中",
+        "note": "批准机构核心证据",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "physical_page_range": [
+          14,
+          15
+        ],
+        "physical_page_note": "QA 独立复验后补充披露：第四十六条标题在物理页 14、（十二）项在页 15，结果的 source_page_number 为 14/15/15，跨页成立；原 physical_page=15 仅记主要出处页，现补范围。"
+      },
+      {
+        "id": "C9",
+        "physical_page": 15,
+        "title": "第四十七条 五类须经股东大会审议通过的对外担保行为",
+        "target_check_id": "charter.guarantee_restrictions",
+        "keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "净资产50%",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [
+          {
+            "check_item_id": "charter.approval_body",
+            "rank": 1,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "第四十七条",
+              "本行下列对外担保行为"
+            ],
+            "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556"
+          },
+          {
+            "check_item_id": "charter.approval_body",
+            "rank": 2,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "第四十七条"
+            ],
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 0,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "第四十七条",
+              "本行下列对外担保行为"
+            ],
+            "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 3,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "对股东"
+            ],
+            "text_sha256": "fca8af9333c273ba2367ed845bf36e62b5fb70a68a3d513de0b73d353b215827"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 4,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "资产负债率"
+            ],
+            "text_sha256": "d94c3a9dc6e1724b24d555d7dc2d3698eb4435d968d59c9904068766a8ad7993"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "rank": 5,
+            "kind": "text",
+            "source_page_numbers": [
+              15
+            ],
+            "matched_keywords": [
+              "第四十七条"
+            ],
+            "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+          },
+          {
+            "check_item_id": "charter.ownership_and_special_terms",
+            "rank": 12,
+            "kind": "text",
+            "source_page_numbers": [
+              13
+            ],
+            "matched_keywords": [
+              "对股东"
+            ],
+            "text_sha256": "6183111016b463a6f562c6ed1efdc637c8eefc4fa2008a9e3fed19d241a14c3a"
+          }
+        ],
+        "target_check_result_rows": 7,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "命中",
+        "note": "对外担保限制性规定核心证据",
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核"
+      },
+      {
+        "id": "C10",
+        "physical_page": null,
+        "title": "法定代表人的签字权限（样本外条款）",
+        "target_check_id": "charter.legal_representative_signature_authority",
+        "keywords": [
+          "法定代表人",
+          "签字权限"
+        ],
+        "ocr_pages_scanned": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "法定代表人"
+        ],
+        "present_in_sample_ocr": true,
+        "result_hits": [],
+        "target_check_result_rows": 1,
+        "target_check_not_found_reasons": [
+          "no_matching_evidence"
+        ],
+        "auto_verdict": "样本外条款：物理 1–15 页无「签字权限」条款，no_matching_evidence 符合预期（非技术失败）",
+        "note": "物理 1–15 页大概率不存在，用于验证 no_matching_evidence 行为",
+        "present_in_sample_ocr_note": "仅通用词「法定代表人」命中（基线导入 176 块中 2 块，物理页 5 / 13）；全文「签字」「签署」「签名」「签章」0 出现（本轮 psql 只读复验），非目标条款，判样本外"
+      }
+    ],
+    "guarantee_vs_business_scope": {
+      "checked_check_item_ids": [
+        "charter.approval_body",
+        "charter.guarantee_restrictions"
+      ],
+      "false_positive_keywords": [
+        "外汇担保",
+        "提供信用证服务及担保",
+        "外汇借款"
+      ],
+      "guarantee_result_rows": [
+        {
+          "check_item_id": "charter.approval_body",
+          "rank": 0,
+          "source_page_numbers": [
+            14
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "9a9831aad550fc967492c2a75ea8176e452aeda93707baa25c8716c46b27fa37"
+        },
+        {
+          "check_item_id": "charter.approval_body",
+          "rank": 1,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556"
+        },
+        {
+          "check_item_id": "charter.approval_body",
+          "rank": 2,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 0,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "0c01946063317cd83c1c5fdee1889c9b547120efc7baf5f662dfb43939a4c556"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 1,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "25b263435c14428792913c03f784cfd8f2a774ce2eec7f4bcd6abb3b2411fd3f"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 2,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "e0535bbe50f851d20a20cf3ead0e453ea0d19122852b139069964a7a6fb5f122"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 3,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "fca8af9333c273ba2367ed845bf36e62b5fb70a68a3d513de0b73d353b215827"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 4,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "d94c3a9dc6e1724b24d555d7dc2d3698eb4435d968d59c9904068766a8ad7993"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 5,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "8d8df55ed13831ebdde368ecf57ca59d0400ea42c317c3260a71bad0d7f3fceb"
+        },
+        {
+          "check_item_id": "charter.guarantee_restrictions",
+          "rank": 6,
+          "source_page_numbers": [
+            15
+          ],
+          "business_scope_keywords_found": [],
+          "is_foreign_exchange_guarantee_mis_hit": false,
+          "text_sha256": "8ff3d9d0ee70c589ad906df53d6950595397ccec26e3b2cd7c575484e4b2cdfc"
+        }
+      ],
+      "any_foreign_exchange_guarantee_mis_hit": false
+    },
+    "status": "事实矩阵 + 规则化自动判定；人工逐条结论见 docs/REVIEW_HANDOFF.md 与本轮回传。QA 独立复验后补充披露：C6 / C10 标签已修正，不再出现「覆盖不全」字样。"
+  },
+  "bottleneck": {
+    "status": "实测",
+    "per_request_elapsed_distribution_seconds": {
+      "count": 14,
+      "min_seconds": 9.203,
+      "max_seconds": 140.537,
+      "mean_seconds": 42.88,
+      "median_seconds": 35.951,
+      "p95_seconds": 68.777,
+      "sum_seconds": 600.323
+    },
+    "per_complete_json_elapsed_distribution_seconds": {
+      "count": 14,
+      "min_seconds": 9.203,
+      "max_seconds": 140.538,
+      "mean_seconds": 42.881,
+      "median_seconds": 35.951,
+      "p95_seconds": 68.777,
+      "sum_seconds": 600.332
+    },
+    "serial_post_processing_seconds": 600.64,
+    "serial_total_measured_seconds": 600.78,
+    "stage_share_percent_of_post_processing": {
+      "classify": 7.427,
+      "search": 92.566,
+      "vision": 0.001,
+      "complete_run": 0.001
+    },
+    "slowest_check_items": [
+      {
+        "check_item_id": "charter.ownership_and_special_terms",
+        "elapsed_seconds": 189.584,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      },
+      {
+        "check_item_id": "charter.approval_body",
+        "elapsed_seconds": 124.453,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      },
+      {
+        "check_item_id": "charter.guarantee_restrictions",
+        "elapsed_seconds": 90.213,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      },
+      {
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "elapsed_seconds": 58.249,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      },
+      {
+        "check_item_id": "charter.business_scope",
+        "elapsed_seconds": 48.659,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      },
+      {
+        "check_item_id": "charter.voting_ratio",
+        "elapsed_seconds": 44.641,
+        "complete_json_call_count": 2,
+        "measured_window_count": 2
+      }
+    ],
+    "slowest_single_requests": [
+      {
+        "chat_seq": 13,
+        "elapsed_seconds": 140.537,
+        "check_item_id": "charter.ownership_and_special_terms",
+        "stage": "search",
+        "response_format_type": "json_schema"
+      },
+      {
+        "chat_seq": 5,
+        "elapsed_seconds": 68.777,
+        "check_item_id": "charter.approval_body",
+        "stage": "search",
+        "response_format_type": "json_schema"
+      },
+      {
+        "chat_seq": 6,
+        "elapsed_seconds": 55.654,
+        "check_item_id": "charter.approval_body",
+        "stage": "search",
+        "response_format_type": "json_schema"
+      },
+      {
+        "chat_seq": 9,
+        "elapsed_seconds": 52.334,
+        "check_item_id": "charter.guarantee_restrictions",
+        "stage": "search",
+        "response_format_type": "json_schema"
+      },
+      {
+        "chat_seq": 11,
+        "elapsed_seconds": 49.038,
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "stage": "search",
+        "response_format_type": "json_schema"
+      }
+    ],
+    "where_time_concentrates": "见 stage_share_percent_of_post_processing 与 slowest_check_items；结论文字见 docs/REVIEW_HANDOFF.md",
+    "estimates_not_measured": {
+      "status": "推算，非实测；基于本次串行实测的逐窗口/逐请求耗时（按 scripts/baseline_serial.py::build_bottleneck 同公式重算），待并发实测验证",
+      "assumed_concurrency": 2,
+      "caveats": [
+        "忽略服务端限流、排队、连接建立、DB 写入与调度开销",
+        "忽略 token 竞争导致的单次请求变慢与重试放大",
+        "忽略多 run 并发时的全局上限争用",
+        "LLM_MAX_CONCURRENCY=2 当前串行链路未生效（无同时在途请求）"
+      ],
+      "window_level_parallel": {
+        "basis": "同一检查项内窗口并行（并发度取 LLM_MAX_CONCURRENCY），检查项之间仍串行；每个检查项耗时取该检查项所有窗口的最大值，总耗时取各检查项最大值之和",
+        "check_window_seconds_measured": {
+          "charter.business_scope": [
+            14.618,
+            34.034
+          ],
+          "charter.approval_body": [
+            68.777,
+            55.655
+          ],
+          "charter.voting_ratio": [
+            17.791,
+            26.839
+          ],
+          "charter.guarantee_restrictions": [
+            52.335,
+            37.869
+          ],
+          "charter.legal_representative_signature_authority": [
+            49.038,
+            9.203
+          ],
+          "charter.ownership_and_special_terms": [
+            140.538,
+            49.035
+          ]
+        },
+        "check_max_after_window_parallel_seconds": {
+          "charter.business_scope": 34.034,
+          "charter.approval_body": 68.777,
+          "charter.voting_ratio": 26.839,
+          "charter.guarantee_restrictions": 52.335,
+          "charter.legal_representative_signature_authority": 49.038,
+          "charter.ownership_and_special_terms": 140.538
+        },
+        "ideal_total_seconds_if_checks_still_serial": 371.561,
+        "slowest_single_check_seconds": 140.538,
+        "serial_sum_seconds": 555.732
+      },
+      "check_item_level_parallel": {
+        "basis": "各检查项总耗时串行求和；检查项之间并行（并发度取 LLM_MAX_CONCURRENCY），窗口仍串行",
+        "check_total_seconds_measured": {
+          "charter.business_scope": 48.652,
+          "charter.approval_body": 124.432,
+          "charter.voting_ratio": 44.63,
+          "charter.guarantee_restrictions": 90.204,
+          "charter.legal_representative_signature_authority": 58.241,
+          "charter.ownership_and_special_terms": 189.573
+        },
+        "ideal_total_seconds_if_windows_still_serial": 277.866,
+        "slowest_single_check_seconds": 189.573,
+        "serial_sum_seconds": 555.732
+      },
+      "global_two_layer_parallel": {
+        "basis": "所有 complete_json 调用视为可并行任务，全局并发度取 LLM_MAX_CONCURRENCY",
+        "ideal_total_seconds": 300.166,
+        "slowest_single_request_seconds": 140.538,
+        "serial_sum_seconds": 600.332
+      },
+      "measured_serial": {
+        "status": "实测",
+        "post_processing_seconds": 600.64,
+        "total_measured_seconds": 600.78,
+        "chat_request_count": 14,
+        "chat_elapsed_sum_seconds": 600.323
+      }
+    },
+    "conclusion": "实测：14 次真实 HTTP 请求全部成功（无 json_schema 降级、无格式修复、无重试、无超时），单次耗时 9.203–140.537s（均值 42.88s、中位 35.951s、P95 68.777s），求和 600.323s ≈ 后处理 600.64s 的 99.95%，耗时几乎全部在模型 HTTP 等待；阶段占比 search 92.566% / classify 7.427% / vision 0.001%；最慢检查项 charter.ownership_and_special_terms 189.584s（含单窗口 140.538s），缺材料 12 项与 seal/signature 项约 0.002s 且不产生模型调用。"
+  },
+  "sample_limitations": {
+    "status": "基于本次实测样本（15 页 / 约 9200 字符 / 窗口数见 windows）的局限说明",
+    "can_verify": [
+      "串行链路完整性：classify → search → vision → complete_run 全部真实执行且落库",
+      "计时字段齐全性：阶段墙钟耗时、RunStep 起止耗时、逐次请求耗时、OCR 导入与后处理分栏",
+      "条款召回与出处页码：Result.text 摘要 + text_sha256 + ResultSource.source_page_number 可核对；fingerprint 含随机 OcrBlock UUID，仅本次 run 内自洽（见 run_bound_artifacts）",
+      "超时与重试观测字段是否齐全（本次实测值见 model_calls；若为 0 即说明链路未触发）",
+      "no_matching_evidence 与 coverage_incomplete 的区分路径是否存在（本样本若未触发，需长样本/故障注入验证）",
+      "样本外条款（法定代表人签字权限）走 not_found 而非硬凑命中",
+      "经营范围「外汇担保」是否被担保类检查项误引（见 clause_matrix.guarantee_vs_business_scope）",
+      "窗口级容错分支（LLMFatalError / LLMTransientError / LLMFormatError）的代码路径可读性"
+    ],
+    "cannot_verify": [
+      "并发真实收益：本轮 0 个同时在途请求，LLM_MAX_CONCURRENCY=2 未生效；所有并发数字均为推算",
+      "服务端限流（429）与排队行为：短样本、低并发下不会暴露",
+      "窗口级与检查项级两层上限的相互作用与死锁/饥饿",
+      "多 run 并发时的全局上限与数据库会话隔离",
+      "长章程（62 页 / 多窗口）下的断句、住所串入、去重与总耗时量级",
+      "失败窗口只重试的幂等键与 fingerprint 合并去重行为（fingerprint 去重仅在同一 run / 同一批 OcrBlock UUID 内成立）"
+    ],
+    "needed_for_concurrency_validation": [
+      "更长样本：完整 62 页章程或等价的多窗口输入（窗口数 ≥ 6），使窗口级并发有实际可并行单位",
+      "同时派发多个检查项与多个窗口，能产生 ≥ 2 个在途请求",
+      "可调并发度（1/2/4/8）与多 run 并发对照，观测 429 / 限流 / P95 延迟变化",
+      "固定同一份 OCR JSON（同一 SHA256）+ 同一清单 hash + 同一提示词 sha256 只保证输入相同；并发对照须再复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID），跑多次取分布",
+      "注入超时/格式错误/致命错误，验证有限重试、停止派发、只重试失败段与覆盖不全标识",
+      "串行与并发结果按 (check_item_id, text_sha256, source_page_number) 逐条比对；不要用 fingerprint 跨 run 比对（含随机 OcrBlock UUID）"
+    ],
+    "conclusion": "实测样本 15 页 / 9570 字符只切出 2 个窗口，已能完整验证串行链路、计时字段、条款召回与出处页码、样本外 no_matching_evidence 与「外汇担保」误命中排查；但本轮 0 个同时在途请求，LLM_MAX_CONCURRENCY=2 未生效，所有并发收益数字均为推算，必须有更长样本与多 run 并发实测才能验证。QA 独立复验后补充披露：窗口级指纹与 Result.fingerprint 为 run 绑定值，跨 run 不可复现，并发对照须复用同一批隔离数据（见 run_bound_artifacts）。",
+    "run_bound_artifacts": {
+      "added_by": "QA 独立复验后补充披露（不重跑基线、不改业务代码）",
+      "status": "已实测（QA 用 --probe-only 独立实跑 2 次 + 本轮只读复算；非推算）",
+      "finding": "同一 OCR JSON（SHA256 不变）重复导入，source_block_count=176 / source_total_characters=9570 四次相同，但窗口边界、逐窗口字符数与窗口文本 sha256 每次都不同。",
+      "comparison": [
+        {
+          "source": "04:56 早期 probe",
+          "win0": "130 块 / 7991 字符 / eb28ab09…",
+          "win1": "57 块 / 2086 字符 / c5702341…"
+        },
+        {
+          "source": "05:09 交付基线（本次 run）",
+          "win0": "132 块 / 7984 字符 / 0ddb2baa…",
+          "win1": "58 块 / 2158 字符 / 7bc72b8a…"
+        },
+        {
+          "source": "QA probe#1",
+          "win0": "131 块 / 7983 字符 / aec6322f…",
+          "win1": "59 块 / 2137 字符 / 6a6cc477…"
+        },
+        {
+          "source": "QA probe#2",
+          "win0": "131 块 / 7984 字符 / 00cedfdc…",
+          "win1": "59 块 / 2092 字符 / 5a10ed30…"
+        }
+      ],
+      "comparison_source": "QA 第 1 轮独立复验报告（表格原值）+ 本轮证据 windows.preflight / observed_during_run；首行 win0 块数按 /tmp/baseline_probe_stdout.txt:139 订正为 130（QA 第 1 轮报告表格转录误差，主理人汇编时订正）",
+      "root_causes_business_side": [
+        "ocr_blocks.sequence_index 只有 25 个不同值却存 176 块；load_source_blocks / load_file_blocks 只 order_by(sequence_index)，同值行顺序由 DB 物理序决定 → 分窗边界漂移",
+        "_window_text() 把每次导入新生成的随机 OcrBlock UUID 拼进窗口文本 → window_text_sha256 / messages_sha256 / user_sha256 随 run 变",
+        "_fingerprint(check_item_id, block_id, start, end) 同样含随机 block_id → 同一段 text 在基线 run 与中断 run 的 fingerprint 全部不同（QA SQL JOIN 8/8 为不同）"
+      ],
+      "run_bound_values": [
+        "window_text_sha256",
+        "逐窗口字符数 / 窗口边界",
+        "messages_sha256",
+        "user_sha256",
+        "Result.fingerprint"
+      ],
+      "disclosure": "以上值均为「该次导入 DB 行（含 OcrBlock UUID）」绑定值，仅本次 run 内自洽；仅凭 OCR JSON SHA256 复现不出这些值。固定项指纹逐项一致只保证输入相同，不保证窗口级指纹复现。",
+      "rules": [
+        "并发对照必须复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID）",
+        "跨 run 逐条比对改用 text_sha256 + source_page_number，不要用 fingerprint",
+        "fingerprint 合并去重仅在「同一 run / 同一批 OcrBlock UUID 内」有效（同 run 内去重成立）"
+      ],
+      "technical_debt": "业务侧技术债（非本轮引入）：sequence_index 非唯一导致分窗不确定；block_id 进入窗口文本与 fingerprint。本轮不修改业务代码，仅如实披露，列为下一轮待修。"
+    }
+  },
+  "session_notes": {
+    "added_by": "人工整理（非脚本采集）",
+    "prior_interrupted_attempt": {
+      "run_id": "4333c31e-c2d6-4806-a287-f8b9e7d0eaae",
+      "task_id": "7fe4dd1c-d8c9-41d6-bcb8-ea9beb2e51c1",
+      "what_happened": "同一脚本首次前台执行时，宿主机侧 docker exec 被 SIGTERM 中断（Exit 137），stdout 管道断开导致进程内存中的逐次请求观测全部丢失；容器内的业务链路仍完整跑完，该 run 在 DB 中为 READY/done，40 条 results，全部 RunStep SUCCEEDED。",
+      "not_used_as_baseline": true,
+      "reason": "无逐次请求耗时/窗口观测，不能作为基线数据；仅作链路完整性的交叉参考",
+      "cross_check": "首次跑 classification 同样得到 articles_of_association；结果条目数 40 与本次 44 不同，属真实模型输出差异（temperature=0 但服务端非完全确定），不作一致性断言",
+      "task_soft_deleted_at": "2026-11-12T05:07:41.001782+00:00"
+    },
+    "probe_only_task": {
+      "task_id": "59e7570d-3666-49f8-9843-1ef757e61bba",
+      "purpose": "不调模型，验证造数据/导入/真实窗口实测/指纹；已软删",
+      "soft_deleted_at": "2026-11-12T04:56:17.936784+00:00"
+    },
+    "final_attempt": {
+      "run_id": "5547804d-da6d-4417-8139-9dc36e3b5e3e",
+      "task_id": "ddd97b17-8bfe-4954-b7fb-3f4f8386b879",
+      "execution": "Bash 后台任务托管 docker exec（10m2s，EXIT=0），stdout 与容器内 /tmp/baseline_evidence.json 两份 SHA256 一致",
+      "task_soft_deleted_at": "2026-11-12T05:19:18.340287+00:00"
+    },
+    "protected_tasks_untouched": [
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd (REVIEWING)",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384 (COMPLETED, 77 条结果)"
+    ],
+    "qa_round1_probe_tasks": {
+      "added_by": "QA 独立复验后补充披露",
+      "tasks": [
+        "20714d03-…（QA probe#1）",
+        "a4bc1759-…（QA probe#2）"
+      ],
+      "state": "均已 deleted_at 软删；未触碰 2 条真实业务任务，其 state / deleted_at 全程未变",
+      "total_isolated_tasks": "本轮 3 条（probe / 首次中断跑批 / 交付基线）+ QA probe 2 条 = 5 条"
+    }
+  },
+  "git_state": {
+    "added_by": "人工整理（非脚本采集）",
+    "head": "9c1eda1fc65fb132fd6e2a608876340fb8fa8e06",
+    "branch": "feature/credit-review",
+    "committed_this_round": false,
+    "note": "用户未要求提交；本轮不写「本次文档提交号」（自引用必然失效）。如实记录未提交状态 + 当前 HEAD + 改动文件清单。",
+    "files_added_or_modified": [
+      "scripts/baseline_serial.py（新增，可复现串行基线脚本）",
+      "docs/perf_baseline_2026-11-12.json（新增，结构化证据）",
+      "docs/REVIEW_HANDOFF.md（原地更新，新增「短样本串行基线（2026-11-12）」章节）"
+    ],
+    "pre_existing_unstaged_deletions_not_touched": [
+      "docs/screenshots/review_locate_highlight.png",
+      "docs/screenshots/review_pdf_chapter.png",
+      "docs/screenshots/review_readonly_reject_reason.png",
+      "docs/screenshots/review_todo_nav.png",
+      "docs/screenshots/review_workbench.png"
+    ],
+    "deletion_note": "5 张截图的 D 标记由他人造成；未 git add -A、未恢复、未提交、未纳入本轮改动",
+    "pycache_removed": "scripts/__pycache__/（py_compile 产生）已删除，不作为交付物",
+    "post_qa_revision": "QA 第 1 轮独立复验后修复 F1–F9：仍为未提交状态，HEAD 未变 9c1eda1fc65fb132fd6e2a608876340fb8fa8e06；未重跑基线、未新增数字、未改业务代码、未提交。"
+  },
+  "clause_verdicts_manual": {
+    "added_by": "人工对照（基于 clause_matrix 实测事实，非脚本采集）",
+    "rule": "命中/未命中/误命中以 Result.text 去空白后的精确短语 + ResultSource.source_page_number 判定；系统只输出证据/未找到，不输出合规判断",
+    "verdicts": [
+      {
+        "id": "C1",
+        "physical_page": 7,
+        "verdict": "命中",
+        "detail": "charter.business_scope 命中第 7 页第十七条业务范围 1 条，text 含「第十七条」「外汇借款」（同页亦含「外汇担保」「提供信用证服务及担保」）。"
+      },
+      {
+        "id": "C2",
+        "physical_page": 8,
+        "verdict": "未命中",
+        "detail": "第二十四条「不以赠与、垫资、担保、补偿或贷款等形式」在样本 OCR 第 8 页存在，但本次 44 条结果中无该精确短语；属样本内存在而未被本次摘录，不是技术失败。首次中断跑批曾在 charter.guarantee_restrictions 出现 1 条第 8 页结果，两次真实跑批摘录不同，如实记录差异。"
+      },
+      {
+        "id": "C3",
+        "physical_page": 8,
+        "verdict": "未命中",
+        "detail": "第二十五条「经股东大会分别作出决议」在样本内存在，结果未含该短语。"
+      },
+      {
+        "id": "C4",
+        "physical_page": 13,
+        "verdict": "未命中",
+        "detail": "第四十一条 5% 以上股东质押/「借款担保」在样本内存在，结果未含该精确短语。"
+      },
+      {
+        "id": "C5",
+        "physical_page": 13,
+        "verdict": "命中",
+        "detail": "charter.ownership_and_special_terms 命中第 13 页第四十三条「本行对股东贷款的条件不得优于」。"
+      },
+      {
+        "id": "C6",
+        "physical_page": 13,
+        "verdict": "未命中",
+        "detail": "第四十四条「授信逾期…限制表决权」在样本内存在，但 charter.voting_ratio 整体返回 no_matching_evidence（1 条，覆盖完整后的真实「未找到」，全链路无 LLM_FATAL / PARTIAL_COVERAGE）。非技术失败；召回能力待长样本验证。"
+      },
+      {
+        "id": "C7",
+        "physical_page": 14,
+        "verdict": "部分命中",
+        "detail": "探针三短语中仅「50%」在结果中命中（charter.ownership_and_special_terms 第 14 页）；「事前书面告知董事会」「借款余额超过其持有经审计的上一年度股权净值」两个精确短语未出现在结果 text 中。样本内存在但摘录不全。"
+      },
+      {
+        "id": "C8",
+        "physical_page": 15,
+        "verdict": "命中",
+        "detail": "charter.approval_body 命中第 14/15 页共 3 条，其中第 15 页含「审议批准第四十七条规定的担保事项」；charter.guarantee_restrictions 亦引用同短语，属跨检查项证据重叠，不计为误命中。"
+      },
+      {
+        "id": "C9",
+        "physical_page": 15,
+        "verdict": "命中",
+        "detail": "charter.guarantee_restrictions 命中第 15 页 7 条，含「第四十七条」「本行下列对外担保行为」「总资产30%」「资产负债率」「对股东」；charter.approval_body 亦引用第 15 页第四十七条。"
+      },
+      {
+        "id": "C10",
+        "physical_page": null,
+        "verdict": "样本外条款（未命中）",
+        "detail": "15 页 OCR 全文仅出现通用词「法定代表人」，无签字权限条款；charter.legal_representative_signature_authority 返回 no_matching_evidence（1 条）。符合样本外预期，验证 no_matching_evidence 行为，未硬凑命中。（QA 复验后本轮 psql 只读复验：176 块中「法定代表人」2 块，页 5 / 13；「签字」「签署」「签名」「签章」均 0 出现。）"
+      }
+    ],
+    "foreign_exchange_guarantee_mis_hit": {
+      "verdict": "未误命中",
+      "detail": "clause_matrix.guarantee_vs_business_scope.any_foreign_exchange_guarantee_mis_hit = false。charter.approval_body 3 条（页 14/15/15）与 charter.guarantee_restrictions 7 条（全部页 15）均不含「外汇担保」「提供信用证服务及担保」「外汇借款」，且无第 7 页出处；经营范围中的「外汇担保」只出现在 charter.business_scope 第 7 页那 1 条里，属正确命中。"
+    },
+    "coverage_vs_not_found": {
+      "verdict": "严格区分成立（本样本）",
+      "detail": "no_matching_evidence 2 条（charter.voting_ratio、charter.legal_representative_signature_authority）、material_missing 12 条、coverage_incomplete 0 条、LLM_FATAL 0 条；fatal_error_count=0、format_error_count=0、window_level_retry_count=0，故本样本未触发「技术失败」分支，coverage_incomplete 与 no_matching_evidence 的区分仍需故障注入或长样本验证。"
+    },
+    "qa_revision_note": "QA 独立复验后补充披露：C6 / C10 的 clause_matrix.auto_verdict 已去掉「覆盖不全」措辞；本轮 coverage_complete=true、coverage_incomplete=0、19 步全 SUCCEEDED，两条均为覆盖完整后的真实「未找到 / 样本外」，非技术失败。"
+  },
+  "post_processing_notes": {
+    "added_by": "宿主机一次性后处理（非脚本采集）",
+    "what_changed": [
+      "per_complete_json 中 2 条 classification_output 的 check_item_id 由误抓的 block_id UUID 改为 null（脚本正则已同步修复；未动耗时/次数/序号等任何数值）",
+      "bottleneck.estimates_not_measured 按修后 scripts/baseline_serial.py::build_bottleneck 同公式，从已实测的逐窗口耗时重算，并把含混的 ideal_lower_bound_seconds 改为语义明确的字段（全部仍标注「推算，非实测」）",
+      "新增 session_notes / git_state / clause_verdicts_manual / bottleneck.conclusion / sample_limitations.conclusion / database_verification / post_processing_notes",
+      "QA 第 1 轮复验后修复：F1 文档窗口字符数改 7984 + 2158；F2 自检命令键路径改 windows.preflight.classify；F8 steps[5] 改输出到 /tmp/baseline_raw.json（不覆盖交付证据）",
+      "QA 第 1 轮复验后补充披露 F3：新增 sample_limitations.run_bound_artifacts、收窄 reproduction.note / configuration.fixed_items / can_verify / needed_for_concurrency_validation 中的 fingerprint 与「固定项一致即可复现」表述",
+      "QA 第 1 轮复验后修复 F4/F5：C6 / C10 auto_verdict 去掉「覆盖不全」、C10 加 present_in_sample_ocr_note、C8 加 physical_page_range；F6/F9 补 P95 口径与 attempt 推得说明；未改任何实测数值",
+      "F10 未做（主理人汇编补记）：不在推算数值字段加「推算」字符串前缀，以免把数值类型改成字符串、破坏 JSON 复算与 QA 独立复算；实测/推算分栏由 bottleneck.estimates_not_measured.status、caveats、measured_serial.status 与文档章节标题共同承担。"
+    ],
+    "fixed_label_records": [
+      {
+        "seq": 1,
+        "was": "6ed1c418-aa11-4e62-b02a-ef3d11ed13dc",
+        "now": null
+      },
+      {
+        "seq": 2,
+        "was": "30f96606-07f0-4b13-bf4e-786b829be8f5",
+        "now": null
+      }
+    ],
+    "unchanged": "run_id、所有耗时、调用次数、窗口数、结果条目、fingerprint、text_sha256、出处页码、超时/重试计数、RunStep 明细全部保持脚本原始实测值",
+    "source_sha256": "64a9fe44842a11d4ff9c2d6d357187043b42ccc4cf6140d0bc9ed927c2a7ac47（/tmp/baseline_from_container.json 与 /tmp/baseline_stdout.json 一致）",
+    "qa_round1_revision": {
+      "added_by": "QA 独立复验后补充披露",
+      "reran_baseline": false,
+      "fabricated_numbers": false,
+      "business_code_changed": false,
+      "measured_values_unchanged": "run_id、14 次逐请求耗时、窗口数、44 条结果、fingerprint、text_sha256、出处页码、超时/重试计数、RunStep 明细、推算分栏全部保持脚本原始实测值",
+      "new_readonly_checks": [
+        "C10：基线导入 176 块中「法定代表人」2 块（物理页 5 / 13），「签字/签署/签名/签章」全 0",
+        "P95 三口径独立复算：脚本 68.777s、线性插值 93.893s、nearest-rank 140.537s"
+      ]
+    }
+  },
+  "database_verification": {
+    "added_by": "人工整理（psql 直查 credit-review-app-db-1，非脚本采集）",
+    "processing_runs": {
+      "id": "5547804d-da6d-4417-8139-9dc36e3b5e3e",
+      "state": "READY",
+      "stage": "done",
+      "coverage_complete": true,
+      "started_at": "2026-11-12 05:09:17.681625+00",
+      "finished_at": "2026-11-12 05:19:18.317537+00"
+    },
+    "results_count": 44,
+    "run_steps_count": 19,
+    "isolation_task_soft_deleted": true,
+    "timing_endpoint_note": "GET /tasks/{task_id}/runs/{run_id}/timing 为只读接口；隔离任务已软删，如需通过 HTTP 复验，先把 tasks.deleted_at 置 NULL。证据中 run_steps 明细与 run 起止为该接口同源数据。"
+  }
+}

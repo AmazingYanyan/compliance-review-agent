@@ -1,0 +1,256 @@
+{
+  "ran_at": "2026-11-12T02:15:27.506Z",
+  "base_url": "http://localhost:8080",
+  "fixture": "frontend/tests/fixtures/tasks-23.json",
+  "fixture_count": 23,
+  "intercepted_request_count": 10,
+  "intercepted_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000001/files"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000005/files"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000005/files"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000001/files"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000001/files"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000003/files"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tasks/00000000-0000-4000-8000-000000000003/files"
+    }
+  ],
+  "summary": {
+    "PASS": 40,
+    "FAIL": 0,
+    "PENDING": 0
+  },
+  "results": [
+    {
+      "status": "PASS",
+      "name": "A1 真实服务登录",
+      "detail": "HTTP 200"
+    },
+    {
+      "status": "PASS",
+      "name": "A2 待核对与已完成同屏",
+      "detail": "实际 2 行"
+    },
+    {
+      "status": "PASS",
+      "name": "A3 待核对行三槽位（上传/继续核对/更多）",
+      "detail": "上传材料 / 继续核对 / 更多操作 均存在"
+    },
+    {
+      "status": "PASS",
+      "name": "A4 已完成行入口与更多、且不显示上传",
+      "detail": "查看结果 / 更多操作 存在，上传材料 槽位留空"
+    },
+    {
+      "status": "PASS",
+      "name": "A5 继续核对 / 查看结果 横向对齐",
+      "detail": "x=1276.0/1276.0 w=80.0/80.0"
+    },
+    {
+      "status": "PASS",
+      "name": "A6 两个入口同为浅青样式且尺寸一致",
+      "detail": "bg=oklab(0.5982 -0.106771 -0.00460383 / 0.1) color=oklch(0.5982 0.10687 182.469) size=32pxx80px"
+    },
+    {
+      "status": "PASS",
+      "name": "A7 上传材料为中性描边、与主入口区分",
+      "detail": "upload bg=oklch(1 0 0) color=oklch(0.145 0 0)"
+    },
+    {
+      "status": "PASS",
+      "name": "A8 行内文字按钮纯文字、更多保留省略号",
+      "detail": "三个文字按钮无图标，更多含 1 个省略号图标"
+    },
+    {
+      "status": "PASS",
+      "name": "A9 页级新建保留加号与实心青绿",
+      "detail": "plus=1 bg=oklch(0.5982 0.10687 182.469)（行内浅青 oklab(0.5982 -0.106771 -0.00460383 / 0.1)）"
+    },
+    {
+      "status": "PASS",
+      "name": "A10 更多具备可访问名称",
+      "detail": "aria-label=\"更多操作\""
+    },
+    {
+      "status": "PASS",
+      "name": "A11 待核对行未展开即可上传",
+      "detail": "点击「上传材料」弹出文件选择器"
+    },
+    {
+      "status": "PASS",
+      "name": "A12 同屏截图",
+      "detail": "docs/screenshots/tasks_actions_two_states.png"
+    },
+    {
+      "status": "PASS",
+      "name": "A13 查看结果进入只读页",
+      "detail": "urlOk=true 状态已完成=true 完成核对按钮=0:true 接受拒绝按钮=0:true editable(api)=false url=http://localhost:8080/tasks/ee59108d-e4f1-4aa8-bf2e-afe07d457384/review"
+    },
+    {
+      "status": "PASS",
+      "name": "A14 继续核对进入对应任务",
+      "detail": "url=http://localhost:8080/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/review 期望ID=607e6d41-4d47-4582-a5ad-07313b6c17bd"
+    },
+    {
+      "status": "PASS",
+      "name": "B1 23 条默认首页 20 行",
+      "detail": "首页 20 行 / 共 23 条"
+    },
+    {
+      "status": "PASS",
+      "name": "B2 分页显示 2 页",
+      "detail": "共 23 条 · 第 1/2 页"
+    },
+    {
+      "status": "PASS",
+      "name": "B3 默认按更新时间降序",
+      "detail": "第一行=资料核对 2026-11-11 09:53"
+    },
+    {
+      "status": "PASS",
+      "name": "B4 点击切换为升序",
+      "detail": "第一行=测试任务 01 期望=测试任务 01"
+    },
+    {
+      "status": "PASS",
+      "name": "B5 再次点击恢复降序（无第三态）",
+      "detail": "第一行=资料核对 2026-11-11 09:53"
+    },
+    {
+      "status": "PASS",
+      "name": "排序后(asc) 首行身份",
+      "detail": "首行=测试任务 01 期望=测试任务 01"
+    },
+    {
+      "status": "PASS",
+      "name": "排序后(asc) 进入命中任务 ID",
+      "detail": "href=/tasks/00000000-0000-4000-8000-000000000001/review"
+    },
+    {
+      "status": "PASS",
+      "name": "排序后(asc) 展开命中任务 ID",
+      "detail": "GET files id=00000000-0000-4000-8000-000000000001 期望=00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "status": "PASS",
+      "name": "排序后(asc) 上传命中任务 ID",
+      "detail": "同视图待核对行「测试任务 05」 POST files id=00000000-0000-4000-8000-000000000005 期望=00000000-0000-4000-8000-000000000005"
+    },
+    {
+      "status": "PASS",
+      "name": "B9 搜索「测试」→ 7 条",
+      "detail": "实际 7 行"
+    },
+    {
+      "status": "PASS",
+      "name": "B10 结果缩到一页时收起分页",
+      "detail": "分页条已隐藏"
+    },
+    {
+      "status": "PASS",
+      "name": "B11 搜索 + 状态组合筛选 → 1 条",
+      "detail": "实际 1 行"
+    },
+    {
+      "status": "PASS",
+      "name": "B12 单状态「已完成」→ 2 条",
+      "detail": "实际 2 行"
+    },
+    {
+      "status": "PASS",
+      "name": "B13 筛选结果单页仍收起分页",
+      "detail": "分页条已隐藏"
+    },
+    {
+      "status": "PASS",
+      "name": "筛选后(已完成) 首行身份",
+      "detail": "首行=测试任务 01 期望=测试任务 01"
+    },
+    {
+      "status": "PASS",
+      "name": "筛选后(已完成) 进入命中任务 ID",
+      "detail": "href=/tasks/00000000-0000-4000-8000-000000000001/review"
+    },
+    {
+      "status": "PASS",
+      "name": "筛选后(已完成) 展开命中任务 ID",
+      "detail": "GET files id=00000000-0000-4000-8000-000000000001 期望=00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "status": "PASS",
+      "name": "筛选后(已完成) 上传槽位留空（已完成行）",
+      "detail": "该视图无待核对行，上传槽位按预期留空"
+    },
+    {
+      "status": "PASS",
+      "name": "B18 清空筛选恢复 20 行 / 2 页",
+      "detail": "实际 20 行"
+    },
+    {
+      "status": "PASS",
+      "name": "B18b 清空筛选后切回降序",
+      "detail": "第一行=资料核对 2026-11-11 09:53"
+    },
+    {
+      "status": "PASS",
+      "name": "B19 翻到第 2 页 3 行",
+      "detail": "实际 3 行"
+    },
+    {
+      "status": "PASS",
+      "name": "B20 翻页页码正确",
+      "detail": "共 23 条 · 第 2/2 页"
+    },
+    {
+      "status": "PASS",
+      "name": "翻页后(第2页) 首行身份",
+      "detail": "首行=测试任务 03 期望=测试任务 03"
+    },
+    {
+      "status": "PASS",
+      "name": "翻页后(第2页) 进入命中任务 ID",
+      "detail": "href=/tasks/00000000-0000-4000-8000-000000000003/review"
+    },
+    {
+      "status": "PASS",
+      "name": "翻页后(第2页) 展开命中任务 ID",
+      "detail": "GET files id=00000000-0000-4000-8000-000000000003 期望=00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "status": "PASS",
+      "name": "翻页后(第2页) 上传命中任务 ID",
+      "detail": "首行 POST files id=00000000-0000-4000-8000-000000000003 期望=00000000-0000-4000-8000-000000000003"
+    }
+  ]
+}
