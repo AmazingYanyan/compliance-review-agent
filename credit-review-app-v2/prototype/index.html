@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公司章程核对 · V2 线框</title>
+<link rel="stylesheet" href="./workbench.css">
+<header>
+  <div><small>设计评审 · 固定样本</small><h1>公司章程核对</h1></div>
+  <label>评审场景 <select id="scenario">
+    <option value="normal">正常核对</option><option value="processing">处理中</option>
+    <option value="missing">缺材料</option><option value="invalid">覆盖不全 · 无效出处</option>
+    <option value="truncated">覆盖不全 · 输出截断</option><option value="complete">已完成只读</option>
+  </select></label>
+  <button id="complete" class="primary">完成核对</button>
+</header>
+<nav aria-label="核对材料"><button data-tab="charter" aria-pressed="true">公司章程</button><button data-tab="license" aria-pressed="false">营业执照</button><button data-tab="financial" aria-pressed="false">审计财报</button></nav>
+<p id="banner" role="status"></p>
+<main>
+  <section aria-labelledby="preview-title">
+    <h2 id="preview-title">原件预览 <small id="page-number"></small></h2>
+    <div class="scroll" id="source"></div>
+  </section>
+  <section aria-labelledby="evidence-title">
+    <h2 id="evidence-title">原文摘录 <small id="count"></small><button id="next">下一条待办</button></h2>
+    <div class="scroll cards" id="results"></div>
+  </section>
+</main>
+<script type="module" src="./workbench.js"></script>
+</html>

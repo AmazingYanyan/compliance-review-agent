@@ -1,0 +1,41 @@
+:root {
+  font: 15px/1.55 system-ui, sans-serif;
+  color: #243449;
+  background: #f4f6f9;
+  --border: #d3dce7;
+  --active: #174c83;
+}
+* { box-sizing: border-box; }
+body { margin: 0 auto; padding: 18px; height: 100dvh; display: flex; flex-direction: column; gap: 10px; max-width: 1700px; }
+header, nav, h2, .actions { display: flex; align-items: center; gap: 10px; }
+header > div { margin-right: auto; }
+small { color: #50647b; font-weight: normal; }
+h1 { font-size: 24px; margin: 0; }
+button, select, textarea { font: inherit; }
+button, select { color: inherit; background: #fff; border: 1px solid var(--border); border-radius: 5px; padding: 5px 10px; }
+button:not(:disabled) { cursor: pointer; }
+button:disabled { opacity: .48; }
+.primary, button[aria-pressed="true"] { background: var(--active); border-color: var(--active); color: #fff; }
+#banner { margin: 0; padding: 7px 10px; border-left: 4px solid #758ca5; background: #e9eef6; }
+#banner[data-warning="true"] { border-color: #a65f00; background: #fff1d9; }
+main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 12px; }
+section { min-height: 0; display: flex; flex-direction: column; border: 1px solid var(--border); background: #fff; border-radius: 6px; }
+h2 { font-size: 16px; margin: 0; padding: 10px; border-bottom: 1px solid var(--border); }
+h2 button { margin-left: auto; font-size: 13px; }
+.scroll { padding: 12px; overflow: auto; flex: 1; }
+#source { background: #e5eaf1; }
+.sheet { position: relative; max-width: 760px; margin: 0 auto 12px; }
+.sheet { aspect-ratio: 1191 / 1684; background: #fff; border: 1px solid var(--border); }
+.sheet strong { display: block; padding: 10px; color: #50647b; }
+.sheet p { position: absolute; margin: 0; font-size: clamp(10px, 1vw, 14px); }
+.mark { position: absolute; border: 2px solid #a65f00; background: #ffd55f63; }
+article { padding: 12px; border: 1px solid var(--border); border-radius: 5px; margin-bottom: 9px; }
+article:focus { outline: 2px solid var(--active); outline-offset: -2px; }
+h3, article p { margin: 0 0 8px; }
+h3 { font-size: 15px; }
+blockquote { margin: 8px 0; padding: 6px 9px; background: #f1f4f8; }
+textarea { display: block; width: 100%; min-height: 52px; margin: 8px 0; }
+@media (max-width: 700px) {
+  header { flex-wrap: wrap; }
+  main { grid-template-columns: 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); }
+}
