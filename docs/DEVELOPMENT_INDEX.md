@@ -60,7 +60,7 @@ cp credit-review-app-v2/prototype/fixtures/charter.js /tmp/charter.mjs && node -
 | 决定状态看起来没变 | 决定写在浏览器 localStorage，key `charter-wireframe`；清空：`localStorage.removeItem('charter-wireframe')` 后刷新页面 |
 | 控制台出现 favicon 404 | `index.html` 已声明 `<link rel="icon" href="data:,">`；若再出现请确认该行未被删 |
 | Figma 读不到选中 Frame | Figma Desktop 在运行，但 Dev Mode MCP 端口未监听且本环境未注册 Figma MCP 工具，**该项检查本轮未能执行**，改用浏览器线框评审。详见[本轮记录](v2/sessions/2026-11/2026-11-16-02-phase-a.md) |
-| git fetch/push 到 github.com 超时 | DNS 多址中部分地址不可达；本地绕过：`git config http.curloptResolve "github.com:443:20.6.7.17"` 与 `git config http.version HTTP/1.1`。只写本地 `.git/config`、不进提交；IP 可能随 DNS 轮转变化，失败时重新解析可用 IP 后覆盖该配置 |
+| git fetch/push 到 github.com 超时 | DNS 多址中部分地址不可达；本地绕过：`git config http.curloptResolve "github.com:443:<可用IP>"` 与 `git config http.version HTTP/1.1`。只写本地 `.git/config`、不进提交；**IP 随 DNS 轮转变化，固定 IP 会过期**。〔本轮实测〕收尾时 `20.247.166.64` 已恢复可达，已 `git config --local --unset http.curloptResolve` 撤销固定 IP，恢复默认解析。下次失败时先用 `dig +short github.com` 与 `curl -s -o /dev/null -w "%{remote_ip}" https://github.com/` 找到当下可达的 IP 再决定是否固定 |
 | 找不到 V2 后端入口 | V2 后端、迁移与接口**尚未实现**（阶段 B），仓库内只有 `compose.yml` 的 `db` 骨架 |
 
 ## 五、复用记录（V1 → V2）

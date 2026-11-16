@@ -52,5 +52,5 @@
 
 - [x] 浏览器复验覆盖完整路径并记录控制台无报错（编写会话自测 + 独立浏览器会话复验，六项 PASS）
 - [x] 工作树与 staged diff 已检查，排除凭据、运行产物、数据库卷、未脱敏日志
-- [ ] 提交已推送到 `v2/workbench`
-- [ ] GitHub 上远端分支 SHA 与本地提交一致，提交信息可交接
+- [x] 提交已推送到 `v2/workbench`（`d0d1c58..a9381a8`）
+- [x] GitHub 上远端分支 SHA 与本地提交一致，提交信息可交接（`git ls-remote` 与 GitHub API `branches/v2/workbench` 均为 `a9381a8483544dd024291b8d76ce48f8c162e439`）
