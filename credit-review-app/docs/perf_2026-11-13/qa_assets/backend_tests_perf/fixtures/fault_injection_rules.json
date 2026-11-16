@@ -1,0 +1,253 @@
+{
+  "schema_version": "qa-perf-fault-injection-rules-1",
+  "status": "供 mock_llm_server.py 使用的 HTTP 层故障注入规则；静态配置，非实测结果。容器内 monkeypatch 版实测证据见 evidence/fault_injection.json。",
+  "purpose": [
+    "工程师实现完成后，用模拟服务从 HTTP 层复验 401 / 格式失败 / 超时三种失败回传",
+    "与容器内 monkeypatch 版 fault_injection.py 互为对照：一个走真实 OpenAI SDK 错误分类，一个走本地异常注入"
+  ],
+  "prerequisites": {
+    "llm_api_base": "把该次运行的 LLM_API_BASE 指向模拟服务，例如 http://127.0.0.1:8099/v1",
+    "llm_request_timeout_seconds": "timeout 用例必须把客户端超时调到小于 mock 配置的 timeout_hang_seconds（例如 1s vs 3s），否则只会等满挂起时间而不会触发 APITimeoutError",
+    "llm_max_transient_retries": "默认 2；超时/429 会重试 3 次，重试计入同一额度，模拟服务会记录 attempt",
+    "no_real_model": "禁止把本配置的规则用于真实模型账号；模拟服务是独立本地进程",
+    "timeout_injection_recommendation": "推荐 inject=429 → RateLimitError → LLMTransientError 重试耗尽（LLM_MAX_TRANSIENT_RETRIES=2 即 3 次尝试后未覆盖）复现同一覆盖口径；本批所有故障注入都在 complete_json/_chat 层直接抛业务异常、绕过 HTTP，不依赖真实超时。若一定要测 APITimeoutError，需 recreate 容器把 LLM_REQUEST_TIMEOUT_SECONDS 调到 <3s。"
+  },
+  "cases": [
+    {
+      "id": "auth_401",
+      "title": "注入 401（鉴权失败）",
+      "inject": "401",
+      "mock_rule": {
+        "name": "inject_401_on_window1",
+        "when": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.business_scope",
+          "window_index": 1
+        },
+        "inject": "401",
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      "sdk_error_class": "openai.AuthenticationError",
+      "business_error_class": "LLMFatalError",
+      "sdk_note": "LLMClient.complete_json 在 LLMFatalError 时会降级 json_object 再发一次 _chat；真实 401 服务端对降级请求同样返回 401，模拟服务按规则持续注入即可复现",
+      "expected_observed_in_current_head": {
+        "run_state": "FAILED",
+        "run_error_code": "SEARCH_FAILED",
+        "check_step_state": "FAILED",
+        "check_step_last_error_code": "LLM_FATAL",
+        "window0_evidence_preserved": false,
+        "stage_search_state": "SUCCEEDED",
+        "stage_vision_state": "SUCCEEDED",
+        "note": "当前 HEAD 实测：阶段状态与检查项状态不一致，致命错误后视觉阶段仍执行，且窗口 0 已采集证据丢失；架构师确认工程师会把 run_pipeline:479-481 的无条件 stage:search SUCCEEDED 改成致命错误 raise"
+      },
+      "expected_after_fix": {
+        "run_state": "FAILED",
+        "stage_and_check_states_consistent": true,
+        "window0_evidence_preserved": true,
+        "stop_further_dispatch": true,
+        "complete_task_status": 409,
+        "complete_task_code": "RUN_NOT_READY",
+        "complete_task_zero_write": true,
+        "stage_search_state": "FAILED",
+        "run_and_stage_and_check_states_consistent": true,
+        "expected_last_error_codes": [
+          "LLM_FATAL"
+        ],
+        "complete_task_code_note": "致命失败（run FAILED）优先于覆盖判定：complete_task 第一道拦截是 `if not run or run.state != READY: 409 RUN_NOT_READY`，根本走不到 REVISION_CONFLICT 之后的 COVERAGE_INCOMPLETE 拦截。COVERAGE_INCOMPLETE 仅在 run READY 且 coverage_complete=false 时出现。",
+        "stage_vision_step_absent": true,
+        "stage_vision_note": "改成 raise 后 run_pipeline 的 except 在 stage:search 之后 return，stage:vision 的 _touch_step(RUNNING) 根本不会执行 → RunStep 里不存在 step_key == 'stage:vision' 的行，而不是 state 等于某个值。当前 HEAD 实测 stage:vision=SUCCEEDED 是 _search_stage 不抛异常导致 run_pipeline 继续往下走的副作用，改 raise 后自然消失。",
+        "evidence_preservation_effective_after": "T03",
+        "evidence_preservation_note": "T03 接入「先回先存」后 window0 单元完成即独立短会话写 Result+ResultSource，401 发生在 window1 时 window0 证据已在 DB → window0_evidence_preserved 成立。T02（第一步四项前置，尚未接入调度器）阶段 _search_stage 的 LLM_FATAL 分支不写 found，window0 证据仍丢，此阶段只能断言「JSONL trace / 基线脚本 evidence 保留观测证据」。"
+      }
+    },
+    {
+      "id": "format_error",
+      "title": "注入格式失败（合法 JSON 但 schema 校验失败）",
+      "inject": "format_error",
+      "mock_rule": {
+        "name": "inject_format_error_on_window1",
+        "when": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.business_scope",
+          "window_index": 1
+        },
+        "inject": "format_error",
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      "sdk_error_class": "LLMFormatError",
+      "business_error_class": "LLMFormatError",
+      "sdk_note": "非法 JSON 走 _parse 直接抛 LLMFormatError（不会 _repair）；合法 JSON 但 schema 校验失败会先发一次 _repair 再抛。两种路径都要覆盖",
+      "expected_observed_in_current_head": {
+        "run_state": "READY",
+        "run_coverage_complete": true,
+        "target_not_found_reasons": [],
+        "target_hit_rows": 1,
+        "note": "当前 HEAD 实测：search_check_item 有 found 即 return found,None，丢弃 uncovered，导致格式失败被误判为覆盖完整"
+      },
+      "expected_after_fix": {
+        "run_coverage_complete": false,
+        "affected_check_reason": "coverage_incomplete",
+        "window0_evidence_preserved": true,
+        "complete_task_status": 409,
+        "complete_task_code": "COVERAGE_INCOMPLETE",
+        "complete_task_zero_write": true,
+        "expected_last_error_codes": [
+          "FORMAT_FAILED"
+        ],
+        "run_step_last_error_code": "FORMAT_FAILED",
+        "evidence_preservation_effective_after": "T03"
+      }
+    },
+    {
+      "id": "timeout",
+      "title": "注入超时耗尽（重试计入同一额度）",
+      "inject": "timeout",
+      "mock_rule": {
+        "name": "inject_timeout_on_window1",
+        "when": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.business_scope",
+          "window_index": 1
+        },
+        "inject": "timeout",
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      "alternative_inject": "429",
+      "alternative_note": "若不想等待挂起，可改用 inject=429 让 RateLimitError 触发同样的窗口级重试耗尽，覆盖口径一致",
+      "sdk_error_class": "openai.APITimeoutError",
+      "business_error_class": "LLMTransientError",
+      "expected_observed_in_current_head": {
+        "run_state": "READY",
+        "run_coverage_complete": true,
+        "target_not_found_reasons": [],
+        "retry_call_count": 3,
+        "note": "当前 HEAD 实测：重试 3 次（LLM_MAX_TRANSIENT_RETRIES=2）均失败，但 run 仍报覆盖完整；重试次数由 fault_injection.py 的 chat_call_log 实测"
+      },
+      "expected_after_fix": {
+        "run_coverage_complete": false,
+        "affected_check_reason": "coverage_incomplete",
+        "window0_evidence_preserved": true,
+        "retries_counted_in_same_quota": true,
+        "complete_task_status": 409,
+        "complete_task_code": "COVERAGE_INCOMPLETE",
+        "complete_task_zero_write": true,
+        "expected_last_error_codes": [
+          "BATCH_TIMEOUT"
+        ],
+        "run_step_last_error_code": "BATCH_TIMEOUT",
+        "evidence_preservation_effective_after": "T03"
+      }
+    }
+  ],
+  "assertion_targets": [
+    "processing_runs.state / stage / coverage_complete / error_code",
+    "run_steps: stage:classify / stage:search / stage:vision / check:{check_item_id} 的 state + last_error_code + attempt",
+    "results: 受影响检查项的 not_found_reason 必须是 coverage_incomplete（技术失败不得写成 no_matching_evidence）",
+    "result_sources（effective_after=T03）：失败前已采集窗口的出处与原文必须保留；T02 阶段只能断言 JSONL trace / 基线脚本 evidence 保留观测证据",
+    "complete_task: 覆盖不全时 409 + 可断言错误码，即使可见摘录全部人工确认",
+    "perf_trace_jsonl：逐请求核对 t_submit / t_http_start / t_http_end、attempt、错误码、finish_reason，以及 run_id 归属无串写",
+    "七类短码落在 RunStep.last_error_code 与 perf_trace_jsonl；三档 not_found_reason 严格不混用",
+    "stage:vision 断言形式为「RunStep 中不存在 step_key == stage:vision 的行」，不是 state 字符串",
+    "complete_task 错误码按 run.state 分流：FAILED → RUN_NOT_READY；READY 且 coverage_complete=false → COVERAGE_INCOMPLETE"
+  ],
+  "batch_error_code_mapping": {
+    "_note": "架构师 §4 定义的七类短码，落在 RunStep.last_error_code / perf_trace_jsonl；本文件只覆盖三种注入，其余见 fixed_responses.json 的 scenarios",
+    "FORMAT_FAILED": "格式失败（LLMFormatError）→ 本 case format_error",
+    "BATCH_TIMEOUT": "一次搜索单元（窗口×批次）的 HTTP 超时/瞬时重试耗尽；X=1 时等价窗口级超时耗尽；整批超时由 merge_outcomes 展开为该批所有检查项未覆盖 → 本 case timeout（或 inject=429 重试耗尽）",
+    "other_codes": [
+      "BATCH_MISSING_CHECK",
+      "BATCH_DUPLICATE_CHECK",
+      "INVALID_CHECK_ID",
+      "INVALID_BLOCK_REF",
+      "OUTPUT_TRUNCATED"
+    ],
+    "_partial_coverage_note": "PARTIAL_COVERAGE 是检查项级 failed_reason（search_check_item 返回值语义），不是 RunStep.last_error_code 短码，不得进 expected_last_error_codes；FORMAT_FAILED 是格式失败，与超时不同类。 工程师最终镜像已移除 _search_stage 的 last_error_code=\"PARTIAL_COVERAGE\"，本批短码位只有 LLM_FATAL 与 SEARCH_FAILED:...。",
+    "_granularity_note": "区分窗口级 vs 整批级不用短码，用 run_config.X + step_key=u:w{wi}:b{bi} + coverage_incomplete_check_items 项数（X=1 为 1 项、X=3 为 N 项）。"
+  },
+  "trace_jsonl_contract": {
+    "path": "/data/perf_traces/{run_id}.jsonl",
+    "fields": [
+      "trace_id",
+      "实验组",
+      "run",
+      "窗口",
+      "批次",
+      "检查项",
+      "attempt",
+      "t_submit（提交到线程池）",
+      "t_http_start（acquire 到额度后、_chat 前）",
+      "t_http_end",
+      "状态",
+      "错误码",
+      "finish_reason",
+      "内容hash",
+      "请求hash"
+    ],
+    "note": "U1/U2/U5 的时间字段一律取自该 JSONL，不要去 DB 里找时间字段；t_http_start - t_submit = 额度等待"
+  },
+  "complete_task_code_decided": "COVERAGE_INCOMPLETE（架构师定值；实现后 409 + detail.code 可断言 + 零写入）。COVERAGE_INCOMPLETE 仅适用于 run 已 READY 但应查窗口未成功完成（覆盖不全/超时耗尽）的场景；401/鉴权失败导致 run 未就绪（run.state=FAILED）时 complete_task 第一道拦截走 RUN_NOT_READY、不标覆盖不全。两个场景分别验、不合并，否则「完成接口 409」的交付口径会指向错误码。",
+  "llm_chat_return_compat_after_T01": "LLMClient._chat 现在返回 (content, finish_reason) 元组，complete_json 兼容只返回 str 的旧包装器。本文件对应容器内 fault_injection.py 改 patch OpenAI Completions.create（返回带 choices[0].message.content + finish_reason 的响应对象），新 _chat 仍从 resp.choices[0].message.content 取 content，故不受影响；若改 patch _chat 需返回 (json字符串, \"stop\")。",
+  "post_T01_status": "工程师已实现 409 COVERAGE_INCOMPLETE / PARTIAL_COVERAGE 语义修复 / stage 三态一致；本文件三种注入待容器重建后从 HTTP 层与容器内 monkeypatch 两条路径分别复验。",
+  "failed_run_results_side_effect": {
+    "note": "请由工程师原地更新 REVIEW_HANDOFF.md（QA 不改交接文档）",
+    "behavior": "FAILED run 的 results 仍会被 list_results 查出（取 order_by(created_at.desc()).first()，不看 state），但 editable=false（run.state != READY），用户只读回看 —— 这是预期行为，不需要工程师清理 FAILED run 的结果行。"
+  },
+  "complete_task_code_scenarios": {
+    "auth_401": {
+      "run_state": "FAILED",
+      "expected_409_code": "RUN_NOT_READY"
+    },
+    "format_error": {
+      "run_state": "READY",
+      "coverage_complete": false,
+      "expected_409_code": "COVERAGE_INCOMPLETE"
+    },
+    "timeout": {
+      "run_state": "READY",
+      "coverage_complete": false,
+      "expected_409_code": "COVERAGE_INCOMPLETE"
+    },
+    "_note": "两个场景分别验、不合并"
+  },
+  "t02_final_mirror_notes": {
+    "partial_coverage_removed_from_shortcode": "工程师最终镜像已移除 _search_stage 写 last_error_code=\"PARTIAL_COVERAGE\"；compute_coverage_summary 只依赖 RunStep.state + Result.not_found_reason。PARTIAL_COVERAGE 仍是检查项级 failed_reason（search_check_item 返回值），不是短码。",
+    "shortcodes_present_in_this_batch": [
+      "LLM_FATAL（致命分支）",
+      "SEARCH_FAILED:...（阶段级）"
+    ],
+    "not_present": [
+      "七类批次短码",
+      "u:w{wi}:b{bi} step_key",
+      "perf_traces JSONL",
+      "timing.progress"
+    ],
+    "engineer_assertions": "工程师已在最终镜像实跑通过：partial_coverage_not_a_shortcode=true、llm_fatal_keeps_shortcode=true、fatal401_no_vision_step=true"
+  }
+}

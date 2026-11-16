@@ -1,0 +1,160 @@
+{
+  "_note": "本轮三组快速验收 · A 组「并发和结果归属」最小配置。4 个模拟请求、客户端 C=2（LLM_MAX_IN_FLIGHT=2）、刻意打乱放行顺序、一快一慢。本文件是静态配置，不是实测结果：所有 delay_ms / size 都是配置值，实测统计只能来自 mock_llm_server.py 的 --stats-out 落盘 JSON。模拟服务端本身不限流在途数，C=2 由后端调度器的模块级 BoundedSemaphore 保证；因此 stats.peak_inflight 观测到的就是客户端真实同时在途数。",
+  "schema_version": "qa-mock-llm-config-1",
+  "group": "A",
+  "host": "127.0.0.1",
+  "port": 8099,
+  "stats_out": "/tmp/qa_mock_a_c2_refill_4.json",
+  "tag_header": "X-QA-Tag",
+  "default_delay_ms": 60,
+  "timeout_hang_seconds": 3.0,
+  "truncate_ratio": 0.6,
+  "expected_request_count": 4,
+  "default_inject": null,
+  "run_config_note": "实跑前置：run_config.X=1（每请求 1 个检查项）、C=2。4 个单元 = 2 窗口 × 2 检查项。实跑脚本在容器内把 LLM_WINDOW_CHARACTERS/OVERLAP 临时设为 45/10（进程内 settings 赋值，不改 .env、不改配置文件）以在 3 个合成块上切出 2 个窗口；LLM_MAX_IN_FLIGHT 保持 .env 的 2。",
+  "runtime_unit_order": "_search_stage 的 units 顺序为 for batch(检查项) → for window：X=1、2 检查项、2 窗口时 units = [c1/w0, c1/w1, c2/w0, c2/w1]。ThreadPoolExecutor(max_workers=2) 一次提交全部，前 2 个到达的必然是 c1/w0 与 c1/w1（同检查项）。因此把「一快一慢」放在 c1 的两个窗口规则上（20ms / 400ms），c2 的两个窗口均为 60ms 中等；无论 mock 服务按到达顺序把 c1 的两个窗口编号成 0/1 还是 1/0，前 2 个请求都必然命中「一快一慢」两条规则，A1 成立。",
+  "client_request_setup": [
+    "客户端一次提交全部 4 个搜索单元，由 ThreadPoolExecutor(max_workers=C=2) + 模块级 BoundedSemaphore(LLM_MAX_IN_FLIGHT=2) 限流",
+    "实跑未落地 X-QA-Tag 请求头：A3 归属核对改走 /data/perf_traces/{run_id}.jsonl 的 run_id + window_id + batch_index + check_item_ids + request_id（团长核实字段），stats.requests[].tag 恒为 null",
+    "as_completed 先回先收：放行顺序故意与到达顺序相反，验证先回先处理时 run_id / 窗口 / 检查项不串写"
+  ],
+  "barrier": {
+    "enabled": true,
+    "size": 2,
+    "release_order": [2, 1],
+    "release_gap_ms": 5,
+    "wait_timeout_seconds": 30,
+    "check_item_order": [
+      "charter.business_scope",
+      "charter.approval_body"
+    ]
+  },
+  "_barrier_note": "size=2 等于 C。实跑脚本把 classification/vision 等非 text_search 请求在容器内进程内固定响应、不发 HTTP 到模拟服务，因此 mock 的 arrival_seq 1..4 全是 4 个 text_search 请求，barrier 精确作用于 seq1/seq2（不会与 classification 抢 seq 导致死锁或 30s 超时）。显式 release_order=[2,1] 让 seq2 先放行、seq1 后放行（released_at 顺序 [2,1] 与 arrived_at 顺序 [1,2] 相反，即『刻意打乱放行顺序』）。seq1/seq2 是 c1 的两个窗口，分别命中 20ms 与 400ms 规则，故快请求先响应、慢请求仍在途；快请求结束后客户端立即补发 seq3，这是断言①的观测点。seq3/seq4 的 arrival_seq>size 不进 barrier，只走各自 60ms delay_ms。",
+  "rules": [
+    {
+      "name": "a.w0.c1.fast",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 0
+      },
+      "delay_ms": 20,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "found",
+            "evidence": [
+              {
+                "source_refs": [
+                  {
+                    "block_id": "{{BLOCK:0}}",
+                    "start_char": null,
+                    "end_char": null
+                  }
+                ],
+                "relation_status": "matched",
+                "relevance_reason": "A 组快请求：c1 命中（用于证明快结束后立即补发）"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w1.c1.slow",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 1
+      },
+      "delay_ms": 400,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w0.c2.mid",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 0
+      },
+      "delay_ms": 60,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w1.c2.mid",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 1
+      },
+      "delay_ms": 60,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "found",
+            "evidence": [
+              {
+                "source_refs": [
+                  {
+                    "block_id": "{{BLOCK:0}}",
+                    "start_char": null,
+                    "end_char": null
+                  }
+                ],
+                "relation_status": "matched",
+                "relevance_reason": "A 组：c2 命中（打乱顺序后归属仍应正确）"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.classify.fixed",
+      "when": {
+        "schema_name": "classification_output"
+      },
+      "delay_ms": 5,
+      "response": {
+        "bundle_id": "merged",
+        "material_type": "articles_of_association",
+        "mixed": false,
+        "confidence": 0.9,
+        "reason": "A 组固定分类响应",
+        "source_block_ids": []
+      }
+    }
+  ],
+  "_assertions_consumed_by_test_script": [
+    "① 快请求结束后下一条立即发出：stats.requests[] 里按 matched_rule 含 fast / slow 找出快/慢请求，断言存在补发请求满足 fast.responded_at ≤ arrived_at < slow.responded_at（即慢请求仍在途时新请求已到达）；只用落盘的真实时间戳，不写推算值",
+    "② 峰值在途 = 2：stats.peak_inflight == 2（客户端 C=2 限流的真实结果；模拟服务端不自建限流）",
+    "③ 每条响应写入正确的 run_id / 窗口 / 检查项，无串写：逐条核对 /data/perf_traces/{run_id}.jsonl 的 run_id / window_id / batch_index / check_item_ids / request_id 与落库 results / run_steps 的归属一致（无 X-QA-Tag，改走 JSONL）；放行顺序打乱后摘录集合按 text_sha256 + source_page_number + 稳定 rank 比对仍一致",
+    "④ 提交到线程池时间 vs 实际 HTTP 发起时间：trace JSONL 的 t_submit / t_http_start / t_http_end 三个字段均已落地（团长核实），A4 可完整断言 t_http_start ≥ t_submit，并逐条算 t_http_start - t_submit = 额度等待；模拟服务只提供 arrived_at（≈t_http_start）作交叉旁证，不伪造"
+  ],
+  "_trace_fields_note": "④ 的字段来源：t_submit / t_http_start / t_http_end / t_persist 由客户端写入 /data/perf_traces/{run_id}.jsonl，另有 run_id / request_id / window_id / window_index / batch_index / check_item_ids / state / error_code / unit_state / unit_error_code。t_http_start - t_submit = 额度等待。模拟服务只观测 arrived_at（≈t_http_start），两者定义不同（网络/排队开销），精确值以 trace JSONL 为准。",
+  "_C_injection_final_mirror": "LLM_MAX_IN_FLIGHT 在 llm_client.py 模块 import 时固化（_IN_FLIGHT = BoundedSemaphore(settings.LLM_MAX_IN_FLIGHT)）。本实跑沿用 .env 现值 2，未改 .env、未 force-recreate。标准改 C 方式仍是：改 .env 后 `docker compose up -d --force-recreate api worker`；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings 对 _IN_FLIGHT 无效。",
+  "_concurrency_scheduler_status": "ThreadPoolExecutor 一次提交全部单元 / 先回先处理 / 即时补位的并发调度器由 dev-backend 本轮实现，镜像已重建；本配置在团长下发实跑信号后实跑。",
+  "status": "实跑适配版：按 _search_stage 真实单元顺序把「一快一慢」放到前 2 个到达的 c1 单元；A3 改走 JSONL（无 X-QA-Tag）；分类/视觉请求进程内固定响应不占 mock arrival_seq。以上均为实跑前的链路核实，不是实测数字。"
+}

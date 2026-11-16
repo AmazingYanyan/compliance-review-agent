@@ -1,0 +1,458 @@
+{
+  "schema_version": "qa-mock-selftest-1",
+  "ran_at": "2026-11-12T15:56:38.045588+00:00",
+  "scope": "仅验证模拟服务本身可用；不是业务验收，不是真实模型结果",
+  "config": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/credit-review-app/backend/tests/perf/mock_config.full_concurrency.json",
+  "port": 18099,
+  "requests_sent": 12,
+  "client_wall_ms": 72.508,
+  "client_status_codes": [
+    200
+  ],
+  "server_stats_path": "/tmp/qa_mock_selftest_stats_18099.json",
+  "server_stats": {
+    "schema_version": "qa-mock-llm-stats-1",
+    "service": "mock_llm_server.py",
+    "started_at": "2026-11-12T15:56:37.754553+00:00",
+    "snapshot_at": "2026-11-12T15:56:37.873053+00:00",
+    "config_path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/credit-review-app/backend/tests/perf/mock_config.full_concurrency.json",
+    "config_sha256": "780625680a7a89d9c471ba308c95708881200d8ee9a0c770ff4fbe7ae8b39476",
+    "request_count": 12,
+    "current_inflight": 0,
+    "peak_inflight": 12,
+    "first_arrival_at": "2026-11-12T15:56:37.800262+00:00",
+    "last_arrival_at": "2026-11-12T15:56:37.802008+00:00",
+    "first_last_arrival_gap_ms": 1.741,
+    "expected_request_count": 12,
+    "arrival_count_matches_expected": true,
+    "proves_requests_actually_sent": true,
+    "by_schema": {
+      "text_search_output": 12
+    },
+    "by_check_item": {
+      "charter.business_scope": 2,
+      "charter.approval_body": 2,
+      "charter.guarantee_restrictions": 2,
+      "charter.legal_representative_signature_authority": 2,
+      "charter.voting_ratio": 2,
+      "charter.ownership_and_special_terms": 2
+    },
+    "by_inject": {
+      "(none)": 12
+    },
+    "by_tag": {
+      "(untagged)": 12
+    },
+    "barrier": {
+      "enabled": true,
+      "size": 12,
+      "release_order_config": "reverse",
+      "release_gap_ms": 5.0,
+      "arrived_count": 12,
+      "ready": true,
+      "timed_out": false,
+      "reached_at": "2026-11-12T15:56:37.802038+00:00",
+      "release_order_actual_arrival_seqs": [
+        12,
+        11,
+        10,
+        9,
+        8,
+        7,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1
+      ],
+      "release_order_actual_check_item_ids": [
+        "charter.ownership_and_special_terms",
+        "charter.legal_representative_signature_authority",
+        "charter.approval_body",
+        "charter.voting_ratio",
+        "charter.guarantee_restrictions",
+        "charter.business_scope",
+        "charter.ownership_and_special_terms",
+        "charter.voting_ratio",
+        "charter.legal_representative_signature_authority",
+        "charter.guarantee_restrictions",
+        "charter.approval_body",
+        "charter.business_scope"
+      ]
+    },
+    "requests": [
+      {
+        "arrival_seq": 1,
+        "arrived_at": "2026-11-12T15:56:37.800262+00:00",
+        "arrived_monotonic_ms": 5722321.601125,
+        "inflight_at_arrival": 1,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "batch_check_ids": [
+          "charter.business_scope"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 346,
+        "block_id_count": 4,
+        "raw_body_sha256": "bb019da6fb437edaef97f20da2d441fde1d302b719c82a47db1aa9354802506a",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.862001+00:00",
+        "responded_at": "2026-11-12T15:56:37.869709+00:00",
+        "status_code": 200,
+        "elapsed_ms": 69.449,
+        "error": null
+      },
+      {
+        "arrival_seq": 2,
+        "arrived_at": "2026-11-12T15:56:37.800474+00:00",
+        "arrived_monotonic_ms": 5722321.810083,
+        "inflight_at_arrival": 2,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "batch_check_ids": [
+          "charter.approval_body"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 345,
+        "block_id_count": 4,
+        "raw_body_sha256": "c4a5680d9e44f44d524a6ed716245c6b41dd0278180623a393d2f50b45f6d5c0",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.857816+00:00",
+        "responded_at": "2026-11-12T15:56:37.865574+00:00",
+        "status_code": 200,
+        "elapsed_ms": 65.107,
+        "error": null
+      },
+      {
+        "arrival_seq": 3,
+        "arrived_at": "2026-11-12T15:56:37.800693+00:00",
+        "arrived_monotonic_ms": 5722322.029041,
+        "inflight_at_arrival": 3,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.guarantee_restrictions",
+        "batch_check_ids": [
+          "charter.guarantee_restrictions"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 354,
+        "block_id_count": 4,
+        "raw_body_sha256": "50b0d14e122e85b7b04423fdf2fb5cd7893e277550347c45282a9cf0a67d4bef",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.850244+00:00",
+        "responded_at": "2026-11-12T15:56:37.857915+00:00",
+        "status_code": 200,
+        "elapsed_ms": 57.221,
+        "error": null
+      },
+      {
+        "arrival_seq": 4,
+        "arrived_at": "2026-11-12T15:56:37.800851+00:00",
+        "arrived_monotonic_ms": 5722322.186625,
+        "inflight_at_arrival": 4,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "batch_check_ids": [
+          "charter.legal_representative_signature_authority"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 372,
+        "block_id_count": 4,
+        "raw_body_sha256": "c804b5d0af0ca95c7612bf72b28441d7704f2ed365c1d6a0fdafd49ff9d8b957",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.842120+00:00",
+        "responded_at": "2026-11-12T15:56:37.850386+00:00",
+        "status_code": 200,
+        "elapsed_ms": 49.546,
+        "error": null
+      },
+      {
+        "arrival_seq": 5,
+        "arrived_at": "2026-11-12T15:56:37.801008+00:00",
+        "arrived_monotonic_ms": 5722322.343791001,
+        "inflight_at_arrival": 5,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.voting_ratio",
+        "batch_check_ids": [
+          "charter.voting_ratio"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 344,
+        "block_id_count": 4,
+        "raw_body_sha256": "edad94626c9b157bf9da8b7848a573f8cfd16d8927e8de4d9967937082233229",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.845750+00:00",
+        "responded_at": "2026-11-12T15:56:37.851819+00:00",
+        "status_code": 200,
+        "elapsed_ms": 50.81,
+        "error": null
+      },
+      {
+        "arrival_seq": 6,
+        "arrived_at": "2026-11-12T15:56:37.801181+00:00",
+        "arrived_monotonic_ms": 5722322.516458,
+        "inflight_at_arrival": 6,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "batch_check_ids": [
+          "charter.ownership_and_special_terms"
+        ],
+        "batch_size": 1,
+        "window_index": 0,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 359,
+        "block_id_count": 4,
+        "raw_body_sha256": "785ff81991c350009196c051289817befaebc27cc65bc3a24c2ca3710dc4cb83",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.842132+00:00",
+        "responded_at": "2026-11-12T15:56:37.850332+00:00",
+        "status_code": 200,
+        "elapsed_ms": 49.15,
+        "error": null
+      },
+      {
+        "arrival_seq": 7,
+        "arrived_at": "2026-11-12T15:56:37.801362+00:00",
+        "arrived_monotonic_ms": 5722322.697291,
+        "inflight_at_arrival": 7,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "batch_check_ids": [
+          "charter.business_scope"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 346,
+        "block_id_count": 4,
+        "raw_body_sha256": "efb71446c8738395f733234f3515dfd2ce788b1039e6322433e0843563316251",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.828159+00:00",
+        "responded_at": "2026-11-12T15:56:37.835689+00:00",
+        "status_code": 200,
+        "elapsed_ms": 34.327,
+        "error": null
+      },
+      {
+        "arrival_seq": 8,
+        "arrived_at": "2026-11-12T15:56:37.801512+00:00",
+        "arrived_monotonic_ms": 5722322.847083,
+        "inflight_at_arrival": 8,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.guarantee_restrictions",
+        "batch_check_ids": [
+          "charter.guarantee_restrictions"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 354,
+        "block_id_count": 4,
+        "raw_body_sha256": "0e01197d4a330dba196afa4c0e746a73e30eddc5097b3f22071f9e72851edad6",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.822942+00:00",
+        "responded_at": "2026-11-12T15:56:37.829893+00:00",
+        "status_code": 200,
+        "elapsed_ms": 28.381,
+        "error": null
+      },
+      {
+        "arrival_seq": 9,
+        "arrived_at": "2026-11-12T15:56:37.801657+00:00",
+        "arrived_monotonic_ms": 5722322.9915000005,
+        "inflight_at_arrival": 9,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.voting_ratio",
+        "batch_check_ids": [
+          "charter.voting_ratio"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 344,
+        "block_id_count": 4,
+        "raw_body_sha256": "e482c9472fa6ca67f52b9c91f40250d3b8539c0ae1180e41f6650a5cc21da12d",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.824603+00:00",
+        "responded_at": "2026-11-12T15:56:37.829697+00:00",
+        "status_code": 200,
+        "elapsed_ms": 28.041,
+        "error": null
+      },
+      {
+        "arrival_seq": 10,
+        "arrived_at": "2026-11-12T15:56:37.801776+00:00",
+        "arrived_monotonic_ms": 5722323.110333,
+        "inflight_at_arrival": 10,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "batch_check_ids": [
+          "charter.approval_body"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 345,
+        "block_id_count": 4,
+        "raw_body_sha256": "6974d2755f1cbb476845d2d73d0090e82631631e4acad8a3398e94be1da8e414",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.817131+00:00",
+        "responded_at": "2026-11-12T15:56:37.824708+00:00",
+        "status_code": 200,
+        "elapsed_ms": 22.932,
+        "error": null
+      },
+      {
+        "arrival_seq": 11,
+        "arrived_at": "2026-11-12T15:56:37.801900+00:00",
+        "arrived_monotonic_ms": 5722323.234790999,
+        "inflight_at_arrival": 11,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.legal_representative_signature_authority",
+        "batch_check_ids": [
+          "charter.legal_representative_signature_authority"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 372,
+        "block_id_count": 4,
+        "raw_body_sha256": "46f445157e26553ad6de998aa1b2e2d8ee8070fae805ffef923bca3521f10735",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.809623+00:00",
+        "responded_at": "2026-11-12T15:56:37.817202+00:00",
+        "status_code": 200,
+        "elapsed_ms": 15.303,
+        "error": null
+      },
+      {
+        "arrival_seq": 12,
+        "arrived_at": "2026-11-12T15:56:37.802008+00:00",
+        "arrived_monotonic_ms": 5722323.342333,
+        "inflight_at_arrival": 12,
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.ownership_and_special_terms",
+        "batch_check_ids": [
+          "charter.ownership_and_special_terms"
+        ],
+        "batch_size": 1,
+        "window_index": 1,
+        "attempt": 0,
+        "tag": null,
+        "response_format_type": "json_schema",
+        "model": "qa-selftest-model",
+        "user_chars": 359,
+        "block_id_count": 4,
+        "raw_body_sha256": "db74e9b2d52fcbe9f96c3f0337cf0225af21cacbf816b81c7d9051a9c4d3b5fa",
+        "matched_rule": "full_concurrency_search",
+        "inject": null,
+        "released_at": "2026-11-12T15:56:37.802060+00:00",
+        "responded_at": "2026-11-12T15:56:37.809718+00:00",
+        "status_code": 200,
+        "elapsed_ms": 7.712,
+        "error": null
+      }
+    ]
+  },
+  "checks": [
+    {
+      "name": "服务返回所有请求",
+      "status": "PASS",
+      "detail": "客户端收到 12/12"
+    },
+    {
+      "name": "统计请求数与发出数一致",
+      "status": "PASS",
+      "detail": "stats.request_count=12 预期=12"
+    },
+    {
+      "name": "每个请求都有真实到达时间",
+      "status": "PASS",
+      "detail": "有 arrived_at 的请求数=12"
+    },
+    {
+      "name": "峰值在途 == 并发请求数",
+      "status": "PASS",
+      "detail": "实测 peak_inflight=12 预期=12"
+    },
+    {
+      "name": "barrier 已收齐并放行",
+      "status": "PASS",
+      "detail": "enabled=True ready=True arrived=12"
+    },
+    {
+      "name": "barrier 放行顺序 == reverse",
+      "status": "PASS",
+      "detail": "实际放行 seq 顺序=[12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]"
+    },
+    {
+      "name": "每个请求都识别到 check_item_id",
+      "status": "PASS",
+      "detail": "识别到 check_item_id 的数量=12"
+    },
+    {
+      "name": "首末到达时间差有真实测量值",
+      "status": "PASS",
+      "detail": "实测 first_last_arrival_gap_ms=1.741"
+    }
+  ],
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0
+  }
+}

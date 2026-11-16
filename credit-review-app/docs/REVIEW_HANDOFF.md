@@ -306,7 +306,7 @@ python3 -c "import json,pathlib; d=json.loads(pathlib.Path('/tmp/baseline_stdout
 
 ## 性能下一步
 
-本节为历史方案清单；第 1 条「先能量出来」已由 2026-11-12 短样本串行基线落地实测（见上文章节），第 2–4 条仍未落地。**下一阶段（并发调度 + 批量搜索 + 阶梯/批量/全文对照）的详细任务规格、开工门槛与四项前置缺口，已登记在「下一阶段性能试验」章节；该章节当前状态为「已登记、未开工」。**
+本节为历史方案清单；第 1 条「先能量出来」已由 2026-11-12 短样本串行基线落地实测（见上文章节），第 2–4 条仍未落地。**下一阶段（并发调度 + 批量搜索 + 阶梯/批量/全文对照）的详细任务规格、开工门槛与四项前置缺口，已登记在「下一阶段性能试验」章节；该章节登记时状态为「已登记、未开工」，现已由下文「T03 已开工：并发调度 + 批量搜索落地」章节接续（含本轮两套证据与 QA 独立实跑结论）。**
 
 现有交接记录章程旧跑批 54 分钟，搜索路径约 6 个检查项 × 6 个窗口，约 36 次串行调用。这个数字可作历史参考，旧跑批缺阶段耗时。15 分钟记为试验目标。
 
@@ -315,11 +315,138 @@ python3 -c "import json,pathlib; d=json.loads(pathlib.Path('/tmp/baseline_stdout
 3. **另测减少调用。** 试一个窗口同时查多个检查项，记录调用次数、耗时和关键条款召回。固定模型响应时，串行与并发结果按条目内容、来源和去重结果比对。真模型、批量提示或换模型时，用人工核对过的关键证据、来源正确性及差异清单验收。换模型、并发和批量策略分别记录收益。
 4. **补一次实际长章程验收。** 回传基线、改动后耗时和关键条款差异。记录超时或限流下是重试、失败还是覆盖不全，覆盖不全与正常未找到明确区分。同时用新跑批核实断句、住所串入和去重。区域框选与财报印章／签名继续按各自用例验证。
 
-## 下一阶段性能试验（已登记，未开工）
+## 下一阶段性能试验（T03 已开工：并发调度 + 批量搜索落地）
 
-**状态：已登记 / 开工门槛未满足 / 未实现任何实验代码。** 按 2026-11-12 晚间用户指令，本轮只做三件事：把任务登记到本章节、记录开工前状态、**核对四项前置并把缺口写明**。开工闸门为「稳定分窗、覆盖不全提示、完成接口拦截、摘录去重四项通过独立复验」，经核查**四项均未通过独立复验**，故本轮不实现并发调度、不实现批量搜索、不跑任何模型实验、不改业务代码。前端运行档位留到实验结束后决策。
+**状态：T01+T02 封版后接续，本轮（2026-11-13）已落地并发调度、批量搜索、T03-F1~F4 收敛与前端覆盖提示，并实跑三组验收。** 下方「开工前记录 / 前置验收证据盘点 / 四项前置门槛核查 / 待执行任务规格」均为 **2026-11-12 登记时的历史状态**，保留作对照，不代表当前现状；当前结论以本节「T03 落地记录」与 `docs/perf_2026-11-13/` 的机器可读证据为准。真实模型耗时标「待测」。
 
-### 开工前记录（2026-11-12 19:08 实测，非推算）
+### T03 落地记录（2026-11-13，本轮）
+
+#### 从哪里接续
+
+- 基准：`main` 分支，HEAD `00d040699b838c7dd0d7edb35a4d8b66917a6695`（T01+T02 封版，IS_PASS YES）。本轮**从已有工作区继续，未重做、未回滚**上一轮任何成果；工作树原有 ` M .DS_Store` 原样保留、未 add、未 commit。
+- **上一轮已完成、直接沿用**：稳定分窗 `source_ordering.py`（K1 排序键 `(file_order,page_key,page_ordinal)`、K2 内容 hash、K3 去重键）、`text_search.SearchOutcome` / `search_check_item_outcome`「有摘录却丢 uncovered」根因修复、`search_check_item` 兼容 wrapper、三档 `not_found_reason`、`_complete_run` 按 `compute_coverage_summary` 赋值、`runs.py` 409 `COVERAGE_INCOMPLETE` 与 `list_results` 覆盖字段、`llm_client` 模块级 `_IN_FLIGHT` + `RequestTrace`、`TEXT_SEARCH_SCHEMA` 的 `check_results` 数组、`build_run_config` / `_write_run_config`、基线脚本失败三态。
+- **上一轮只做一半、本轮接续**：`CHECKS_PER_REQUEST` 仅是**配置项**（X 批量分组未落地）；`LLM_MAX_IN_FLIGHT` 仅是模块级信号量（**并发调度器未落地**，`_search_stage` 仍是 `for leaf` 串行）；`RequestTrace` 只在内存（未写 JSONL、未落 `u:` 步）；`SearchOutcome` 是「供后续批次」接口预留；`check_results` 存在性校验（T03-F1）是 T02 **已知缺口**。
+- **本轮新做**：`_search_stage` 改为「窗口×检查项批次」单元 + `ThreadPoolExecutor` 全量提交 / `as_completed` 先回先收；`validate_batch_response` 批量校验与七类短码；T03-F2/F3/F4 收敛；前端持久覆盖提示条与完成按钮禁用；三组验收实跑；T05-F1 证据持久化。
+
+#### 本轮改动文件（完整清单）
+
+| 文件 | 改动 |
+|---|---|
+| `backend/app/processing_pipeline.py` | 重写 `_search_stage`（按 material 分组复用 `load_source_blocks`+`chunk_source_blocks`、按 X 分批、单元 dataclass、`_execute_unit` 模型线程只调用、`_append_traces` JSONL、`_write_unit_step` `u:w{wi}:b{bi}`、`_flush_check` 短事务归并、`_direct_check_result`）；`build_run_config` 的 `batch.status` 改实际生效状态并补 `batches`/`units_total`/提示词版本；`compute_coverage_summary` 收敛（F3 无单元步保守 False + 错误码、F4 affected 纯读 `Result.not_found_reason`、不依赖 `step_key` 前缀）；`_complete_run` 保留调用并记错误码 |
+| `backend/app/prompt_registry.py` | `SEARCH_PROMPT_VERSION` 升 `text-search-batch-v2`；新增 `SEARCH_BATCH_SYSTEM_TEMPLATE` 与 `render_search_batch_user`（每批 ID/名称/取证范围/误引边界 + `check_item_id=` 显式清单 + 窗口文本只发一次） |
+| `backend/app/text_search.py` | 新增 `validate_batch_response` / `BatchValidation` / `BatchCheckResult`（本批每检查项恰好一项、非法/重复/缺失 ID、幻引零落库但覆盖达成、`OUTPUT_TRUNCATED`、回查 OCR 原文生成摘录）；保留 `SEARCH_SYSTEM` 与 `search_check_item` 兼容 wrapper |
+| `backend/app/api/routes/runs.py` | `complete_task` 收敛为单条 `if not run.coverage_complete: 409 COVERAGE_INCOMPLETE`（删 api 侧 `compute_coverage_summary` 反推，位置仍在 `REVISION_CONFLICT` 之后、`compute_statistics` 之前）；`list_results` 的 `coverage_affected_check_ids` 直接从已查出的 `results` 按 `not_found_reason` 计算（零额外查询） |
+| `frontend/src/api/types.ts` | `ResultList` 补 `coverage_complete: boolean` / `coverage_affected_check_ids: string[]` |
+| `frontend/src/routes/_layout/tasks/$taskId.review.tsx` | 新增 `CoverageBanner`（持久、列出受影响检查项）、`CompleteButton` 在覆盖不全时 disabled + 「识别覆盖不完整，暂不能完成核对」说明；`editable` 判定不变，接受/拒绝/出处定位照常 |
+| `docs/REVIEW_HANDOFF.md` | 本文件原地更新（本节） |
+| `docs/perf_2026-11-13/` | 新建证据目录（T02 证据副本 + `INDEX.json`、本轮三组验收脚本/日志/证据/JSONL、`INDEX_T03.json`） |
+
+未改：`models.py`、无数据库迁移；未改 `backend/tests/perf/` 与 `frontend/tests/perf/`（QA 资产，零冲突）；`.env` 现值原样保留。
+
+#### 并发和批量怎么启用
+
+- `X = CHECKS_PER_REQUEST`（`1/2/3/6`，默认 `1`），`C = LLM_MAX_IN_FLIGHT`（默认 `2`），二者独立；`LLM_MAX_CONCURRENCY` 是兼容别名、不参与限流。`PIPELINE_CONFIG_VERSION=pipeline-v2`、`LLM_REQUEST_TIMEOUT_SECONDS=180` 本轮未改。
+- 改 `.env` 的 `CHECKS_PER_REQUEST` / `LLM_MAX_IN_FLIGHT` 后**代码不需 build，但必须** `docker compose up -d --force-recreate api worker` 才会重读 `env_file`；`docker compose restart worker` 沿用旧 env **无效**；进程内改 `settings` **无效**——`llm_client._IN_FLIGHT = BoundedSemaphore(settings.LLM_MAX_IN_FLIGHT)` 与线程池 `max_workers = settings.LLM_MAX_IN_FLIGHT` 分别在模块 import / run 时固化。
+- **QA 实跑前置（`C` / `X` 改 `.env` 生效）**：改 `.env` 后必须 `docker compose up -d --force-recreate api worker` 才会重读 `env_file`（`docker compose restart worker` 沿用旧 env 无效）；`C` / `X` 跑完**必须改回默认** `CHECKS_PER_REQUEST=1` / `LLM_MAX_IN_FLIGHT=2` **并再 force-recreate 一次**，否则后续复跑口径漂移。QA 实跑资产 `backend/tests/perf/mock_config.a_c2_refill_4.json`（4 请求 / C=2 / `release_order=[2,1]` 打乱放行 / 20ms 与 400ms 一快一慢）、`backend/tests/perf/fixtures/quick_acceptance.json`（X=1 3 请求 / X=3 1 请求等价对）、统一离线断言器 `backend/tests/perf/verify_quick_acceptance.py` 均在 QA 目录，本轮**未改**，实现只需能被它们验。
+- `X=1` 是「批大小 1」特例，与 `X>1` 共用同一执行器与同一提示词，不按 X 分支写两套逻辑；`C=1` 时 `ThreadPoolExecutor(max_workers=1)` 等价于原有串行入口。
+- 改 `backend/app/**` 后必须 `docker compose build api worker && docker compose up -d api worker`（**api 与 worker 是两个独立镜像，都必须重建**），改完进容器 grep 新代码行号确认生效。前端改完需 `VITE_API_URL= npx vite build --outDir /tmp/fe --emptyOutDir` 再 `docker cp /tmp/fe/. credit-review-app-api-1:/app/backend/app/frontend/`（容器内 WORKDIR `/app/backend`，相对 `app/frontend`）；不挂源码卷、产物不入库。
+- 本轮验收**不改 `.env`**（现值 X=1 / C=2 / TIMEOUT=180 / VER=pipeline-v2 / ALIAS=2）；`X=3` 由验收脚本在进程内改 `settings.CHECKS_PER_REQUEST` 实测，不是改 `.env`。
+
+#### 三组验收实测结果（两套证据并列，不要混成一套数字）
+
+**本轮有且仅有两套独立证据，必须并列看**：
+
+| 证据集 | 执行方 | 落盘文件（`docs/perf_2026-11-13/` 下） | 结论 |
+|---|---|---|---|
+| **开发侧自测**（实现后自验） | dev-backend | `t03_pipeline_evidence.json`（28 断言）、`t03_http_evidence.json`（12 断言）、`t03_list_results_evidence.json`（6 断言） | **46/46 断言通过**（28+12+6） |
+| **QA 独立实跑**（团长下发实跑信号后） | qa-perf | `qa_measured/quick_acceptance.json`（`mode=measured`）、`qa_measured/chrome/coverage_incomplete.skeleton.json` | 统一断言 **12 PASS / 0 FAIL / 0 未跑 / 0 无法取得 / 1 沿用**（A 4 / B 4+1 沿用 / C 4）+ Chrome **11 PASS / 0 FAIL / 2 PENDING**（C15/C16 本轮范围外） |
+
+开发侧自测用固定响应 + monkeypatch 底层 `openai.resources.chat.completions.Completions.create`（完整走 `complete_json` / `_chat` / `_IN_FLIGHT` 链路）；QA 独立实跑用容器内 HTTP 模拟服务（`settings.LLM_API_BASE` **仅进程内**指向 `127.0.0.1:8099`、未改 `.env`）+ 宿主机真实 8080 完成接口 + `QA_REAL_UI=1` 透明代理转真实前端。**两者均零真实模型 / 零外部 OCR**。
+
+| 组 | 开发侧自测（dev-backend，46/46） | QA 独立实跑（qa-perf，12/0/1） |
+|---|---|---|
+| **A 并发与归属** | `C=2 / X=1`，4 个搜索单元；峰值在途 **2**；慢请求（400ms）仍在途时已补发 **2** 条新请求（响应完成顺序被打乱）；4 个 `u:w{wi}:b{bi}` 步、4 行 `/data/perf_traces/{run_id}.jsonl`（`t_submit`/`t_http_start`/`t_http_end`/`run_id`/窗口/批次/检查项/attempt/状态），逐条 `t_http_start >= t_submit`；每条结果写入正确 `run_id`/`task_id`/检查项，无串写；run `READY` / `coverage_complete=true` | 4 请求 / C=2；fast **31.7ms**、slow **402.5ms**；补发 seq3 `00.111278`、seq4 `00.221765` **均在 fast 响应后、slow 响应前**（慢请求仍在途）；`first_last_arrival_gap_ms=147.045`；`peak_inflight=2`；barrier `release_order_actual=[2,1]` 生效；JSONL 4 行单一 run_id、`(window_id,batch_index)` 4 组、落库摘录 4 条无串写；`t_submit/t_http_start/t_http_end` 齐全且逐条 `t_http_start - t_submit ≥ 0`；模拟服务 `stats.by_tag` 有值（= run_id） |
+| **B 批量、稳定分窗、去重** | 同一 15 页 OCR JSON（SHA256 `8879c8a2…60b`）：`X=1` 实发 **6** 个搜索请求、`X=3` 实发 **2** 个；两者结果集合（`text_sha256 + source_page_number + 稳定 rank`，**不用 fingerprint**）完全相等；`run_config` 记录实际 X / `batches`（X=3 为 1 批 3 个检查项）/ `units_total` / 提示词版本。分窗稳定性**沿用** QA `compare_two_imports.json` 的 24/24 证据——本轮未改 `source_ordering` / `load_source_blocks` / `chunk_source_blocks`，按规格未补跑。合成块去重样本：跨窗口重复引用只存 1 条、同文不同出处保留、同一块被多个检查项引用各项保留；3 个检查项各 **3** 条（共 9 条 text 行），`X=1` 与 `X=3` 相等，fingerprint 均为 64 位 hex 内容 hash | 实发 **X=1 6 / X=3 2**（2 窗口 × 3 检查项，按「窗口数 × 分组数」比例断言，未硬编码 3/1）；结果集合按 `text_sha256 + source_page_number + 稳定 rank` 相等；三类去重 X=1 与 X=3 各 **9 条 text 行、每检查项 3 条**；两次 `run_config` 差异仅 `batch` / `checks_per_request` / `units_total` **三个 X 派生字段**，其余全等；**B0 沿用 T02 24/24**（本轮未改分窗排序） |
+| **C 部分失败与完成** | 窗口 0 成功、窗口 1 超时耗尽（重试计入同一额度）：保留 **2 条**成功摘录 + `coverage_incomplete` + `run.coverage_complete=false` + 单元短码 `BATCH_TIMEOUT`（无 `PARTIAL_COVERAGE` 短码）；**直接调完成接口 409 `COVERAGE_INCOMPLETE` 且零写入**；正常样本完成 **200 `COMPLETED`** | 保留 **1 条**成功摘录 + `coverage_incomplete` + `run.coverage_complete=false` + `BATCH_TIMEOUT`；完成接口 **409 `COVERAGE_INCOMPLETE` 严格相等 + 零写入** + `task_id_filtered=true`；正常样本 **200 `COMPLETED`**；`list_results` 实测 `coverage_complete=false` / `coverage_affected_check_ids=["charter.business_scope"]` / `editable=true`。**（保留摘录 2 条 vs 1 条的差异见下节，非源码缺陷）** |
+| **T03-F1（从 T02 已知缺口接续修）** | `X=1` 空 `check_results` → 未覆盖 → `BATCH_MISSING_CHECK` + `coverage_incomplete` + 409；仅含非法 ID 顶替 → `INVALID_CHECK_ID` + `BATCH_MISSING_CHECK` + 409；`[{outcome:"not_found"}]` → 覆盖达成 → `no_matching_evidence` →（补人工决策后）200 | 三项**未纳入三组最小集**（由开发侧自测覆盖）；列入 QA 遗留待验清单 |
+| **G2 / 历史任务（HTTP 实跑）** | FAILED run → 409 `RUN_NOT_READY`；READY+false → 409 `COVERAGE_INCOMPLETE` + 零写入；READY+true → 200 `COMPLETED`。历史 REVIEWING 任务 `607e6d41-…` **只读核对**（`READY` / `coverage_complete=true` / 无任何 `u:`/`check:` 单元步 / `results` 可 200 回看），完成动作在**同构隔离副本**上实测 200——因硬边界「绝不触碰 2 条真实业务任务」，未对真实任务执行完成写入，故不是「只靠推理」而是「同构实测 + 只读核对」 | 未纳入三组最小集（由开发侧自测覆盖） |
+
+边界：两套证据各自的隔离任务全部 `deleted_at` 软删保留（QA 侧 7 个、开发侧两轮 28 个）；`607e6d41-…`(REVIEWING) 与 `ee59108d-…`(COMPLETED, 77 条结果) 前后 `state`/`deleted_at`/`input_revision` 均未变化。**真实模型耗时：待测**（本轮按边界不跑真实模型 / 外部 OCR）。
+
+#### 外部独立复核前的内部 QA 结论（2026-11-13）
+
+> 本节记录外部独立复验（交付之后、**不在本轮范围**）之前的内部 QA 结论，留后续排期。
+
+- **智能路由判定：`NoOne`**（qa-perf 独立实跑三组验收 + Chrome 真实页面后）。统一断言 12 PASS / 0 FAIL，Chrome 0 FAIL，唯一 FAIL 为 QA 侧测试脚本顺序问题并已自修，**未发现业务源码缺陷、无需返工**。
+- **最终镜像全量重跑（2026-11-12 18:18 UTC）**：因 dev-backend 在首次实跑信号后二次重建并替换前端产物，QA 按团长要求以**最终镜像 / 最终前端产物**重跑三组 + HTTP + Chrome，结论与首次一致（12 PASS / 0 FAIL / 1 沿用、Chrome 11/0/2），并收紧断言（A3 双验、A4 逐条额度等待、B2 归一化键不含 `window_index`、B4 静态字段归一化、C13/C14 `data-testid` + exact 文本）。`qa_measured/quick_acceptance.json` 与全部 `*_results/stats` 均为**最终重跑版**；首次结论另存 `*.first_pass.json` 留档，未采信旧数字。镜像/产物 provenance 见 `qa_measured/quick_acceptance_run/image_provenance.json`：api/worker `StartedAt` 均 17:43 UTC（后端镜像两次实跑期间未变），首页唯一前端产物 **`index-CiFoDBwL.js`**（旧 `index-MxNLwRYA.js` 已不在首页），差异只在前端产物替换。最终 A 组实测 fast 26.443ms / slow 401.522ms、补发 seq3/seq4 落在慢请求响应前、`first_last_arrival_gap_ms=139.1`、峰值 2、逐条额度等待 `[0.137, 31.786, 139.532, 0.208]` ms 全部 ≥0；首次实跑的 31.7/402.5ms 与 147.045ms 属旧产物轮次，**两套数字分别引用、不混算**。
+- **C17 首跑 FAIL 是 QA 测试脚本顺序问题**：先点「接受」把 decision 切成 `accepted`、前端按 `review.tsx` 逻辑切为单个「已接受（可点击重置）」按钮，导致「拒绝按钮=0」。QA 已自修为「点击前取 unselected 三按钮状态 + 点击后可重置」，重跑 **11 PASS / 0 FAIL / 2 PENDING**。**无需 dev-backend 定向修复**。
+- **两处与开发侧自测的差异（如实并列，均非源码缺陷）**：
+  1. **C 组保留摘录条数**：开发侧自测 **2 条**、QA 独立实跑 **1 条**。原因：固定响应引用块数不同（QA 引用窗口首块 1 个，开发侧用 `first_last` 引用 2 个）；「成功摘录保留」两侧都成立，不是源码缺陷。
+  2. **`X-QA-Tag` 口径**：**请求头 `X-QA-Tag: <run_id>` 与 JSONL 逐请求归属双口径均落地**（`llm_client.py:176` 在二次重建后生效；QA 实测模拟服务 `stats.by_tag` 有值 = run_id，4 请求同一 tag）。QA 主口径走 JSONL、tag 作旁证。早前「未落地」是**二次重建之前**的核实结论，已过时、不作准；本文统一按「双口径均落地」表述。
+  3. 补充：QA 正常样本是「全窗口命中 + 全人工确认 → 200」而非「无候选 → `no_matching_evidence`」，断言按 200 + `coverage_complete=true` 判定；B 组 fixture 静态构造为 1 窗口（3/1 请求），实跑按 2 窗口（6/2）适配、不硬断言 3/1。
+- **QA 遗留待验**（标「待测」，不写推算值）：性能矩阵、长章程、全文模式、配置面板、**真实模型耗时（待测）**；Chrome C15/C16（本轮范围外）；跨 run 隔离 `(window_id,batch_index)` U5；T03-F1 三项未纳入三组最小集（**开发侧自测已覆盖**）。
+- **两套证据不混算**：开发侧 46/46 与 QA 12/0/1 + Chrome 11/0/2 各自独立成表（见上节）；`qa_acceptance/` 是开发侧格式样例、`qa_measured/` 才是 QA 独立实测，**绝不能把样例当验收结果**。
+
+#### QA 实跑字段契约（本轮补充落地）
+
+- **逐请求 JSONL**（`/data/perf_traces/{run_id}.jsonl`，逐行 JSON，只存 hash / 时间戳 / 状态 / 短码，不存窗口全文）：每行含 `trace_id`、`run_id`、`window_id`、`window_index`、`batch_id`、`check_ids`（数组）、`check_item_id`、`t_submit`、`t_http_start`、`t_http_end`、`state`、`error_code`、`finish_reason`、`messages_sha256`、`user_sha256`、`window_text_sha256`，另有 `request_id` / `batch_index` / `check_item_ids` / `attempt` / `unit_state` / `unit_error_code`。`t_submit` = 主线程提交 `ThreadPoolExecutor` 时的 `time.perf_counter()`（**真实采集、非伪造**）；`t_http_start` = acquire 到 `_IN_FLIGHT` 额度后真正发起 HTTP 的时刻；两者差值即「额度等待」。原始证据 `docs/perf_2026-11-13/t03_trace_A.jsonl`（4 行）。
+- **A3 无串写归属（两种都落地，QA 二选一即可）**：① 搜索请求带 `X-QA-Tag: <run_id>` 请求头（模拟服务 `stats.requests[].tag` 可记录）；② JSONL 逐请求带 `run_id / window_id / window_index / batch_id / check_ids / check_item_id` 归属。落库侧 `Result.run_id` / `ResultSource` 与 `u:w{wi}:b{bi}` 步同属本 run。开发侧实跑已断言 `qa_tag == run_id` 且 JSONL 必填字段齐全。
+- **B4 run_config 除 X 外全等**：`run.model_snapshot.run_config` 可读；静态字段 `C / version(pipeline_config_version) / search_prompt_version / checklist_hash / text_model / window_strategy` 两次运行（X=1 / X=3）除 `X` 外全等；`batch.status` 已改为固定文案、不随 X 变。原始 `run_config` 还完整记录 `batch.batches`（每批检查项 ID）/ `batch.units_total` / `units_total` 等**动态派生**信息（X 的函数）；导出给 QA 断言器时按 `RESULT_SPEC` 归一化为 `{X, C, version, ...}` 即可。样例见 `docs/perf_2026-11-13/qa_acceptance/quick_acceptance_b_x1_results.json` 与 `quick_acceptance_b_x3_results.json`（实测：B1 请求数 6 / 2、B2 归一化集合相等、B4 除 X 外全等）。
+- **落库结果导出字段**：`check_item_id` / `text_sha256`（`sha256(result.text)`）/ `source_page_number`（`ResultSource`）/ `page_inner_seq`（`OcrBlock.sequence_index`，页内稳定序号）/ `run_id` / `window_index`；**不用** `Result.fingerprint` 或含 UUID 的请求 hash。样例由 `t03_export_qa_acceptance.py` 从 DB 真实导出。
+- **是否改动分窗排序**：**未改** `source_ordering.py` 与 `chunk_source_blocks` / `load_source_blocks` 的排序逻辑（本轮只复用），B0 分窗对照**沿用** T02 `compare_two_imports.json` 24/24，QA 无需补跑 `--windowing-recheck`。
+- **前端字面量与 DOM**：持久覆盖提示条 `data-testid="coverage-banner"`，主文案「识别覆盖不完整，暂不能完成核对」，列出 `coverage_affected_check_ids`；完成按钮 `coverage_complete === false` 时 disabled，说明含独立文本节点 `data-testid="complete-blocked-label"` + 精确字面量 **「暂不能完成核对」**（正则 `/暂不能完成/` 与精确断言均可命中）。`editable` 判定不变，接受 / 拒绝 / 出处定位照常。`NOT_FOUND_REASON_LABEL.coverage_incomplete` 文案「识别覆盖不完整，请人工复核」保持不变。
+
+#### 可复跑命令
+
+```bash
+cd credit-review-app
+# 1) 造数 + A/B/C/F1/G2 的 DB 事实（worker 容器，零真实模型 / 零外部 OCR）
+docker cp "<15页章程OCR.json>" credit-review-app-worker-1:/tmp/t03_ocr.json
+docker exec -i credit-review-app-worker-1 python - \
+  --evidence-out /tmp/t03_pipeline_evidence.json --setup-out /tmp/t03_setup.json \
+  --ocr-json /tmp/t03_ocr.json < docs/perf_2026-11-13/t03_verify_pipeline.py
+docker cp credit-review-app-worker-1:/tmp/t03_setup.json docs/perf_2026-11-13/t03_setup.json
+docker cp credit-review-app-worker-1:/tmp/t03_pipeline_evidence.json \
+  docs/perf_2026-11-13/t03_pipeline_evidence.json
+# 2) HTTP 层 G2/C/F1/历史断言（宿主机；登录后最后统一软删隔离任务）
+python3 docs/perf_2026-11-13/t03_verify_http.py
+# 3) list_results 覆盖字段补测（F4 展示面）
+python3 docs/perf_2026-11-13/t03_verify_list_results.py
+# 4) 导出 QA 断言器输入格式样例（真实实跑数据，供 QA 写导出脚本时对照）
+python3 docs/perf_2026-11-13/t03_export_qa_acceptance.py
+# 验收前自检
+docker exec credit-review-app-api-1 sh -c 'cd /app/backend && python -m compileall -q app'
+docker exec credit-review-app-worker-1 sh -c 'cd /app/backend && python -m compileall -q app'
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:8080/
+
+# 5) QA 独立实跑前置（C/X 改 .env 才生效；代码不需 build，但必须 force-recreate）
+#    改 .env 的 CHECKS_PER_REQUEST / LLM_MAX_IN_FLIGHT
+docker compose up -d --force-recreate api worker
+#    QA 用 backend/tests/perf/mock_config.a_c2_refill_4.json、fixtures/quick_acceptance.json
+#    等资产实跑并导出 stats / results / complete / trace
+#    跑完改回默认 CHECKS_PER_REQUEST=1 / LLM_MAX_IN_FLIGHT=2
+docker compose up -d --force-recreate api worker
+#    统一离线断言器（QA 资产，本轮未改）：
+#    python3 backend/tests/perf/verify_quick_acceptance.py --group A \
+#      --stats <a_stats.json> --results <a_results.json> --trace <perf_traces/{run_id}.jsonl>
+```
+
+#### 原始证据路径（文档链接一律指向此处）
+
+`credit-review-app/docs/perf_2026-11-13/`：本轮索引 `INDEX_T03.json`、主证据 `t03_pipeline_evidence.json`（28 断言）、HTTP 证据 `t03_http_evidence.json`（12 断言）、`t03_list_results_evidence.json`（6 断言，补测 `list_results` 覆盖字段：`coverage_complete=false`、`coverage_affected_check_ids=["charter.business_scope"]`、`editable=true` 印证「覆盖不全 ≠ 整体只读」）、`t03_setup.json`、`t03_trace_A.jsonl`（逐请求 JSONL，QA A3/A4 断言入口）、可复跑脚本 `t03_verify_pipeline.py` / `t03_verify_http.py` / `t03_verify_list_results.py` / `t03_export_qa_acceptance.py`、原始 stdout/stderr，以及 T02 沿用证据 `INDEX.json` / `pipeline_stdout.json` / `http_results.json` / `compare_two_imports` 相关日志等。
+- **`qa_measured/`（QA 独立实测，最终验收结论来源；已同步为最终镜像全量重跑版）**：`quick_acceptance.json`（`mode=measured`，**12 PASS / 0 FAIL / 0 未跑 / 0 无法取得 / 1 沿用**）、`quick_acceptance.first_pass.json`（首次实跑留档）、`quick_acceptance_validate_fixtures.json`、`quick_acceptance_run/`（**19 个原始证据**：`a_*` / `b_dedup_*` / `b_x1_*` / `b_x3_*` / `c_*` / `protected_snapshot` / `runtime_configs` / `setup` + **`image_provenance.json`** 记录 api/worker `StartedAt` 与镜像 sha256、首页唯一前端产物 `index-CiFoDBwL.js`、两轮实跑时间戳）、`chrome/`（`coverage_incomplete.skeleton.json` **11/0/2**、`coverage_incomplete.skeleton.first_pass.json` 首次 11/0/2 留档、`coverage_incomplete.skeleton.t02_baseline.json` T02 封版 **17/0/4** 留档、`quick_acceptance_chrome_evidence.json`）、`assets/`（复跑脚本 `run_quick_acceptance.py` / `run_complete_http.py` / `verify_quick_acceptance.py`、`mock_config.a_c2_refill_4.json`、`fixtures/quick_acceptance.json`、`coverage_incomplete.verify.mjs`、`README_qa_perf.md` 含 **§10.11 最终结论**，§10.10 已标为首次实跑）、以及 `README.md`（明确区分样例与实测、并列两套证据、两处差异、最终镜像 provenance）。共 **34 个文件**。
+- **`qa_acceptance/`（开发侧格式样例，不是验收结果）**：dev-backend 自测产出的 `RESULT_SPEC` / `STATS_SPEC` / `COMPLETE_SPEC` 输入格式样例（A/B/C 的 stats/results/complete/trace + `README.md` 字段契约），仅供 QA 写导出脚本时对照；其 B 组是「15 页 OCR + 3 检查项」，与 QA fixture 的「4 候选」口径不同，**不得当作验收结论**。
+- `qa_assets/`（T05-F1 归档）：QA 静态资产副本（`backend_tests_perf/` 与 `frontend_tests_perf/`，含 `verify_quick_acceptance.py`、`mock_config.a_c2_refill_4.json`、`fixtures/quick_acceptance.json`、README §10、全部 T02 evidence），以及 **`coverage_incomplete.skeleton.T02_17pass.json`**——T02 封版 **17 PASS / 0 FAIL / 4 PENDING** 骨架证据的留档副本（防 `QA_REAL_UI=1` 实跑覆盖）。QA 的 `backend/tests/perf/` 与 `frontend/tests/perf/` 原路径文件本轮**未改**。
+
+#### 边界与不要误读
+
+- **不得宣称「覆盖不全已 100% 闭环」**：T03-F1 是**从 T02 已知缺口接续修**的（T02 对空 `check_results` 仍给 `no_matching_evidence` 并放行完成），本轮已修并实测 409；但 S5 幻引「有响应但引用不可验证」仍显示 `no_matching_evidence`，属输出质量异常需人工复核的已知局限。真实模型下的批量提示词效果、七类短码全量扩面、两 run 共享额度（U5）、长章程 / 性能矩阵 / 全文模式 / 真实模型抽测均未跑，标「待测」。
+- **明确不做**：配置面板、长章程、全文模式、性能矩阵、真实模型抽测、外部独立复验（交付之后）、`models.py` / 迁移、七类短码全量扩面、`timing.progress` 进度接口。
+- **两套证据并列、不混算**：开发侧自测 46/46（`t03_*` 证据）与 QA 独立实跑 12/0/1 + Chrome 11/0/2（`qa_measured/`）各自独立；`qa_acceptance/` 只是开发侧格式样例，**不是验收结果**。外部独立复验仍留交付之后排期，本轮内部 QA 路由 `NoOne`（无源码缺陷、无需返工）。
+- **双口径归属**：请求头 `X-QA-Tag: <run_id>` 与 JSONL 逐请求归属**均落地**（QA 主口径走 JSONL、tag 作旁证）；早前「未落地」是二次重建前核实、已过时。
+- 本轮未 `git commit`、未 `git add -A`；未新增交接文档副本，未写文档自身提交号。Chrome 由 QA 独立实跑一条部分失败任务，本轮只把前端改好并构建同步；收口阶段未改业务代码、未重建镜像。
+
+### 开工前记录（2026-11-12 19:08 实测，非推算；历史状态，保留作对照）
 
 | 项 | 实测值 |
 |---|---|

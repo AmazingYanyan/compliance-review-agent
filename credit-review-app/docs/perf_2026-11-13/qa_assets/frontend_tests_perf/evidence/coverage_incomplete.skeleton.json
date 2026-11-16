@@ -1,0 +1,383 @@
+{
+  "schema_version": "qa-coverage-incomplete-skeleton-1",
+  "ran_at": "2026-11-12T15:56:40.776Z",
+  "scope": "Chrome 覆盖不全用例骨架 + 固定响应拦截自测；不是最终 UI 验收，未使用真实服务数据",
+  "skeleton_mode": true,
+  "base_url": "http://localhost:8080",
+  "fixture": "frontend/tests/perf/fixtures/coverage_incomplete.results.json",
+  "expected": {
+    "_note": "以下为「修复后应达到」的预期；带 pending 标记的断言在实现落地前不判定 PASS/FAIL。",
+    "reason_label_current": "识别覆盖不完整，请人工复核",
+    "reason_label_source": "frontend/src/api/types.ts NOT_FOUND_REASON_LABEL.coverage_incomplete",
+    "banner_text": null,
+    "banner_text_note": "实现后填入实际任务级覆盖不全提示文案；可通过 QA_EXPECTED_BANNER_TEXT 注入，脚本会把 C13 从 PENDING 升级为真实断言",
+    "complete_409_code": "COVERAGE_INCOMPLETE",
+    "complete_409_code_note": "COVERAGE_INCOMPLETE 已由架构师定值（PM 明确以架构师定值为准）；脚本仍支持 QA_EXPECTED_COMPLETE_409_CODE 覆盖，便于后续改名",
+    "run_coverage_complete": false,
+    "complete_button_after_fix": "按钮 disabled，且说明「暂不能完成」（PM 验收口径）；不得只靠后端 409 兜底",
+    "persists_after_refresh": true,
+    "api_and_workbench_consistent": true,
+    "complete_button_disabled_label": "暂不能完成",
+    "zero_write_on_409": "complete_task 覆盖不全时返回 409 且零写入（PM 要求）；骨架记录全部写请求并核对 409 后无新增写入",
+    "coverage_incomplete_is_not_readonly": "覆盖不全 ≠ 整体只读：disabled 只针对「完成」一个动作；已有摘录仍可接受/拒绝、出处仍可点击、刷新后提示仍在。历史已完成任务才是全部写操作 409 TASK_READ_ONLY，两种状态不得复用同一套禁用逻辑。",
+    "zero_write_assertion_scope": "C9b/C9c 的「零写入」只核完成动作相关的状态写入；接受/拒绝的正常 PATCH 属允许写入，不判违规。",
+    "complete_api_assertion_independent_of_ui": "即使前端完成按钮 disabled，也必须独立「绕过前端直接打 API」验 409 + detail.code + 零写入（C9c），不得因前端封了就省掉接口层证据。",
+    "injected_expectation_label": "C8/C14（及 C13）由 QA_EXPECTED_* 注入值升级为 PASS 时，证据须标注「预期由注入的 QA_EXPECTED_* 驱动」，避免误读为前端文案已实测（沉淀经验第 53 条）。",
+    "list_results_new_fields_after_T01": {
+      "coverage_complete": false,
+      "coverage_affected_check_ids": [
+        "charter.approval_body"
+      ],
+      "assertion": "C7b 断言 /results 与 GET run 的 coverage_complete 一致，且受影响检查项 id 命中；刷新后仍在（API 与工作台同一状态）"
+    },
+    "complete_409_code_scope_note": "本 fixture 是覆盖不全/超时耗尽场景（run READY、coverage_complete=false、coverage_affected_check_ids=[charter.approval_body]，对应 S8）。C9c / C9c-0 的期望码保持 COVERAGE_INCOMPLETE；auth_401（run FAILED）场景单独断言 RUN_NOT_READY，两场景分别验、不合并。"
+  },
+  "injected_expectations": {
+    "QA_EXPECTED_COMPLETE_409_CODE": null,
+    "QA_COMPLETE_BLOCKED_LABEL": null,
+    "QA_EXPECTED_BANNER_TEXT": null,
+    "note": "沉淀经验第 53 条：若 C13/C14 由注入值升级为 PASS，证据必须标注「预期由注入的 QA_EXPECTED_* 驱动」，不得误读为前端文案已实测。当前 4 项 PENDING 如实保留，不补结果。"
+  },
+  "evidence": {
+    "intercepted_run_views": [
+      {
+        "id": "qa-coverage-run-0001",
+        "task_id": "qa-coverage-task-0001",
+        "input_revision": 0,
+        "state": "READY",
+        "stage": "done",
+        "coverage_complete": false,
+        "files": [
+          {
+            "file_id": "qa-coverage-file-0001",
+            "effective_material_type": "articles_of_association"
+          }
+        ],
+        "error_code": null,
+        "created_at": "2026-01-01T00:00:00Z",
+        "finished_at": "2026-01-01T00:00:01Z"
+      }
+    ],
+    "complete_response": {
+      "status": 409,
+      "body": {
+        "detail": {
+          "code": "COVERAGE_INCOMPLETE",
+          "message": "识别覆盖不完整，请人工复核后重试"
+        }
+      },
+      "request": {
+        "run_id": "qa-coverage-run-0001",
+        "input_revision": 0
+      }
+    },
+    "decision_requests": [
+      {
+        "method": "PATCH",
+        "path": "/api/v1/tasks/qa-coverage-task-0001/results/qa-coverage-result-hit/decision",
+        "body": {
+          "run_id": "qa-coverage-run-0001",
+          "decision": "accepted",
+          "reject_reason": null
+        }
+      }
+    ],
+    "write_requests": [
+      {
+        "method": "PATCH",
+        "path": "/api/v1/tasks/qa-coverage-task-0001/results/qa-coverage-result-hit/decision",
+        "status": 200
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/tasks/qa-coverage-task-0001/complete",
+        "status": 409
+      },
+      {
+        "method": "POST",
+        "path": "/api/v1/tasks/qa-coverage-task-0001/complete",
+        "status": 409
+      }
+    ],
+    "complete_button_state": {
+      "count": 1,
+      "disabled": false
+    },
+    "skeleton_mode": true,
+    "csrf": {
+      "header_sent": true,
+      "source": "fixture responses.me.csrf_token",
+      "origin": "http://localhost:8080",
+      "note": "拦截自测用 fixture/environment 值；真实服务定向回归必须从登录响应取 token 并保持会话 cookie jar"
+    }
+  },
+  "intercepted_request_count": 17,
+  "intercepted_requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/files",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/results",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/results/qa-coverage-result-hit/decision",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/results",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/assets/qa-coverage-asset-0001",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/runs/qa-coverage-run-0001",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/results",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/complete",
+      "status": 409,
+      "matched": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/complete",
+      "status": 409,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/files",
+      "status": 200,
+      "matched": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/tasks/qa-coverage-task-0001/results",
+      "status": 200,
+      "matched": true
+    }
+  ],
+  "summary": {
+    "PASS": 17,
+    "FAIL": 0,
+    "PENDING": 4
+  },
+  "expected_case_names": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C7b",
+    "C8",
+    "C9",
+    "C9b",
+    "C9c-0",
+    "C9c",
+    "C10",
+    "C11",
+    "C12",
+    "C13",
+    "C14",
+    "C15",
+    "C16",
+    "C17"
+  ],
+  "not_executed_cases": [],
+  "case_content_versions": {
+    "C1": "v1",
+    "C2": "v1",
+    "C3": "v1",
+    "C4": "v1",
+    "C5": "v1",
+    "C6": "v1",
+    "C7": "v1",
+    "C7b": "v1-list-results-coverage",
+    "C8": "v1",
+    "C9": "v1",
+    "C9b": "v2-task-id-filter",
+    "C9c-0": "v1-csrf-403-precheck",
+    "C9c": "v2-csrf-header-plus-task-id-zero-write",
+    "C10": "v1",
+    "C11": "v1",
+    "C12": "v1",
+    "C13": "v1",
+    "C14": "v1",
+    "C15": "v1",
+    "C16": "v1",
+    "C17": "v1-coverage-not-readonly"
+  },
+  "prior_evidence_path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/credit-review-app/frontend/tests/perf/evidence/coverage_incomplete.skeleton.json",
+  "case_version_diffs_vs_prior": [],
+  "revision_check_note": "经验 53 + PM 加固：动态 not_executed_cases 只按名称判断，识别不了「同名但内容已修订」。case_content_versions 记录每个用例的内容版本；比对本次与上一份证据即可发现版本变化，版本变化的用例即使名称出现过也需重跑。case_version_diffs_vs_prior 非空时须显式复核，交付说明以人工标注为准并注明原因。本次交付两份清单未打架：重跑后 not_executed_cases=[]，修订前证据的 measured_before_revision / pending_rerun_cases 已随新证据覆盖而消失。",
+  "coverage_note": "经验 53：summary 只统计 results 里实际执行过的用例；not_executed_cases 列出本轮未跑用例，不得把 summary 数字读成所有预期用例均已通过。",
+  "results": [
+    {
+      "status": "PASS",
+      "name": "C1 条目级覆盖不全提示文案可见",
+      "detail": "文案=\"识别覆盖不完整，请人工复核\" 命中 1 处"
+    },
+    {
+      "status": "PASS",
+      "name": "C2 覆盖不全时已有摘录仍可查看",
+      "detail": "摘录卡片存在且含「第十七条」"
+    },
+    {
+      "status": "PASS",
+      "name": "C3 已有摘录提供「接受」入口",
+      "detail": "接受按钮数=1"
+    },
+    {
+      "status": "PASS",
+      "name": "C4 点击「接受」发出 PATCH 且命中该 result_id",
+      "detail": "PATCH 请求=[\"/api/v1/tasks/qa-coverage-task-0001/results/qa-coverage-result-hit/decision\"]"
+    },
+    {
+      "status": "PASS",
+      "name": "C5 出处定位按钮存在",
+      "detail": "按钮数=1"
+    },
+    {
+      "status": "PASS",
+      "name": "C6 定位后材料预览页码变为出处物理页 7",
+      "detail": "页面含「第 7 页」=true"
+    },
+    {
+      "status": "PASS",
+      "name": "C7 run 接口返回 coverage_complete=false 且与工作台覆盖不全提示一致",
+      "detail": "run.coverage_complete=false 错误码=null"
+    },
+    {
+      "status": "PASS",
+      "name": "C7b list_results 覆盖字段与 run 视图、工作台提示三方一致",
+      "detail": "results.coverage_complete=false run.coverage_complete=false affected=[\"charter.approval_body\"]"
+    },
+    {
+      "status": "PASS",
+      "name": "C8 记录完成按钮当前状态（当前实现仍可点击）",
+      "detail": "按钮数=1 disabled=false；PM 要求实现后应 disabled 且说明「暂不能完成」"
+    },
+    {
+      "status": "PASS",
+      "name": "C9 点击完成后收到 409 且 detail.code 可断言",
+      "detail": "status=409 code=COVERAGE_INCOMPLETE 期望码=COVERAGE_INCOMPLETE"
+    },
+    {
+      "status": "PASS",
+      "name": "C9b 完成动作零状态写入（接受/拒绝的正常写入不判违规）",
+      "detail": "点击前写请求=1（含 C4 接受动作的正常 PATCH，属允许写入）；点击后新增=[{\"method\":\"POST\",\"path\":\"/api/v1/tasks/qa-coverage-task-0001/complete\",\"status\":409}]；本任务 2xx 违规写入=0"
+    },
+    {
+      "status": "PASS",
+      "name": "C10 完成失败原因在页面上可见",
+      "detail": "message=\"识别覆盖不完整，请人工复核后重试\" 命中 1 处"
+    },
+    {
+      "status": "PASS",
+      "name": "C9c-0 先排除 403（CSRF / 会话前置已就位）",
+      "detail": "status=409；若为 403 说明缺 X-CSRF-Token / Origin 或 cookie 会话，不是业务 bug"
+    },
+    {
+      "status": "PASS",
+      "name": "C9c 绕过 UI 直接调完成接口仍 409 + detail.code 可断言 + 零写入",
+      "detail": "status=409 code=COVERAGE_INCOMPLETE 期望码=COVERAGE_INCOMPLETE；本任务新增写请求=[{\"method\":\"POST\",\"path\":\"/api/v1/tasks/qa-coverage-task-0001/complete\",\"status\":409}]；2xx 违规写入=0"
+    },
+    {
+      "status": "PASS",
+      "name": "C11 刷新后覆盖不全提示仍在",
+      "detail": "刷新后命中 1 处"
+    },
+    {
+      "status": "PASS",
+      "name": "C12 刷新后已有摘录仍可见",
+      "detail": "摘录卡片仍在"
+    },
+    {
+      "status": "PASS",
+      "name": "C17 覆盖不全 ≠ 整体只读：接受/拒绝与出处定位仍可用",
+      "detail": "接受按钮=true 出处定位=true；完成按钮 disabled 不得复用成全局只读"
+    },
+    {
+      "status": "PENDING",
+      "name": "C13 任务级覆盖不全 banner 文案",
+      "detail": "通过 QA_EXPECTED_BANNER_TEXT 注入实现后的实际文案，即可把本项升级为真实断言（当前为 null）"
+    },
+    {
+      "status": "PENDING",
+      "name": "C14 实现后完成按钮应 disabled 且说明「暂不能完成」",
+      "detail": "当前 disabled=false；PM 要求实现后按钮不可用且说明「暂不能完成」。可用 QA_COMPLETE_BLOCKED_LABEL 覆盖文案；错误码 COVERAGE_INCOMPLETE 已由架构师定值。"
+    },
+    {
+      "status": "PENDING",
+      "name": "C15 覆盖不全 run 的真实服务定向接口回归（API 与工作台一致、刷新后仍在）",
+      "detail": "本骨架全部走 page.route 拦截；实现完成后需按 README 的定向接口回归清单补跑。"
+    },
+    {
+      "status": "PENDING",
+      "name": "C16 正常完成 / 历史已完成只读回看",
+      "detail": "团长要求优先用定向接口回归，本 Chrome 骨架不覆盖；留待实现后补跑。"
+    }
+  ],
+  "pending_note": "所有 PENDING 项均标注「待实现后补跑」；未跑的用例不写任何结果数字。"
+}

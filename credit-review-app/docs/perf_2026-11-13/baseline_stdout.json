@@ -1,0 +1,2243 @@
+{
+  "schema_version": "baseline-serial-1",
+  "baseline_date": "2026-11-12",
+  "generated_at": "2026-11-12T16:00:07.074517+00:00",
+  "status": "failed",
+  "execution": {
+    "mode": "in_container_synchronous_call",
+    "container": "credit-review-app-worker-1",
+    "entry_point": "run_pipeline.func(str(run_id))",
+    "script": "scripts/baseline_serial.py",
+    "via_procrastinate_queue": false,
+    "queue_job_id": null,
+    "queue_scheduling_overhead_included": false,
+    "execution_note": "在 worker 容器内同步直接调用 Procrastinate Task 的原始函数 run_pipeline.func，未调用 defer/enqueue，不经过队列调度，故队列轮询与调度开销不计入本基线；Result / ResultSource / RunStep / ProcessingRun 均由业务代码正常真实落库。",
+    "observation_method": "脚本层 monkeypatch：LLMClient._chat、LLMClient.complete_json、text_search.chunk_source_blocks、classification.chunk_blocks、processing_pipeline.search_check_item 与四个阶段函数；未改业务代码、未改 models.py、未加迁移、未加接口、未重建 worker 镜像。",
+    "docker_exec_stdin_flag": "-i",
+    "evidence_container_path": "/tmp/t02_baseline_failed.json",
+    "evidence_retrieval_fallback": "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json",
+    "probe_only": false
+  },
+  "fingerprints": {
+    "ocr_json": {
+      "host_absolute_path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json",
+      "container_path": "/tmp/t02_ocr_slice.json",
+      "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "size_bytes": 143880,
+      "page_count": 15,
+      "note": "原《北京银行股份有限公司章程》PDF 物理第 1–15 页，1:1 对应；原 PDF 共 62 页",
+      "sha256_matches_fixed_constant": true
+    },
+    "checklist": {
+      "version": "borrower-wcl-v1",
+      "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+      "leaf_count": 18,
+      "charter_leaf_ids": [
+        "charter.business_scope",
+        "charter.approval_body",
+        "charter.voting_ratio",
+        "charter.guarantee_restrictions",
+        "charter.legal_representative_signature_authority",
+        "charter.ownership_and_special_terms"
+      ]
+    },
+    "models": {
+      "llm_text_model": "qwen3.8-max-0902",
+      "llm_vision_model": "qwen3.8-max-0902"
+    },
+    "prompts": {
+      "SEARCH_SYSTEM": {
+        "sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "chars": 220
+      },
+      "CLASSIFY_SYSTEM": {
+        "sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "chars": 213
+      },
+      "VISION_SYSTEM": {
+        "sha256": "ceda71c329b68205892464b37f4b8af3a4e94c1c2bb51f8afadfd00b2f46602a",
+        "chars": 116
+      },
+      "TEXT_SEARCH_SCHEMA": {
+        "sha256": "110b105b0fba242140a6eb2ecd5248f90140e17ca04ca407a985d2fb8e911fde"
+      },
+      "CLASSIFICATION_SCHEMA": {
+        "sha256": "4e87413875f53aac8c2b198df842e0b2a6845447a6446e71a431f16730c30daf"
+      },
+      "VISION_MATCH_SCHEMA": {
+        "sha256": "5fdf211739b0353e3f92fda103e41545d8917f19a585a5ee77fb8aa605f6a28e"
+      }
+    },
+    "window": {
+      "llm_window_characters": 8000,
+      "llm_window_overlap_characters": 500,
+      "runtime_settings_match_constants": true
+    },
+    "runtime_llm": {
+      "llm_request_timeout_seconds": 180,
+      "llm_max_transient_retries": 2,
+      "llm_max_concurrency": 2,
+      "llm_max_output_tokens": 4096,
+      "llm_max_format_repairs": 1,
+      "app_mode": "real",
+      "pipeline_config_version": "pipeline-v2"
+    }
+  },
+  "configuration": {
+    "ocr_recognition": "未执行（复用既有 OCR JSON，非本轮计时对象）",
+    "ocr_reuse_note": "本轮没有调用外部 OCR 服务、没有重新识别；OCR 识别耗时不参与本基线。OCR JSON 导入落库耗时与后处理耗时严格分栏。",
+    "fixed_items": "见 fingerprints；并发对照须逐项比对输入 sha256，但固定项一致只保证输入相同，不保证窗口边界 / 窗口文本 hash / Result.fingerprint 复现（见 sample_limitations.run_bound_artifacts）"
+  },
+  "reproduction": {
+    "working_directory": "credit-review-app 项目根目录（Git 根，分支 feature/credit-review）",
+    "steps": [
+      "OCR_JSON=\"/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json\"",
+      "shasum -a 256 \"$OCR_JSON\"   # 期望 8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "docker cp \"$OCR_JSON\" credit-review-app-worker-1:/tmp/baseline_ocr_slice.json",
+      "docker exec -i credit-review-app-worker-1 python - --evidence-out /tmp/baseline_evidence.json < scripts/baseline_serial.py > /tmp/baseline_stdout.json   # -i 必须；脚本同时把证据写进容器内 /tmp/baseline_evidence.json",
+      "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json   # 若宿主机 stdout 管道被断开，用这一条取回容器内落盘的同一份证据",
+      "python3 -c \"import json,pathlib; d=json.loads(pathlib.Path('/tmp/baseline_stdout.json').read_text()); pathlib.Path('/tmp/baseline_raw.json').write_text(json.dumps(d, ensure_ascii=False, indent=2)+'\\n', encoding='utf-8')\"",
+      "python3 -c \"import json;d=json.load(open('docs/perf_baseline_2026-11-12.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 交付版证据自检（需该文件存在；校验的是已交付证据，非本次新产出）"
+    ],
+    "optional_single_steps": [
+      "docker exec credit-review-app-worker-1 python -m app.cli import-ocr-json --file-id <file_id> --json /tmp/baseline_ocr_slice.json   # 仅导入，不触发外部 OCR",
+      "登录 liyanyan 取 session cookie 后：GET /api/v1/tasks/<task_id>/runs/<run_id>/timing   # 只读；若隔离任务已软删需先把 tasks.deleted_at 置 NULL",
+      "docker exec credit-review-app-db-1 psql -U postgres -d app -c \"select id,state,started_at,finished_at from processing_runs where id='<run_id>';\"",
+      "python3 -c \"import json;d=json.load(open('/tmp/baseline_raw.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 本次新产出自检：读 steps[5] 产出的 /tmp/baseline_raw.json"
+    ],
+    "probe_only": "docker exec -i credit-review-app-worker-1 python - --probe-only < scripts/baseline_serial.py   # 不调用模型，只实测窗口数与指纹",
+    "note": "并发对照必须复用同一 OCR JSON（同一 SHA256）、同一清单版本与 hash、同一提示词 sha256、同一 8000/500 窗口参数与同一模型 ID；但固定项一致只保证输入相同。窗口文本 hash、逐窗口字符数、messages/user hash 与 Result.fingerprint 均绑定该次导入的 DB 行，因此必须再复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID）；跨 run 逐条比对改用 text_sha256 + source_page_number，不要用 fingerprint。",
+    "deliverable_note": "QA 独立复验后补充披露：steps[5] 只把脚本原始 stdout 格式化到 /tmp/baseline_raw.json，不可覆盖交付证据 docs/perf_baseline_2026-11-12.json；交付版另需按证据 post_processing_notes.what_changed 补回人工段（session_notes / git_state / clause_verdicts_manual / post_processing_notes / database_verification）、2 处标签修正与 QA 披露。steps[6] 自检命令针对交付版证据（校验仓库里已交付的证据文件，非本次新产出）；本次新跑批的自检见 optional_single_steps 中读取 /tmp/baseline_raw.json 的那条（由 steps[5] 产出），两者不可混用。"
+  },
+  "blockers": [],
+  "isolation": {
+    "task_id": "9bc5d1f6-b31f-4732-b5ac-967fece61a0b",
+    "file_id": "7b69f9b9-0cb1-4b29-9532-94e2e9b8cd18",
+    "owner_user_id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+    "task_name": "QA-BASELINE-短样本串行-2026-11-12",
+    "file_name": "《北京银行股份有限公司章程》 切分15页.PDF",
+    "file_sha256_note": "隔离造数占位值（OCR JSON 非 PDF 原件），不参与任何业务判断",
+    "touched_existing_tasks": false,
+    "protected_tasks": [
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd (REVIEWING)",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384 (COMPLETED, 77 条结果)"
+    ],
+    "run_id": "5c67b33c-4016-42db-8db2-80e464d7c157",
+    "soft_deleted_at": "2026-11-12T16:00:07.356290+00:00",
+    "soft_delete_note": "仅软删隔离 tasks 行；run / results / result_sources / run_steps / ocr_* 全部保留可追溯。如需复验 timing 只读接口，先 UPDATE tasks SET deleted_at=NULL WHERE id='<task_id>'。"
+  },
+  "windows": {
+    "preflight": {
+      "measurement_method": "真实调用 app.text_search.chunk_source_blocks / app.classification.chunk_blocks，输入为 import-ocr-json 落库后的 OcrBlock（非预计值）",
+      "parameters": {
+        "max_chars": 8000,
+        "overlap_chars": 500
+      },
+      "source_block_count": 176,
+      "source_total_characters": 9570,
+      "classify_block_count": 176,
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "07626c0cd7e63e7359f0a43e53622260346cc95e649f07793de04b4bb2a1c117"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "b4549b9fafdce72a853937bf07c16e8ef35886344ae9cc37f2fb764d1740bf74"
+          }
+        ]
+      },
+      "per_check_item_search": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "07626c0cd7e63e7359f0a43e53622260346cc95e649f07793de04b4bb2a1c117"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "b4549b9fafdce72a853937bf07c16e8ef35886344ae9cc37f2fb764d1740bf74"
+          }
+        ],
+        "note": "每个文本类检查项复用同一组 file_ids 与同一组 OcrBlock，故窗口数相同"
+      }
+    },
+    "observed_during_run": {
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "07626c0cd7e63e7359f0a43e53622260346cc95e649f07793de04b4bb2a1c117",
+            "source_pages": []
+          },
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "b4549b9fafdce72a853937bf07c16e8ef35886344ae9cc37f2fb764d1740bf74",
+            "source_pages": []
+          }
+        ]
+      },
+      "per_check_item": {},
+      "chunk_events": [
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 0,
+          "bundle_id": "w0",
+          "block_count": 133,
+          "char_count": 7998,
+          "window_text_sha256": "07626c0cd7e63e7359f0a43e53622260346cc95e649f07793de04b4bb2a1c117",
+          "source_pages": []
+        },
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 1,
+          "bundle_id": "w1",
+          "block_count": 51,
+          "char_count": 2095,
+          "window_text_sha256": "b4549b9fafdce72a853937bf07c16e8ef35886344ae9cc37f2fb764d1740bf74",
+          "source_pages": []
+        }
+      ]
+    },
+    "status": "实测（非预计值）",
+    "preflight_matches_observed": true
+  },
+  "timing": {
+    "setup_isolated_data_seconds": 0.056,
+    "ocr_recognition": "未执行（复用既有 JSON，非本轮计时对象）",
+    "ocr_json_import_seconds": 0.132,
+    "ocr_and_after_split_note": "OCR 识别与 OCR 之后的处理不是同一次计时：前者本轮未执行，后者为 OCR JSON 导入落库 + classify/search/vision/complete_run。",
+    "create_run_seconds": 0.003,
+    "post_processing_seconds": 0.031,
+    "total_measured_seconds": 0.235,
+    "total_scope": "从造隔离数据开始到 run_pipeline.func 返回（含造数据、OCR JSON 导入、建 run、三个阶段与 complete_run、DB 写入）；不含证据读取与软删",
+    "stages_wall_clock_seconds": {
+      "classify": 0.007,
+      "search": null,
+      "vision": null,
+      "complete_run": null
+    },
+    "stage_events": [
+      {
+        "stage": "classify",
+        "started_at": "2026-11-12T16:00:07.299270+00:00",
+        "elapsed_seconds": 0.007,
+        "chat_call_count": 2,
+        "complete_json_call_count": 1
+      }
+    ],
+    "run_step_elapsed_seconds": {
+      "stage:classify": 0.011
+    },
+    "run_steps": [
+      {
+        "step_key": "stage:classify",
+        "state": "FAILED",
+        "attempt": 0,
+        "started_at": "2026-11-12T16:00:07.295733+00:00",
+        "finished_at": "2026-11-12T16:00:07.306289+00:00",
+        "elapsed_seconds": 0.011,
+        "last_error_code": "CLASSIFY_FAILED:LLMFatalError"
+      }
+    ],
+    "run_steps_source": "直接读 run_steps 表，与只读接口 GET /tasks/{task_id}/runs/{run_id}/timing 同源；本次未通过 HTTP 调用该接口"
+  },
+  "run": {
+    "run_id": "5c67b33c-4016-42db-8db2-80e464d7c157",
+    "task_id": "9bc5d1f6-b31f-4732-b5ac-967fece61a0b",
+    "state": "FAILED",
+    "stage": null,
+    "coverage_complete": false,
+    "error_code": "CLASSIFY_FAILED:LLMFatalError",
+    "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+    "started_at": "2026-11-12T16:00:07.280375+00:00",
+    "finished_at": "2026-11-12T16:00:07.308912+00:00",
+    "elapsed_seconds": 0.029,
+    "database_verified": true,
+    "verification": "PostgreSQL processing_runs 表按 id 查询命中（真实存在的 ProcessingRun.id）"
+  },
+  "model_calls": {
+    "chat_request_count": 2,
+    "complete_json_call_count": 1,
+    "per_request": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T16:00:07.306017+00:00",
+        "elapsed_seconds": 0.0,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "7d0eb38a7a7049c1f8e989ddfc009e5bc861e78847fe0de4ea82c42682222998",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest",
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 2,
+        "started_at": "2026-11-12T16:00:07.306135+00:00",
+        "elapsed_seconds": 0.0,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_object",
+        "messages_len": 2,
+        "messages_sha256": "7d0eb38a7a7049c1f8e989ddfc009e5bc861e78847fe0de4ea82c42682222998",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest",
+        "is_format_repair_attempt": false
+      }
+    ],
+    "per_complete_json": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T16:00:07.305782+00:00",
+        "elapsed_seconds": 0.0,
+        "schema_name": "classification_output",
+        "check_item_id": null,
+        "window_index": 0,
+        "window_text_hash": "07626c0cd7e63e7359f0a43e53622260346cc95e649f07793de04b4bb2a1c117",
+        "system_sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "user_sha256": "1a337851aa09aa691765bd50ceb22433be8beb3cb5856413c0a47106f19ace42",
+        "user_chars": 14928,
+        "has_images": false,
+        "stage": "classify",
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest"
+      }
+    ],
+    "chat_elapsed_distribution_seconds": {
+      "count": 2,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "complete_json_elapsed_distribution_seconds": {
+      "count": 1,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "timeout_count": 0,
+    "timeout_detail": [],
+    "transient_error_count": 0,
+    "transient_error_detail": [],
+    "window_level_retry_count": 0,
+    "window_level_retry_detail": [],
+    "fatal_error_count": 2,
+    "format_error_count": 0,
+    "format_repair_chat_count": 0,
+    "note": "attempt 为 0-based 窗口级重试序号；其中 0 是首次派发，>=1 是 search_check_item 内 LLM_MAX_TRANSIENT_RETRIES 循环的重试。同一 complete_json 可能触发多次 _chat（json_schema 降级 json_object、_repair 格式修复），因此 chat_request_count >= complete_json_call_count 属正常。P95 口径（QA 独立复验后补充披露）：_dist 用 ordered[int(round((n-1)*0.95))]，n=14 取 ordered[12]=68.777s；常规线性插值 P95=93.893s、nearest-rank=140.537s，外部复算须同口径。14 次 attempt=0 由 timing.run_steps[].attempt（19 条全 0）与三个空 detail 推得，非逐次调用直接观测。"
+  },
+  "search_stage_per_check_item": [],
+  "results": {
+    "total_result_rows": 0,
+    "hit_rows": 0,
+    "not_found_rows": 0,
+    "not_found_reason_counts": {},
+    "by_check_item": {
+      "license.business_scope": {
+        "material_type": "business_license",
+        "label": "经营范围",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "license.operating_term": {
+        "material_type": "business_license",
+        "label": "营业期限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "license.registration_status": {
+        "material_type": "business_license",
+        "label": "登记状态",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.business_scope": {
+        "material_type": "articles_of_association",
+        "label": "经营范围条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.approval_body": {
+        "material_type": "articles_of_association",
+        "label": "借款与担保的决议权限／批准机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.voting_ratio": {
+        "material_type": "articles_of_association",
+        "label": "需要多少表决权比例通过？",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.guarantee_restrictions": {
+        "material_type": "articles_of_association",
+        "label": "对外担保的限制性规定",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.legal_representative_signature_authority": {
+        "material_type": "articles_of_association",
+        "label": "法定代表人的签字权限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.ownership_and_special_terms": {
+        "material_type": "articles_of_association",
+        "label": "股权结构与特殊条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.company_name": {
+        "material_type": "audited_financials",
+        "label": "报表所属企业",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.reporting_period": {
+        "material_type": "audited_financials",
+        "label": "报告年度",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.balance_sheet": {
+        "material_type": "audited_financials",
+        "label": "资产负债表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.income_statement": {
+        "material_type": "audited_financials",
+        "label": "利润表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.cash_flow_statement": {
+        "material_type": "audited_financials",
+        "label": "现金流量表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_institution": {
+        "material_type": "audited_financials",
+        "label": "审计机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_seal": {
+        "material_type": "audited_financials",
+        "label": "审计单位印章",
+        "result_mode": "seal",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.cpa_signature": {
+        "material_type": "audited_financials",
+        "label": "注册会计师签名",
+        "result_mode": "signature",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_opinion": {
+        "material_type": "audited_financials",
+        "label": "审计意见",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      }
+    },
+    "text_policy": "大段原文只存 200 字摘要 + SHA256 + fingerprint + 出处页码；未整份塞入证据"
+  },
+  "clause_matrix": {
+    "matching_rule": "对 OCR 原文与 Result.text 去空白后做精确短语子串匹配，出处页码取 ResultSource.source_page_number",
+    "matrix": [
+      {
+        "id": "C1",
+        "physical_page": 7,
+        "title": "第十七条 业务范围（含外汇借款 / 外汇担保 / 提供信用证服务及担保 / 贷款）",
+        "target_check_id": "charter.business_scope",
+        "keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "ocr_pages_scanned": [
+          7
+        ],
+        "source_ocr_matched_keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "经营范围条款；担保类检查项若引用本页即属误命中"
+      },
+      {
+        "id": "C2",
+        "physical_page": 8,
+        "title": "第二十四条 不以赠与/垫资/担保/补偿/贷款等形式资助购股人",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「担保」字样，但属于股权资助限制，非对外担保规则"
+      },
+      {
+        "id": "C3",
+        "physical_page": 8,
+        "title": "第二十五条 增加注册资本须经股东大会分别作出决议",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "决议机构证据"
+      },
+      {
+        "id": "C4",
+        "physical_page": 13,
+        "title": "第四十一条 5% 以上有表决权股份股东质押书面报告 / 控股股东借款担保",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「借款担保」字样，属股东行为规范，非对外担保决议规则"
+      },
+      {
+        "id": "C5",
+        "physical_page": 13,
+        "title": "第四十三条 本行对股东贷款的条件不得优于其他借款人同类贷款的条件",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "关联交易限制"
+      },
+      {
+        "id": "C6",
+        "physical_page": 13,
+        "title": "第四十四条 授信逾期应限制其在股东大会的表决权",
+        "target_check_id": "charter.voting_ratio",
+        "keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "表决权限制"
+      },
+      {
+        "id": "C7",
+        "physical_page": 14,
+        "title": "股权出质事前书面告知董事会 / 借款余额超股权净值不得质押 / 质押达 50% 限制表决权",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "事前书面告知董事会",
+          "借款余额超过其持有经审计的上一年度股权净值",
+          "50%"
+        ],
+        "ocr_pages_scanned": [
+          14
+        ],
+        "source_ocr_matched_keywords": [
+          "50%"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "股权结构与特殊条款"
+      },
+      {
+        "id": "C8",
+        "physical_page": 15,
+        "title": "第四十六条 股东大会职权（十二）审议批准第四十七条担保事项 / 3% 提案 / 不得授权董事会",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第四十六条",
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "批准机构核心证据"
+      },
+      {
+        "id": "C9",
+        "physical_page": 15,
+        "title": "第四十七条 五类须经股东大会审议通过的对外担保行为",
+        "target_check_id": "charter.guarantee_restrictions",
+        "keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "净资产50%",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "对外担保限制性规定核心证据"
+      },
+      {
+        "id": "C10",
+        "physical_page": null,
+        "title": "法定代表人的签字权限（样本外条款）",
+        "target_check_id": "charter.legal_representative_signature_authority",
+        "keywords": [
+          "法定代表人",
+          "签字权限"
+        ],
+        "ocr_pages_scanned": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "法定代表人"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "仅通用词「法定代表人」命中（基线导入 176 块中 2 块，物理页 5 / 13）；全文「签字」「签署」「签名」「签章」0 出现（psql 只读复验），非目标条款，判样本外",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "物理 1–15 页大概率不存在，用于验证 no_matching_evidence 行为"
+      }
+    ],
+    "guarantee_vs_business_scope": {
+      "checked_check_item_ids": [
+        "charter.approval_body",
+        "charter.guarantee_restrictions"
+      ],
+      "false_positive_keywords": [
+        "外汇担保",
+        "提供信用证服务及担保",
+        "外汇借款"
+      ],
+      "guarantee_result_rows": [],
+      "any_foreign_exchange_guarantee_mis_hit": false
+    },
+    "status": "事实矩阵 + 规则化自动判定；人工逐条结论见 docs/REVIEW_HANDOFF.md 与本轮回传。QA 独立复验后补充披露：C6 / C10 标签已修正，不再出现「覆盖不全」字样。"
+  },
+  "bottleneck": {
+    "status": "实测",
+    "per_request_elapsed_distribution_seconds": {
+      "count": 2,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "per_complete_json_elapsed_distribution_seconds": {
+      "count": 1,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "serial_post_processing_seconds": 0.031,
+    "serial_total_measured_seconds": 0.235,
+    "stage_share_percent_of_post_processing": {
+      "classify": 22.581
+    },
+    "slowest_check_items": [],
+    "slowest_single_requests": [
+      {
+        "chat_seq": 1,
+        "elapsed_seconds": 0.0,
+        "check_item_id": null,
+        "stage": "classify",
+        "response_format_type": "json_schema"
+      },
+      {
+        "chat_seq": 2,
+        "elapsed_seconds": 0.0,
+        "check_item_id": null,
+        "stage": "classify",
+        "response_format_type": "json_object"
+      }
+    ],
+    "where_time_concentrates": "见 stage_share_percent_of_post_processing 与 slowest_check_items；结论文字见 docs/REVIEW_HANDOFF.md",
+    "estimates_not_measured": {
+      "status": "推算，非实测；基于本次串行实测的逐窗口/逐请求耗时，待并发实测验证",
+      "assumed_concurrency": 2,
+      "caveats": [
+        "忽略服务端限流、排队、连接建立、DB 写入与调度开销",
+        "忽略 token 竞争导致的单次请求变慢与重试放大",
+        "忽略多 run 并发时的全局上限争用",
+        "LLM_MAX_CONCURRENCY=2 当前串行链路未生效（无同时在途请求）"
+      ],
+      "window_level_parallel": {
+        "basis": "同一检查项内窗口并行（并发度取 LLM_MAX_CONCURRENCY），检查项之间仍串行；每个检查项耗时取该检查项所有窗口的最大值，总耗时取各检查项最大值之和",
+        "check_window_seconds_measured": {},
+        "check_max_after_window_parallel_seconds": {},
+        "ideal_total_seconds_if_checks_still_serial": 0,
+        "slowest_single_check_seconds": null,
+        "serial_sum_seconds": 0
+      },
+      "check_item_level_parallel": {
+        "basis": "各检查项总耗时串行求和；检查项之间并行（并发度取 LLM_MAX_CONCURRENCY），窗口仍串行",
+        "check_total_seconds_measured": {},
+        "ideal_total_seconds_if_windows_still_serial": null,
+        "slowest_single_check_seconds": null,
+        "serial_sum_seconds": 0
+      },
+      "global_two_layer_parallel": {
+        "basis": "所有 complete_json 调用视为可并行任务，全局并发度取 LLM_MAX_CONCURRENCY",
+        "ideal_total_seconds": 0.0,
+        "slowest_single_request_seconds": 0.0,
+        "serial_sum_seconds": 0.0
+      },
+      "measured_serial": {
+        "status": "实测",
+        "post_processing_seconds": 0.031,
+        "total_measured_seconds": 0.235,
+        "chat_request_count": 2,
+        "chat_elapsed_sum_seconds": 0.0
+      }
+    }
+  },
+  "sample_limitations": {
+    "status": "基于本次实测样本（15 页 / 约 9200 字符 / 窗口数见 windows）的局限说明",
+    "can_verify": [
+      "串行链路完整性：classify → search → vision → complete_run 全部真实执行且落库",
+      "计时字段齐全性：阶段墙钟耗时、RunStep 起止耗时、逐次请求耗时、OCR 导入与后处理分栏",
+      "条款召回与出处页码：Result.text 摘要 + text_sha256 + ResultSource.source_page_number 可核对；fingerprint 含随机 OcrBlock UUID，仅本次 run 内自洽（见 run_bound_artifacts）",
+      "超时与重试观测字段是否齐全（本次实测值见 model_calls；若为 0 即说明链路未触发）",
+      "no_matching_evidence 与 coverage_incomplete 的区分路径是否存在（本样本若未触发，需长样本/故障注入验证）",
+      "样本外条款（法定代表人签字权限）走 not_found 而非硬凑命中",
+      "经营范围「外汇担保」是否被担保类检查项误引（见 clause_matrix.guarantee_vs_business_scope）",
+      "窗口级容错分支（LLMFatalError / LLMTransientError / LLMFormatError）的代码路径可读性"
+    ],
+    "cannot_verify": [
+      "并发真实收益：本轮 0 个同时在途请求，LLM_MAX_CONCURRENCY=2 未生效；所有并发数字均为推算",
+      "服务端限流（429）与排队行为：短样本、低并发下不会暴露",
+      "窗口级与检查项级两层上限的相互作用与死锁/饥饿",
+      "多 run 并发时的全局上限与数据库会话隔离",
+      "长章程（62 页 / 多窗口）下的断句、住所串入、去重与总耗时量级",
+      "失败窗口只重试的幂等键与 fingerprint 合并去重行为（fingerprint 去重仅在同一 run / 同一批 OcrBlock UUID 内成立）"
+    ],
+    "needed_for_concurrency_validation": [
+      "更长样本：完整 62 页章程或等价的多窗口输入（窗口数 ≥ 6），使窗口级并发有实际可并行单位",
+      "同时派发多个检查项与多个窗口，能产生 ≥ 2 个在途请求",
+      "可调并发度（1/2/4/8）与多 run 并发对照，观测 429 / 限流 / P95 延迟变化",
+      "固定同一份 OCR JSON（同一 SHA256）+ 同一清单 hash + 同一提示词 sha256 只保证输入相同；并发对照须再复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID），跑多次取分布",
+      "注入超时/格式错误/致命错误，验证有限重试、停止派发、只重试失败段与覆盖不全标识",
+      "串行与并发结果按 (check_item_id, text_sha256, source_page_number) 逐条比对；不要用 fingerprint 跨 run 比对（含随机 OcrBlock UUID）"
+    ],
+    "run_bound_artifacts": {
+      "added_by": "QA 独立复验后补充披露（不重跑基线、不改业务代码）",
+      "status": "已实测（QA 用 --probe-only 独立实跑 2 次 + 本轮只读复算；非推算）",
+      "finding": "同一 OCR JSON（SHA256 不变）重复导入，source_block_count=176 / source_total_characters=9570 四次相同，但窗口边界、逐窗口字符数与窗口文本 sha256 每次都不同。",
+      "comparison": [
+        {
+          "source": "04:56 早期 probe",
+          "win0": "130 块 / 7991 字符 / eb28ab09…",
+          "win1": "57 块 / 2086 字符 / c5702341…"
+        },
+        {
+          "source": "05:09 交付基线（本次 run）",
+          "win0": "132 块 / 7984 字符 / 0ddb2baa…",
+          "win1": "58 块 / 2158 字符 / 7bc72b8a…"
+        },
+        {
+          "source": "QA probe#1",
+          "win0": "131 块 / 7983 字符 / aec6322f…",
+          "win1": "59 块 / 2137 字符 / 6a6cc477…"
+        },
+        {
+          "source": "QA probe#2",
+          "win0": "131 块 / 7984 字符 / 00cedfdc…",
+          "win1": "59 块 / 2092 字符 / 5a10ed30…"
+        }
+      ],
+      "comparison_source": "QA 第 1 轮独立复验报告（表格原值）+ 本轮证据 windows.preflight / observed_during_run；首行 win0 块数按 /tmp/baseline_probe_stdout.txt:139 订正为 130（QA 第 1 轮报告表格转录误差，主理人汇编时订正）",
+      "root_causes_business_side": [
+        "ocr_blocks.sequence_index 只有 25 个不同值却存 176 块；load_source_blocks / load_file_blocks 只 order_by(sequence_index)，同值行顺序由 DB 物理序决定 → 分窗边界漂移",
+        "_window_text() 把每次导入新生成的随机 OcrBlock UUID 拼进窗口文本 → window_text_sha256 / messages_sha256 / user_sha256 随 run 变",
+        "_fingerprint(check_item_id, block_id, start, end) 同样含随机 block_id → 同一段 text 在基线 run 与中断 run 的 fingerprint 全部不同（QA SQL JOIN 8/8 为不同）"
+      ],
+      "run_bound_values": [
+        "window_text_sha256",
+        "逐窗口字符数 / 窗口边界",
+        "messages_sha256",
+        "user_sha256",
+        "Result.fingerprint"
+      ],
+      "disclosure": "以上值均为「该次导入 DB 行（含 OcrBlock UUID）」绑定值，仅本次 run 内自洽；仅凭 OCR JSON SHA256 复现不出这些值。固定项指纹逐项一致只保证输入相同，不保证窗口级指纹复现。",
+      "rules": [
+        "并发对照必须复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID）",
+        "跨 run 逐条比对改用 text_sha256 + source_page_number，不要用 fingerprint",
+        "fingerprint 合并去重仅在「同一 run / 同一批 OcrBlock UUID 内」有效（同 run 内去重成立）"
+      ],
+      "technical_debt": "业务侧技术债（非本轮引入）：sequence_index 非唯一导致分窗不确定；block_id 进入窗口文本与 fingerprint。本轮不修改业务代码，仅如实披露，列为下一轮待修。"
+    }
+  },
+  "status_signals": [
+    "run.state=FAILED",
+    "run.coverage_complete=False",
+    "run.error_code=CLASSIFY_FAILED:LLMFatalError"
+  ]
+}
+{
+  "schema_version": "baseline-serial-1",
+  "baseline_date": "2026-11-12",
+  "generated_at": "2026-11-12T16:00:07.358965+00:00",
+  "status": "blocked",
+  "execution": {
+    "mode": "in_container_synchronous_call",
+    "container": "credit-review-app-worker-1",
+    "entry_point": "run_pipeline.func(str(run_id))",
+    "script": "scripts/baseline_serial.py",
+    "via_procrastinate_queue": false,
+    "queue_job_id": null,
+    "queue_scheduling_overhead_included": false,
+    "execution_note": "在 worker 容器内同步直接调用 Procrastinate Task 的原始函数 run_pipeline.func，未调用 defer/enqueue，不经过队列调度，故队列轮询与调度开销不计入本基线；Result / ResultSource / RunStep / ProcessingRun 均由业务代码正常真实落库。",
+    "observation_method": "脚本层 monkeypatch：LLMClient._chat、LLMClient.complete_json、text_search.chunk_source_blocks、classification.chunk_blocks、processing_pipeline.search_check_item 与四个阶段函数；未改业务代码、未改 models.py、未加迁移、未加接口、未重建 worker 镜像。",
+    "docker_exec_stdin_flag": "-i",
+    "evidence_container_path": "/tmp/t02_baseline_failed_exception.json",
+    "evidence_retrieval_fallback": "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json",
+    "probe_only": false
+  },
+  "fingerprints": {
+    "ocr_json": {
+      "host_absolute_path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json",
+      "container_path": "/tmp/t02_ocr_slice.json",
+      "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "size_bytes": 143880,
+      "page_count": 15,
+      "note": "原《北京银行股份有限公司章程》PDF 物理第 1–15 页，1:1 对应；原 PDF 共 62 页",
+      "sha256_matches_fixed_constant": true
+    },
+    "checklist": {
+      "version": "borrower-wcl-v1",
+      "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+      "leaf_count": 18,
+      "charter_leaf_ids": [
+        "charter.business_scope",
+        "charter.approval_body",
+        "charter.voting_ratio",
+        "charter.guarantee_restrictions",
+        "charter.legal_representative_signature_authority",
+        "charter.ownership_and_special_terms"
+      ]
+    },
+    "models": {
+      "llm_text_model": "qwen3.8-max-0902",
+      "llm_vision_model": "qwen3.8-max-0902"
+    },
+    "prompts": {
+      "SEARCH_SYSTEM": {
+        "sha256": "c93878b910516ec71fd14a5ec93337524693ec398cfc9b31970ad8c5f0d3d1a9",
+        "chars": 220
+      },
+      "CLASSIFY_SYSTEM": {
+        "sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "chars": 213
+      },
+      "VISION_SYSTEM": {
+        "sha256": "ceda71c329b68205892464b37f4b8af3a4e94c1c2bb51f8afadfd00b2f46602a",
+        "chars": 116
+      },
+      "TEXT_SEARCH_SCHEMA": {
+        "sha256": "110b105b0fba242140a6eb2ecd5248f90140e17ca04ca407a985d2fb8e911fde"
+      },
+      "CLASSIFICATION_SCHEMA": {
+        "sha256": "4e87413875f53aac8c2b198df842e0b2a6845447a6446e71a431f16730c30daf"
+      },
+      "VISION_MATCH_SCHEMA": {
+        "sha256": "5fdf211739b0353e3f92fda103e41545d8917f19a585a5ee77fb8aa605f6a28e"
+      }
+    },
+    "window": {
+      "llm_window_characters": 8000,
+      "llm_window_overlap_characters": 500,
+      "runtime_settings_match_constants": true
+    },
+    "runtime_llm": {
+      "llm_request_timeout_seconds": 180,
+      "llm_max_transient_retries": 2,
+      "llm_max_concurrency": 2,
+      "llm_max_output_tokens": 4096,
+      "llm_max_format_repairs": 1,
+      "app_mode": "real",
+      "pipeline_config_version": "pipeline-v2"
+    }
+  },
+  "configuration": {
+    "ocr_recognition": "未执行（复用既有 OCR JSON，非本轮计时对象）",
+    "ocr_reuse_note": "本轮没有调用外部 OCR 服务、没有重新识别；OCR 识别耗时不参与本基线。OCR JSON 导入落库耗时与后处理耗时严格分栏。",
+    "fixed_items": "见 fingerprints；并发对照须逐项比对输入 sha256，但固定项一致只保证输入相同，不保证窗口边界 / 窗口文本 hash / Result.fingerprint 复现（见 sample_limitations.run_bound_artifacts）"
+  },
+  "reproduction": {
+    "working_directory": "credit-review-app 项目根目录（Git 根，分支 feature/credit-review）",
+    "steps": [
+      "OCR_JSON=\"/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json\"",
+      "shasum -a 256 \"$OCR_JSON\"   # 期望 8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "docker cp \"$OCR_JSON\" credit-review-app-worker-1:/tmp/baseline_ocr_slice.json",
+      "docker exec -i credit-review-app-worker-1 python - --evidence-out /tmp/baseline_evidence.json < scripts/baseline_serial.py > /tmp/baseline_stdout.json   # -i 必须；脚本同时把证据写进容器内 /tmp/baseline_evidence.json",
+      "docker cp credit-review-app-worker-1:/tmp/baseline_evidence.json /tmp/baseline_stdout.json   # 若宿主机 stdout 管道被断开，用这一条取回容器内落盘的同一份证据",
+      "python3 -c \"import json,pathlib; d=json.loads(pathlib.Path('/tmp/baseline_stdout.json').read_text()); pathlib.Path('/tmp/baseline_raw.json').write_text(json.dumps(d, ensure_ascii=False, indent=2)+'\\n', encoding='utf-8')\"",
+      "python3 -c \"import json;d=json.load(open('docs/perf_baseline_2026-11-12.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 交付版证据自检（需该文件存在；校验的是已交付证据，非本次新产出）"
+    ],
+    "optional_single_steps": [
+      "docker exec credit-review-app-worker-1 python -m app.cli import-ocr-json --file-id <file_id> --json /tmp/baseline_ocr_slice.json   # 仅导入，不触发外部 OCR",
+      "登录 liyanyan 取 session cookie 后：GET /api/v1/tasks/<task_id>/runs/<run_id>/timing   # 只读；若隔离任务已软删需先把 tasks.deleted_at 置 NULL",
+      "docker exec credit-review-app-db-1 psql -U postgres -d app -c \"select id,state,started_at,finished_at from processing_runs where id='<run_id>';\"",
+      "python3 -c \"import json;d=json.load(open('/tmp/baseline_raw.json'));print(d['run']['run_id'], d['windows']['preflight']['classify']['measured_window_count'], d['model_calls']['chat_request_count'])\"   # 本次新产出自检：读 steps[5] 产出的 /tmp/baseline_raw.json"
+    ],
+    "probe_only": "docker exec -i credit-review-app-worker-1 python - --probe-only < scripts/baseline_serial.py   # 不调用模型，只实测窗口数与指纹",
+    "note": "并发对照必须复用同一 OCR JSON（同一 SHA256）、同一清单版本与 hash、同一提示词 sha256、同一 8000/500 窗口参数与同一模型 ID；但固定项一致只保证输入相同。窗口文本 hash、逐窗口字符数、messages/user hash 与 Result.fingerprint 均绑定该次导入的 DB 行，因此必须再复用同一批隔离数据（同一 file_id / 同一批 OcrBlock UUID）；跨 run 逐条比对改用 text_sha256 + source_page_number，不要用 fingerprint。",
+    "deliverable_note": "QA 独立复验后补充披露：steps[5] 只把脚本原始 stdout 格式化到 /tmp/baseline_raw.json，不可覆盖交付证据 docs/perf_baseline_2026-11-12.json；交付版另需按证据 post_processing_notes.what_changed 补回人工段（session_notes / git_state / clause_verdicts_manual / post_processing_notes / database_verification）、2 处标签修正与 QA 披露。steps[6] 自检命令针对交付版证据（校验仓库里已交付的证据文件，非本次新产出）；本次新跑批的自检见 optional_single_steps 中读取 /tmp/baseline_raw.json 的那条（由 steps[5] 产出），两者不可混用。"
+  },
+  "blockers": [
+    {
+      "stage": "setup_or_measurement",
+      "error": "RuntimeError: injected failure AFTER results/clause_matrix were collected",
+      "note": "未完成的字段保持缺失，不填推算值"
+    }
+  ],
+  "isolation": {
+    "task_id": "20320ab5-0dcb-4ee2-9765-2da212d24f2a",
+    "file_id": "80d96fc1-d29b-4ab3-8930-deef7663b4c1",
+    "owner_user_id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+    "task_name": "QA-BASELINE-短样本串行-2026-11-12",
+    "file_name": "《北京银行股份有限公司章程》 切分15页.PDF",
+    "file_sha256_note": "隔离造数占位值（OCR JSON 非 PDF 原件），不参与任何业务判断",
+    "touched_existing_tasks": false,
+    "protected_tasks": [
+      "607e6d41-4d47-4582-a5ad-07313b6c17bd (REVIEWING)",
+      "ee59108d-e4f1-4aa8-bf2e-afe07d457384 (COMPLETED, 77 条结果)"
+    ],
+    "run_id": "806d6283-584f-4061-8c1b-af47fa0b8508",
+    "soft_deleted_at": "2026-11-12T16:00:07.424714+00:00",
+    "soft_delete_note": "仅软删隔离 tasks 行；run / results / result_sources / run_steps / ocr_* 全部保留可追溯。如需复验 timing 只读接口，先 UPDATE tasks SET deleted_at=NULL WHERE id='<task_id>'。"
+  },
+  "windows": {
+    "preflight": {
+      "measurement_method": "真实调用 app.text_search.chunk_source_blocks / app.classification.chunk_blocks，输入为 import-ocr-json 落库后的 OcrBlock（非预计值）",
+      "parameters": {
+        "max_chars": 8000,
+        "overlap_chars": 500
+      },
+      "source_block_count": 176,
+      "source_total_characters": 9570,
+      "classify_block_count": 176,
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "0459e6c6e17d765fb64d669e144f23045df2f7bed7b2d9bad5ba189b1645dc90"
+          }
+        ]
+      },
+      "per_check_item_search": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047"
+          },
+          {
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "0459e6c6e17d765fb64d669e144f23045df2f7bed7b2d9bad5ba189b1645dc90"
+          }
+        ],
+        "note": "每个文本类检查项复用同一组 file_ids 与同一组 OcrBlock，故窗口数相同"
+      }
+    },
+    "observed_during_run": {
+      "classify": {
+        "measured_window_count": 2,
+        "windows": [
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 0,
+            "bundle_id": "w0",
+            "block_count": 133,
+            "char_count": 7998,
+            "window_text_sha256": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047",
+            "source_pages": []
+          },
+          {
+            "kind": "classify_window",
+            "check_item_id": null,
+            "window_index": 1,
+            "bundle_id": "w1",
+            "block_count": 51,
+            "char_count": 2095,
+            "window_text_sha256": "0459e6c6e17d765fb64d669e144f23045df2f7bed7b2d9bad5ba189b1645dc90",
+            "source_pages": []
+          }
+        ]
+      },
+      "per_check_item": {},
+      "chunk_events": [
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 0,
+          "bundle_id": "w0",
+          "block_count": 133,
+          "char_count": 7998,
+          "window_text_sha256": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047",
+          "source_pages": []
+        },
+        {
+          "kind": "classify_window",
+          "check_item_id": null,
+          "window_index": 1,
+          "bundle_id": "w1",
+          "block_count": 51,
+          "char_count": 2095,
+          "window_text_sha256": "0459e6c6e17d765fb64d669e144f23045df2f7bed7b2d9bad5ba189b1645dc90",
+          "source_pages": []
+        }
+      ]
+    },
+    "status": "实测（非预计值）",
+    "preflight_matches_observed": true
+  },
+  "timing": {
+    "setup_isolated_data_seconds": 0.002,
+    "ocr_recognition": "未执行（复用既有 JSON，非本轮计时对象）",
+    "ocr_json_import_seconds": 0.034,
+    "ocr_and_after_split_note": "OCR 识别与 OCR 之后的处理不是同一次计时：前者本轮未执行，后者为 OCR JSON 导入落库 + classify/search/vision/complete_run。",
+    "create_run_seconds": 0.001,
+    "post_processing_seconds": 0.011,
+    "total_measured_seconds": 0.065,
+    "total_scope": "从造隔离数据开始到 run_pipeline.func 返回（含造数据、OCR JSON 导入、建 run、三个阶段与 complete_run、DB 写入）；不含证据读取与软删",
+    "stages_wall_clock_seconds": {
+      "classify": 0.006,
+      "search": null,
+      "vision": null,
+      "complete_run": null
+    },
+    "stage_events": [
+      {
+        "stage": "classify",
+        "started_at": "2026-11-12T16:00:07.412058+00:00",
+        "elapsed_seconds": 0.006,
+        "chat_call_count": 2,
+        "complete_json_call_count": 1
+      }
+    ],
+    "run_step_elapsed_seconds": {
+      "stage:classify": 0.007
+    },
+    "run_steps": [
+      {
+        "step_key": "stage:classify",
+        "state": "FAILED",
+        "attempt": 0,
+        "started_at": "2026-11-12T16:00:07.410783+00:00",
+        "finished_at": "2026-11-12T16:00:07.417563+00:00",
+        "elapsed_seconds": 0.007,
+        "last_error_code": "CLASSIFY_FAILED:LLMFatalError"
+      }
+    ],
+    "run_steps_source": "直接读 run_steps 表，与只读接口 GET /tasks/{task_id}/runs/{run_id}/timing 同源；本次未通过 HTTP 调用该接口"
+  },
+  "run": {
+    "run_id": "806d6283-584f-4061-8c1b-af47fa0b8508",
+    "task_id": "20320ab5-0dcb-4ee2-9765-2da212d24f2a",
+    "state": "FAILED",
+    "stage": null,
+    "coverage_complete": false,
+    "error_code": "CLASSIFY_FAILED:LLMFatalError",
+    "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+    "started_at": "2026-11-12T16:00:07.409144+00:00",
+    "finished_at": "2026-11-12T16:00:07.419066+00:00",
+    "elapsed_seconds": 0.01,
+    "database_verified": true,
+    "verification": "PostgreSQL processing_runs 表按 id 查询命中（真实存在的 ProcessingRun.id）"
+  },
+  "model_calls": {
+    "chat_request_count": 2,
+    "complete_json_call_count": 1,
+    "per_request": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T16:00:07.417301+00:00",
+        "elapsed_seconds": 0.0,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_schema",
+        "messages_len": 2,
+        "messages_sha256": "ce0ea2fe099fc20fedafc4a0ccf146764e899dc1376d78994d98b1c3c7ec6f51",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest",
+        "is_format_repair_attempt": false
+      },
+      {
+        "seq": 2,
+        "started_at": "2026-11-12T16:00:07.417416+00:00",
+        "elapsed_seconds": 0.0,
+        "model": "qwen3.8-max-0902",
+        "response_format_type": "json_object",
+        "messages_len": 2,
+        "messages_sha256": "ce0ea2fe099fc20fedafc4a0ccf146764e899dc1376d78994d98b1c3c7ec6f51",
+        "stage": "classify",
+        "check_item_id": null,
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest",
+        "is_format_repair_attempt": false
+      }
+    ],
+    "per_complete_json": [
+      {
+        "seq": 1,
+        "started_at": "2026-11-12T16:00:07.417091+00:00",
+        "elapsed_seconds": 0.0,
+        "schema_name": "classification_output",
+        "check_item_id": null,
+        "window_index": 0,
+        "window_text_hash": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047",
+        "system_sha256": "207297043a18172cfd1684249f54fd1f0fbd62997b5fbc916aad9b2f4556b774",
+        "user_sha256": "623d3acca16015465fcf38fcf1bd7ea28003702b709e0c7312664a1fa92dbf9d",
+        "user_chars": 14928,
+        "has_images": false,
+        "stage": "classify",
+        "ok": false,
+        "error_type": "LLMFatalError",
+        "error_message_short": "injected 401 for T02 baseline failure selftest"
+      }
+    ],
+    "chat_elapsed_distribution_seconds": {
+      "count": 2,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "complete_json_elapsed_distribution_seconds": {
+      "count": 1,
+      "min_seconds": 0.0,
+      "max_seconds": 0.0,
+      "mean_seconds": 0.0,
+      "median_seconds": 0.0,
+      "p95_seconds": 0.0,
+      "sum_seconds": 0.0
+    },
+    "timeout_count": 0,
+    "timeout_detail": [],
+    "transient_error_count": 0,
+    "transient_error_detail": [],
+    "window_level_retry_count": 0,
+    "window_level_retry_detail": [],
+    "fatal_error_count": 2,
+    "format_error_count": 0,
+    "format_repair_chat_count": 0,
+    "note": "attempt 为 0-based 窗口级重试序号；其中 0 是首次派发，>=1 是 search_check_item 内 LLM_MAX_TRANSIENT_RETRIES 循环的重试。同一 complete_json 可能触发多次 _chat（json_schema 降级 json_object、_repair 格式修复），因此 chat_request_count >= complete_json_call_count 属正常。P95 口径（QA 独立复验后补充披露）：_dist 用 ordered[int(round((n-1)*0.95))]，n=14 取 ordered[12]=68.777s；常规线性插值 P95=93.893s、nearest-rank=140.537s，外部复算须同口径。14 次 attempt=0 由 timing.run_steps[].attempt（19 条全 0）与三个空 detail 推得，非逐次调用直接观测。"
+  },
+  "search_stage_per_check_item": [],
+  "results": {
+    "total_result_rows": 0,
+    "hit_rows": 0,
+    "not_found_rows": 0,
+    "not_found_reason_counts": {},
+    "by_check_item": {
+      "license.business_scope": {
+        "material_type": "business_license",
+        "label": "经营范围",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "license.operating_term": {
+        "material_type": "business_license",
+        "label": "营业期限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "license.registration_status": {
+        "material_type": "business_license",
+        "label": "登记状态",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.business_scope": {
+        "material_type": "articles_of_association",
+        "label": "经营范围条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.approval_body": {
+        "material_type": "articles_of_association",
+        "label": "借款与担保的决议权限／批准机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.voting_ratio": {
+        "material_type": "articles_of_association",
+        "label": "需要多少表决权比例通过？",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.guarantee_restrictions": {
+        "material_type": "articles_of_association",
+        "label": "对外担保的限制性规定",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.legal_representative_signature_authority": {
+        "material_type": "articles_of_association",
+        "label": "法定代表人的签字权限",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "charter.ownership_and_special_terms": {
+        "material_type": "articles_of_association",
+        "label": "股权结构与特殊条款",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.company_name": {
+        "material_type": "audited_financials",
+        "label": "报表所属企业",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.reporting_period": {
+        "material_type": "audited_financials",
+        "label": "报告年度",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.balance_sheet": {
+        "material_type": "audited_financials",
+        "label": "资产负债表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.income_statement": {
+        "material_type": "audited_financials",
+        "label": "利润表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.cash_flow_statement": {
+        "material_type": "audited_financials",
+        "label": "现金流量表",
+        "result_mode": "full_table",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_institution": {
+        "material_type": "audited_financials",
+        "label": "审计机构",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_seal": {
+        "material_type": "audited_financials",
+        "label": "审计单位印章",
+        "result_mode": "seal",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.cpa_signature": {
+        "material_type": "audited_financials",
+        "label": "注册会计师签名",
+        "result_mode": "signature",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 0,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      },
+      "financial.audit_opinion": {
+        "material_type": "audited_financials",
+        "label": "审计意见",
+        "result_mode": "verbatim_quotes",
+        "verdict": "no_result_row",
+        "verdict_reason": "未写入任何 Result 行",
+        "result_count": 0,
+        "measured_window_count": 0,
+        "preflight_window_count_if_files_present": 2,
+        "window_count_note": "缺材料 / seal / signature / 分类未命中的检查项不会进入分窗，实测窗口数为 0；preflight_window_count_if_files_present 仅为「若有对应材料」时的参考值，非该检查项实测值",
+        "complete_json_call_count": 0,
+        "chat_call_count": 0,
+        "search_elapsed_seconds": null,
+        "failed_reason": null,
+        "results": []
+      }
+    },
+    "text_policy": "大段原文只存 200 字摘要 + SHA256 + fingerprint + 出处页码；未整份塞入证据"
+  },
+  "clause_matrix": {
+    "matching_rule": "对 OCR 原文与 Result.text 去空白后做精确短语子串匹配，出处页码取 ResultSource.source_page_number",
+    "matrix": [
+      {
+        "id": "C1",
+        "physical_page": 7,
+        "title": "第十七条 业务范围（含外汇借款 / 外汇担保 / 提供信用证服务及担保 / 贷款）",
+        "target_check_id": "charter.business_scope",
+        "keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "ocr_pages_scanned": [
+          7
+        ],
+        "source_ocr_matched_keywords": [
+          "第十七条",
+          "外汇借款",
+          "外汇担保",
+          "提供信用证服务及担保"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "经营范围条款；担保类检查项若引用本页即属误命中"
+      },
+      {
+        "id": "C2",
+        "physical_page": 8,
+        "title": "第二十四条 不以赠与/垫资/担保/补偿/贷款等形式资助购股人",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十四条",
+          "不以赠与、垫资、担保、补偿或贷款等形式"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「担保」字样，但属于股权资助限制，非对外担保规则"
+      },
+      {
+        "id": "C3",
+        "physical_page": 8,
+        "title": "第二十五条 增加注册资本须经股东大会分别作出决议",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "ocr_pages_scanned": [
+          8
+        ],
+        "source_ocr_matched_keywords": [
+          "第二十五条",
+          "经股东大会分别作出决议"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "决议机构证据"
+      },
+      {
+        "id": "C4",
+        "physical_page": 13,
+        "title": "第四十一条 5% 以上有表决权股份股东质押书面报告 / 控股股东借款担保",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十一条",
+          "持有本行5%以上有表决权股份",
+          "借款担保"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "含「借款担保」字样，属股东行为规范，非对外担保决议规则"
+      },
+      {
+        "id": "C5",
+        "physical_page": 13,
+        "title": "第四十三条 本行对股东贷款的条件不得优于其他借款人同类贷款的条件",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十三条",
+          "本行对股东贷款的条件不得优于"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "关联交易限制"
+      },
+      {
+        "id": "C6",
+        "physical_page": 13,
+        "title": "第四十四条 授信逾期应限制其在股东大会的表决权",
+        "target_check_id": "charter.voting_ratio",
+        "keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "ocr_pages_scanned": [
+          13
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十四条",
+          "授信逾期"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "表决权限制"
+      },
+      {
+        "id": "C7",
+        "physical_page": 14,
+        "title": "股权出质事前书面告知董事会 / 借款余额超股权净值不得质押 / 质押达 50% 限制表决权",
+        "target_check_id": "charter.ownership_and_special_terms",
+        "keywords": [
+          "事前书面告知董事会",
+          "借款余额超过其持有经审计的上一年度股权净值",
+          "50%"
+        ],
+        "ocr_pages_scanned": [
+          14
+        ],
+        "source_ocr_matched_keywords": [
+          "50%"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "股权结构与特殊条款"
+      },
+      {
+        "id": "C8",
+        "physical_page": 15,
+        "title": "第四十六条 股东大会职权（十二）审议批准第四十七条担保事项 / 3% 提案 / 不得授权董事会",
+        "target_check_id": "charter.approval_body",
+        "keywords": [
+          "第四十六条",
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "审议批准第四十七条规定的担保事项",
+          "股东大会不得将法定由股东大会行使的职权授予董事会行使"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "批准机构核心证据"
+      },
+      {
+        "id": "C9",
+        "physical_page": 15,
+        "title": "第四十七条 五类须经股东大会审议通过的对外担保行为",
+        "target_check_id": "charter.guarantee_restrictions",
+        "keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "净资产50%",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "ocr_pages_scanned": [
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "第四十七条",
+          "本行下列对外担保行为",
+          "总资产30%",
+          "资产负债率",
+          "对股东"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "按关键词精确短语匹配判定；目标条款是否真实存在需人工复核",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "对外担保限制性规定核心证据"
+      },
+      {
+        "id": "C10",
+        "physical_page": null,
+        "title": "法定代表人的签字权限（样本外条款）",
+        "target_check_id": "charter.legal_representative_signature_authority",
+        "keywords": [
+          "法定代表人",
+          "签字权限"
+        ],
+        "ocr_pages_scanned": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "source_ocr_matched_keywords": [
+          "法定代表人"
+        ],
+        "present_in_sample_ocr": true,
+        "present_in_sample_ocr_note": "仅通用词「法定代表人」命中（基线导入 176 块中 2 块，物理页 5 / 13）；全文「签字」「签署」「签名」「签章」0 出现（psql 只读复验），非目标条款，判样本外",
+        "result_hits": [],
+        "target_check_result_rows": 0,
+        "target_check_not_found_reasons": [],
+        "auto_verdict": "未命中（结果未包含该短语）",
+        "note": "物理 1–15 页大概率不存在，用于验证 no_matching_evidence 行为"
+      }
+    ],
+    "guarantee_vs_business_scope": {
+      "checked_check_item_ids": [
+        "charter.approval_body",
+        "charter.guarantee_restrictions"
+      ],
+      "false_positive_keywords": [
+        "外汇担保",
+        "提供信用证服务及担保",
+        "外汇借款"
+      ],
+      "guarantee_result_rows": [],
+      "any_foreign_exchange_guarantee_mis_hit": false
+    },
+    "status": "事实矩阵 + 规则化自动判定；人工逐条结论见 docs/REVIEW_HANDOFF.md 与本轮回传。QA 独立复验后补充披露：C6 / C10 标签已修正，不再出现「覆盖不全」字样。"
+  },
+  "stage_events": [
+    {
+      "stage": "classify",
+      "started_at": "2026-11-12T16:00:07.412058+00:00",
+      "elapsed_seconds": 0.006,
+      "chat_call_count": 2,
+      "complete_json_call_count": 1
+    }
+  ],
+  "chunk_events": [
+    {
+      "kind": "classify_window",
+      "check_item_id": null,
+      "window_index": 0,
+      "bundle_id": "w0",
+      "block_count": 133,
+      "char_count": 7998,
+      "window_text_sha256": "7d58bcaf887a40f1f78f983bc70f9766247f62d8f1a17c328a358a9c1b687047",
+      "source_pages": []
+    },
+    {
+      "kind": "classify_window",
+      "check_item_id": null,
+      "window_index": 1,
+      "bundle_id": "w1",
+      "block_count": 51,
+      "char_count": 2095,
+      "window_text_sha256": "0459e6c6e17d765fb64d669e144f23045df2f7bed7b2d9bad5ba189b1645dc90",
+      "source_pages": []
+    }
+  ],
+  "failure_evidence_preservation": {
+    "note": "except 分支不清除任何已赋值字段；缺失字段保持缺失，不填推算值；model_calls / search_stage_per_check_item 由 observer 真实采集补齐",
+    "present_keys": [
+      "clause_matrix",
+      "model_calls",
+      "results",
+      "run",
+      "search_stage_per_check_item",
+      "timing",
+      "windows"
+    ]
+  }
+}
+{
+  "selftest": "T02-5-baseline-script-failure",
+  "real_model_calls": 0,
+  "failed_run_case": {
+    "exit_code": 1,
+    "evidence_out": "/tmp/t02_baseline_failed.json",
+    "status": "failed",
+    "status_signals": [
+      "run.state=FAILED",
+      "run.coverage_complete=False",
+      "run.error_code=CLASSIFY_FAILED:LLMFatalError"
+    ],
+    "run": {
+      "run_id": "5c67b33c-4016-42db-8db2-80e464d7c157",
+      "task_id": "9bc5d1f6-b31f-4732-b5ac-967fece61a0b",
+      "state": "FAILED",
+      "stage": null,
+      "coverage_complete": false,
+      "error_code": "CLASSIFY_FAILED:LLMFatalError",
+      "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+      "started_at": "2026-11-12T16:00:07.280375+00:00",
+      "finished_at": "2026-11-12T16:00:07.308912+00:00",
+      "elapsed_seconds": 0.029,
+      "database_verified": true,
+      "verification": "PostgreSQL processing_runs 表按 id 查询命中（真实存在的 ProcessingRun.id）"
+    },
+    "blockers": [],
+    "present_evidence_keys": [
+      "bottleneck",
+      "clause_matrix",
+      "model_calls",
+      "results",
+      "run",
+      "sample_limitations",
+      "search_stage_per_check_item",
+      "timing",
+      "windows"
+    ],
+    "model_calls_present": true,
+    "search_stage_per_check_item_present": true,
+    "results_present": true,
+    "clause_matrix_present": true,
+    "failure_evidence_preservation": null,
+    "timing_total_measured_seconds": 0.235,
+    "model_calls_summary": {
+      "chat_request_count": 2,
+      "complete_json_call_count": 1,
+      "fatal_error_count": 2
+    }
+  },
+  "except_branch_case": {
+    "exit_code": 1,
+    "evidence_out": "/tmp/t02_baseline_failed_exception.json",
+    "status": "blocked",
+    "status_signals": null,
+    "run": {
+      "run_id": "806d6283-584f-4061-8c1b-af47fa0b8508",
+      "task_id": "20320ab5-0dcb-4ee2-9765-2da212d24f2a",
+      "state": "FAILED",
+      "stage": null,
+      "coverage_complete": false,
+      "error_code": "CLASSIFY_FAILED:LLMFatalError",
+      "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+      "started_at": "2026-11-12T16:00:07.409144+00:00",
+      "finished_at": "2026-11-12T16:00:07.419066+00:00",
+      "elapsed_seconds": 0.01,
+      "database_verified": true,
+      "verification": "PostgreSQL processing_runs 表按 id 查询命中（真实存在的 ProcessingRun.id）"
+    },
+    "blockers": [
+      {
+        "stage": "setup_or_measurement",
+        "error": "RuntimeError: injected failure AFTER results/clause_matrix were collected",
+        "note": "未完成的字段保持缺失，不填推算值"
+      }
+    ],
+    "present_evidence_keys": [
+      "chunk_events",
+      "clause_matrix",
+      "model_calls",
+      "results",
+      "run",
+      "search_stage_per_check_item",
+      "stage_events",
+      "timing",
+      "windows"
+    ],
+    "model_calls_present": true,
+    "search_stage_per_check_item_present": true,
+    "results_present": true,
+    "clause_matrix_present": true,
+    "failure_evidence_preservation": {
+      "note": "except 分支不清除任何已赋值字段；缺失字段保持缺失，不填推算值；model_calls / search_stage_per_check_item 由 observer 真实采集补齐",
+      "present_keys": [
+        "clause_matrix",
+        "model_calls",
+        "results",
+        "run",
+        "search_stage_per_check_item",
+        "timing",
+        "windows"
+      ]
+    },
+    "timing_total_measured_seconds": 0.065,
+    "model_calls_summary": {
+      "chat_request_count": 2,
+      "complete_json_call_count": 1,
+      "fatal_error_count": 2
+    }
+  },
+  "assertions": {
+    "failed_run_status_not_measured": true,
+    "failed_run_status_is_failed": true,
+    "failed_run_exit_code_nonzero": true,
+    "failed_run_signals_include_state": true,
+    "failed_run_evidence_complete": true,
+    "except_branch_status_blocked": true,
+    "except_branch_exit_code_nonzero": true,
+    "except_branch_keeps_model_calls": true,
+    "except_branch_keeps_search_events": true,
+    "except_branch_keeps_results_and_clause_matrix": true,
+    "except_branch_explicit_preservation_note": true
+  },
+  "status": "pass"
+}

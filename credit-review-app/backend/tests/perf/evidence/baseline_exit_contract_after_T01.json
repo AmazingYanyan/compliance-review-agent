@@ -1,0 +1,50 @@
+{
+  "schema_version": "qa-baseline-exit-contract-1",
+  "ran_at": "2026-11-12T15:56:37.560663+00:00",
+  "baseline_contract": {
+    "status": "checked",
+    "method": "AST + 正则静态检查，未执行基线、未连 DB、未造数据、未触发外部服务",
+    "script_path": "scripts/baseline_serial.py",
+    "script_sha256": "667e36269d78e9aeb8725e5edcd92fe2fc5f186f61f5e768e3fab0c9d0797535",
+    "verdict": "fixed",
+    "findings": [
+      {
+        "name": "main() 的退出码表达式",
+        "found": true,
+        "detail": "returns=['1', '0', '1', '0']"
+      },
+      {
+        "name": "status 赋值语句",
+        "found": true,
+        "detail": "assignments=[\"evidence['status'] = 'probe_only'\", \"evidence['status'] = 'failed'\", \"evidence['status'] = 'blocked'\", \"evidence['status'] = 'measured_with_blockers'\", \"evidence['status'] = 'measured'\"]"
+      },
+      {
+        "name": "脚本读取 run 落库 state 用于 status/退出码判定",
+        "found": true,
+        "detail": "找到 run state 读取"
+      },
+      {
+        "name": "status 只由 evidence['blockers'] 决定",
+        "found": false,
+        "detail": "未匹配到该模式"
+      },
+      {
+        "name": "measured 状态返回 0",
+        "found": false,
+        "detail": "未匹配到"
+      },
+      {
+        "name": "存在 status='failed' 分支",
+        "found": true,
+        "detail": "失败 run 会被显式标 failed"
+      },
+      {
+        "name": "存在非 0 退出码",
+        "found": true,
+        "detail": "returns=['1', '0', '1', '0']"
+      }
+    ],
+    "conclusion": "静态复核：新版 baseline_serial.py 已读取 run 落库 state / coverage_complete 与阶段状态矛盾，存在显式 status='failed' 分支和非 0 退出码，且 status 不再只由 evidence['blockers'] 决定。团长点名的「失败 run 标 measured、退出码 0」问题在源码层已修复。注意：这只是静态检查，真正闭环仍需实现后在隔离 run 上实跑基线并核对退出码。",
+    "expected_fix": "基线脚本应在跑批后读 processing_runs.state；state != READY 时把 status 标 failed 并返回非 0 退出码，同时保留已落库的 results / run_steps 供追溯。"
+  }
+}

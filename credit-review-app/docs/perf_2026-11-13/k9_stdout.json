@@ -1,0 +1,107 @@
+{
+  "selftest": "K9-literal-cli-two-imports",
+  "real_model_calls": 0,
+  "commands": [
+    {
+      "round": 1,
+      "argv": [
+        "python",
+        "-m",
+        "app.cli",
+        "import-ocr-json",
+        "--file-id",
+        "f8546316-c7c1-4619-9a2b-e4c786ec3a0e",
+        "--json",
+        "/tmp/t02_ocr_slice.json"
+      ],
+      "returncode": 0,
+      "stdout": "已导入 15 页 OCR 结果到文件「章程切分15页.PDF」（job=801875d5-deea-4757-81fa-777996e8bbb4）",
+      "stderr": ""
+    },
+    {
+      "round": 2,
+      "argv": [
+        "python",
+        "-m",
+        "app.cli",
+        "import-ocr-json",
+        "--file-id",
+        "f8546316-c7c1-4619-9a2b-e4c786ec3a0e",
+        "--json",
+        "/tmp/t02_ocr_slice.json"
+      ],
+      "returncode": 0,
+      "stdout": "已导入 15 页 OCR 结果到文件「章程切分15页.PDF」（job=b979faa4-a9dd-4fe7-a1f7-ae8fb9a1dc3a）",
+      "stderr": ""
+    }
+  ],
+  "snapshots": [
+    {
+      "block_count": 176,
+      "distinct_ocr_block_uuids": 176,
+      "first_block_uuid": "8ff2bdac-16f8-4c36-9970-f1050ee48048",
+      "ordered_block_list_sha256": "b0a1866860abef444c204ae73d86b6b03f9bc34152b02bc3b78a8c1796582edd",
+      "content_hash_list_sha256": "606a4e17055a85c87d153a121f10f353789afccdfedc132dc9fc73b1b10293c1",
+      "windows": [
+        {
+          "bundle_id": "w0",
+          "block_count": 133,
+          "char_count": 7998,
+          "stable_window_content_hash": "6c1f2fe4e31a07356aa43e5853ba38fbe7fa8cc19eac67aade50ad03df95d9ae",
+          "window_text_sha256_run_bound": "7aca2919446f70cfc6357ae0705d3e64b16172c33f9fe78b07dfd1894fc8b3c3"
+        },
+        {
+          "bundle_id": "w1",
+          "block_count": 51,
+          "char_count": 2095,
+          "stable_window_content_hash": "1fbe425197075d08aed13db575a96c6cc8809188f1cc3e6fb51b6bbb30b39ac2",
+          "window_text_sha256_run_bound": "40f095aa3b9ea51dd23aced5ca4f8fef48954497fe558a46bc3aa61f3434c285"
+        }
+      ]
+    },
+    {
+      "block_count": 176,
+      "distinct_ocr_block_uuids": 176,
+      "first_block_uuid": "4681ec62-3437-4cb9-9019-58e8eaf977f9",
+      "ordered_block_list_sha256": "b0a1866860abef444c204ae73d86b6b03f9bc34152b02bc3b78a8c1796582edd",
+      "content_hash_list_sha256": "606a4e17055a85c87d153a121f10f353789afccdfedc132dc9fc73b1b10293c1",
+      "windows": [
+        {
+          "bundle_id": "w0",
+          "block_count": 133,
+          "char_count": 7998,
+          "stable_window_content_hash": "6c1f2fe4e31a07356aa43e5853ba38fbe7fa8cc19eac67aade50ad03df95d9ae",
+          "window_text_sha256_run_bound": "c70ac654cd7199589cff13ac395cc60324c4f3ae8a2105b8c4b614afb7284ebb"
+        },
+        {
+          "bundle_id": "w1",
+          "block_count": 51,
+          "char_count": 2095,
+          "stable_window_content_hash": "1fbe425197075d08aed13db575a96c6cc8809188f1cc3e6fb51b6bbb30b39ac2",
+          "window_text_sha256_run_bound": "63e53ad139aff0df70b9fadb2fd9bf3e3da913ac6e347da70dbdea4ae9b5d163"
+        }
+      ]
+    }
+  ],
+  "comparison": {
+    "ocr_block_uuids_regenerated": true,
+    "block_count_equal": true,
+    "ordered_block_list_equal": true,
+    "content_hash_list_equal": true,
+    "window_boundaries_equal": true,
+    "request_hash_run_bound_differs": true,
+    "first_content_hash_A": "6b51ce36721340cb4df384d39e53a52f1eccca3cc99421caaa88c4e2d6dbf445",
+    "first_content_hash_B": "6b51ce36721340cb4df384d39e53a52f1eccca3cc99421caaa88c4e2d6dbf445",
+    "first_content_hash_equal": true
+  },
+  "assertions": {
+    "cli_command_both_succeeded": true,
+    "uuids_regenerated": true,
+    "ordered_block_list_equal": true,
+    "content_hash_equal": true,
+    "window_boundaries_equal": true,
+    "request_hash_differs_as_expected": true
+  },
+  "status": "pass",
+  "soft_deleted_task_id": "c8c77a86-d193-48d4-bd3e-5bf7c109be5f"
+}

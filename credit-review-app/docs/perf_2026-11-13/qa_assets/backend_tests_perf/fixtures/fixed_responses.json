@@ -1,0 +1,1685 @@
+{
+  "schema_version": "qa-perf-fixed-responses-1",
+  "status": "静态 fixture，非实测结果。所有 expected 均为「修复后应达到的预期断言」，实现落地前不得当作验收结论。",
+  "generated_at_note": "本文件由 QA 手工构造，用于模拟服务与固定响应对照；不含任何真实模型输出，不含任何实测耗时/请求数。",
+  "purpose": [
+    "X=1 与 X=3 等价响应对（摘录、出处、跨检查项引用、去重一致）",
+    "七类批内异常：同块被多项引用 / 一条证据引用多块 / 批内漏返 / 重复返回 / 无效引用 / 输出截断 / 整批超时",
+    "X=1 下「窗口1命中、窗口2超时耗尽」的覆盖不全用例",
+    "摘录去重四条预期（同项同出处同原文不同偏移、相同正文不同出处、同出处多检查项、去重后稳定出处顺序）"
+  ],
+  "contract_facts": {
+    "_note": "QA 阅读当前 HEAD 源码得到的既有契约，供架构师/工程师对齐；实现变更后需回来更新本段。",
+    "text_search_output_shape": {
+      "bundle_id": "string",
+      "check_results": [
+        {
+          "check_item_id": "string",
+          "outcome": "found | not_found",
+          "evidence": [
+            {
+              "source_refs": [
+                {
+                  "block_id": "UUID string",
+                  "start_char": "int|null",
+                  "end_char": "int|null"
+                }
+              ],
+              "relation_status": "matched | needs_review",
+              "relevance_reason": "string(<=1000)"
+            }
+          ]
+        }
+      ]
+    },
+    "source_ref_required_fields": [
+      "block_id",
+      "start_char",
+      "end_char"
+    ],
+    "classification_output_shape": {
+      "bundle_id": "string",
+      "material_type": "business_license | articles_of_association | audited_financials | unknown",
+      "mixed": "bool",
+      "confidence": "0..1",
+      "reason": "string(<=1000)",
+      "source_block_ids": [
+        "UUID string（必须属于当前窗口，否则被 classify_file 过滤）"
+      ]
+    },
+    "not_found_reason_values": [
+      "no_matching_evidence",
+      "material_missing",
+      "coverage_incomplete"
+    ],
+    "not_found_reason_label_frontend": {
+      "no_matching_evidence": "未找到相关证据",
+      "material_missing": "未上传该材料",
+      "coverage_incomplete": "识别覆盖不完整，请人工复核"
+    },
+    "result_kind_values": [
+      "text",
+      "table",
+      "seal",
+      "signature",
+      "not_found"
+    ],
+    "run_state_values": [
+      "QUEUED",
+      "RUNNING",
+      "READY",
+      "FAILED",
+      "SUPERSEDED"
+    ],
+    "step_state_values": [
+      "QUEUED",
+      "RUNNING",
+      "SUCCEEDED",
+      "FAILED",
+      "SUPERSEDED"
+    ],
+    "run_step_fields": [
+      "id",
+      "task_id",
+      "run_id",
+      "file_id",
+      "step_key",
+      "input_hash",
+      "state",
+      "attempt",
+      "provider_request_id",
+      "result_asset_id",
+      "last_error_code",
+      "started_at",
+      "finished_at"
+    ],
+    "run_step_unique_key": [
+      "run_id",
+      "step_key",
+      "input_hash"
+    ],
+    "run_step_step_key_format_after_step2": "u:w{wi}:b{bi}（窗口×批次单元）+ provider_request_id=trace_id + started_at=t_http_start / finished_at=t_http_end —— 架构设计定义，**T03/T04 未落地**。本批 RunStep 只有 stage:classify / stage:search / stage:vision / check:{check_item_id}，**没有任何 u: 键**。",
+    "run_step_window_level_status": "本批（T01/T02）只有 stage:*/check:* 四类 step_key，没有任何 u: 键；窗口×批次单元与逐请求 RunStep 属 T03/T04。",
+    "perf_trace_jsonl": {
+      "path": "/data/perf_traces/{run_id}.jsonl",
+      "status": "架构设计定义的逐请求证据落点；**T03/T04 未落地**：本批 RequestTrace 只在内存，完全没有写 /data/perf_traces/{run_id}.jsonl，未写 provider_request_id=trace_id，t_submit / t_http_start / t_http_end 也没进 JSONL。",
+      "fields": [
+        "trace_id",
+        "实验组",
+        "run",
+        "窗口",
+        "批次",
+        "检查项",
+        "attempt",
+        "t_submit（提交到线程池）",
+        "t_http_start（acquire 到额度后、_chat 前）",
+        "t_http_end",
+        "四个时间戳",
+        "状态",
+        "错误码",
+        "finish_reason",
+        "内容hash",
+        "请求hash"
+      ],
+      "assertion_note": "U1/U2/U5 的提交时间与实际 HTTP 发起时间一律取自该 JSONL，不要去 DB 里找时间字段；t_http_start - t_submit = 额度等待。模拟服务只能观测 arrived_at（≈t_http_start），t_submit 由客户端 trace 提供。",
+      "landed_part": "RequestTrace 数据类与 complete_json/_chat 的内存字段写入 + to_dict() 已落地（T01/T02），仅落盘未做。"
+    },
+    "run_timing_progress_after_step2": {
+      "progress": {
+        "total": "int",
+        "succeeded": "int",
+        "failed": "int",
+        "running": "int",
+        "has_stable_denominator": "bool"
+      },
+      "denominator_from": "run.model_snapshot.run_config.units_total",
+      "note": "无分母时只给计数不给百分比；复用现有 GET /tasks/{id}/runs/{runId}/timing",
+      "status": "T03/T04 未落地：本批 timing 仍是原有结构，没有 progress 派生字段。",
+      "landed_part": "run.model_snapshot.run_config 已落地（X / C / 版本 / 分窗策略 / 提示词版本 / 清单 hash / run_mode），可作 progress 分母来源。"
+    },
+    "batch_error_codes_after_step2": {
+      "_note": "架构师定义的七类短码；**T03/T04 未落地**：本批 RunStep.last_error_code 短码位只有致命分支的 LLM_FATAL 与阶段级 SEARCH_FAILED:...，七类批次短码均未落 last_error_code / JSONL。",
+      "BATCH_MISSING_CHECK": "批内漏返一个检查项",
+      "BATCH_DUPLICATE_CHECK": "重复返回检查项",
+      "INVALID_CHECK_ID": "返回的 check_item_id 不属于本批",
+      "INVALID_BLOCK_REF": "幻引 block_id 不属于当前窗口",
+      "OUTPUT_TRUNCATED": "finish_reason=length 输出截断",
+      "BATCH_TIMEOUT": "一次搜索单元（窗口×批次）的 HTTP 超时/瞬时重试耗尽；X=1 时等价窗口级超时耗尽；整批超时由 merge_outcomes 展开为该批所有检查项未覆盖",
+      "FORMAT_FAILED": "格式失败（LLMFormatError）",
+      "_partial_coverage_note": "PARTIAL_COVERAGE 是检查项级 failed_reason（search_check_item 返回值语义），不是 RunStep.last_error_code 短码，不得进 expected_last_error_codes；FORMAT_FAILED 是格式失败，与超时不同类。工程师最终镜像已移除 _search_stage 写 last_error_code=\"PARTIAL_COVERAGE\"，compute_coverage_summary 只依赖 RunStep.state + Result.not_found_reason。",
+      "_granularity_note": "区分窗口级 vs 整批级不用短码，用 run_config.X + step_key=u:w{wi}:b{bi} + coverage_incomplete_check_items 项数（X=1 为 1 项、X=3 为 N 项）。"
+    },
+    "complete_task_409_code_decided": "COVERAGE_INCOMPLETE（架构师定值；PM 明确「最终以架构师定值为准」）。COVERAGE_INCOMPLETE 仅适用于 run 已 READY 但应查窗口未成功完成（覆盖不全/超时耗尽）的场景；401/鉴权失败导致 run 未就绪（run.state=FAILED）时 complete_task 第一道拦截走 RUN_NOT_READY、不标覆盖不全。两个场景分别验、不合并，否则「完成接口 409」的交付口径会指向错误码。",
+    "fingerprint_semantics_after_step2": "本轮 fingerprint 语义改为「内容 hash，仅供去重」。跨 run 逐条结果比对一律用 text_sha256 + source_page_number + 页内稳定序号，不要用 Result.fingerprint；内容 hash（不含 UUID/偏移，跨导入可复算）与请求 hash（user_sha256 / messages_sha256 / window_text_sha256，含 UUID 绑定值）必须分栏记录，不得混用。",
+    "llm_in_flight_after_step2": "LLM_MAX_IN_FLIGHT=2 唯一在途上限已落地（llm_client.py:117 模块级 BoundedSemaphore，import 时固化）；LLM_MAX_CONCURRENCY 为兼容别名。但「ThreadPoolExecutor 一次提交全部单元 / 先回先处理 / 即时补位」的并发调度器属 T03/T04 未落地。U1 的 C=N 操作口径（工程师实测）：改 .env 的 LLM_MAX_IN_FLIGHT=N（代码不变，不需要 docker compose build）后必须 `docker compose up -d --force-recreate api worker` 让容器重新创建才会重读 env_file；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings.LLM_MAX_IN_FLIGHT 无效（_IN_FLIGHT 已构造）。U1 跑完必须把 .env 改回 2 并再 recreate 一次，否则后续用例一直用 N。",
+    "run_timing_response_shape": {
+      "run_id": "uuid string",
+      "state": "string",
+      "started_at": "iso|null",
+      "finished_at": "iso|null",
+      "elapsed_seconds": "float|null",
+      "steps": [
+        {
+          "step_key": "string",
+          "state": "string",
+          "attempt": "int",
+          "started_at": "iso|null",
+          "finished_at": "iso|null",
+          "elapsed_seconds": "float|null",
+          "last_error_code": "string|null"
+        }
+      ]
+    },
+    "complete_task_existing_409_codes": [
+      "RUN_NOT_READY",
+      "REVISION_CONFLICT",
+      "NOT_COMPLETE",
+      "COVERAGE_INCOMPLETE"
+    ],
+    "complete_task_409_code_to_add": "COVERAGE_INCOMPLETE",
+    "complete_task_current_gap": "已修复（T01/T02）：complete_task 在 can_complete 之前独立检查 run.coverage_complete 与 coverage.coverage_complete，不满足则 409 COVERAGE_INCOMPLETE 且零写入；COVERAGE_INCOMPLETE 不混进 NOT_COMPLETE。待容器重建后实测闭环。",
+    "complete_run_current_gap": "已修复（工程师最终镜像确认，QA 待在新镜像重跑闭环）：_complete_run 删掉无条件 coverage_complete=True，改赋 compute_coverage_summary(...) 结果——check:{id} RunStep 全部 SUCCEEDED 且无 Result.not_found_reason=coverage_incomplete → true。工程师实测 coverage 用例（窗口1有摘录、窗口2超时）→ false，no_match 用例（应查窗口全成功无候选）→ true。兼容分支：历史 5 条真实 run 没有任何 check: RunStep → 按持久化 run.coverage_complete 回退，避免误拦 REVIEWING 任务 607e6d41…。",
+    "search_check_item_current_gap": "已修复（T01/T02）：有摘录但存在未覆盖窗口时仍返回 PARTIAL_COVERAGE，不再丢弃 uncovered 计数。",
+    "llm_error_mapping": {
+      "401 AuthenticationError": "LLMFatalError -> search_check_item 返回 LLM_FATAL -> _search_stage 标 run FAILED / SEARCH_FAILED",
+      "429 RateLimitError / 5xx / APITimeoutError": "LLMTransientError -> 窗口级重试 LLM_MAX_TRANSIENT_RETRIES(默认2) 次，耗尽后 uncovered += 1 -> PARTIAL_COVERAGE -> coverage_incomplete",
+      "非法 JSON / schema 校验失败": "LLMFormatError -> uncovered += 1（注意 complete_json 会先发一次 _repair 请求，共 2 次 _chat）"
+    },
+    "llm_client_concurrency": "LLMClient 实例级 threading.Semaphore(LLM_MAX_CONCURRENCY=2)，get_llm_client() 为模块级单例；单进程内共享，跨进程/多 worker 不共享。X（checks_per_request）在 core/config.py 当前不存在，C 为 LLM_MAX_CONCURRENCY。",
+    "window_chunking_current_gap": "load_source_blocks / load_file_blocks 只 order_by(OcrBlock.sequence_index)（176 块仅 25 个不同值）；_window_text 把随机 OcrBlock UUID 拼进窗口文本；_fingerprint 含随机 block_id；_dedup_evidence 排序键含随机 block_id。",
+    "dedup_current_gap": "_fingerprint(check_item_id, block_id, ref.start_char, ref.end_char) 用模型返回的偏移算指纹，但摘录正文回取整块原文；因此「同检查项/同出处/同原文、不同偏移」会生成不同指纹而重复落库。",
+    "checks_per_request_support": [
+      "1",
+      "2",
+      "3",
+      "6"
+    ],
+    "checks_per_request_default": "1",
+    "checks_per_request_status": "配置项 CHECKS_PER_REQUEST=1 已落地（校验器限 {1,2,3,6}，.env / .env.example 同步）；但 X 批量分组 / 并发调度 / merge_outcomes / 前端属 T03/T04 未落地，不得把「配置存在」当成「调度已实现」。",
+    "not_found_reason_semantics": {
+      "no_matching_evidence": "该检查项全部应查窗口均成功完成且均无候选，才显示正常「未找到」",
+      "coverage_incomplete": "任一应查窗口未成功完成（超时耗尽/401/格式失败/致命错/整批超时/批内漏返）→ 受影响检查项与 run 标记；成功窗口的摘录与原文定位仍保留；API 与工作台同一状态、刷新后提示仍在；不得报 coverage_complete=true、不得显示「未找到」、不得允许完成",
+      "material_missing": "沿用现有规则不变；技术失败不得标成 not_found",
+      "_source": "PM 冻结的语义边界 + 架构师 §4"
+    },
+    "hash_columns_must_be_separate": {
+      "content_hash": "不含 UUID / 偏移，跨导入可复算（compare_two_imports.py 的 content_hash_excluding_import_uuid）",
+      "request_hash": "user_sha256 / messages_sha256 / window_text_sha256，含随机 OcrBlock UUID 绑定值，仅本次 run 自洽",
+      "_note": "PM 明确要求两者分栏记录、不与内容 hash 混用"
+    },
+    "cross_run_compare_key": [
+      "check_item_id",
+      "text_sha256",
+      "source_page_number",
+      "页内稳定序号"
+    ],
+    "bundle_id_format_after_T01": "chunk_source_blocks / chunk_blocks 的 Window.bundle_id 稳定为 w{idx}；Window 新增 window_text_sha256（__post_init__ 计算，请求 hash 侧）；_window_text 仍含 block_id=<UUID>，内容 hash 侧不含 UUID。",
+    "search_check_item_outcome_api": {
+      "function": "text_search.search_check_item_outcome(...) -> SearchOutcome",
+      "fields": [
+        "evidence",
+        "covered_windows",
+        "total_windows",
+        "uncovered_window_ids",
+        "failed_reason",
+        "anomalies"
+      ],
+      "property": "fully_covered = total_windows>0 and covered_windows==total_windows and not uncovered_window_ids and failed_reason is None",
+      "wrapper": "search_check_item 保留为兼容 wrapper，签名/返回仍是 (evidence, failed_reason)，基线观测器 monkeypatch 不受影响",
+      "status": "类与函数已落地（T01/T02），但 _search_stage 仍调兼容 wrapper search_check_item 的 (evidence, failed_reason) 2-tuple，结构化 outcome 尚未被管线消费，属 T03 接口预留。"
+    },
+    "llm_chat_return_after_T01": "LLMClient._chat 返回 (content, finish_reason) 元组；complete_json 兼容「只返回 str 的旧包装器」；_chat 调用签名仍是 5 个位置参数；complete_json 新增可选 trace=None。若 monkeypatch _chat，需返回 (json字符串, \"stop\") 或直接返回 json 字符串。QA 的 fault_injection.py 改 patch Completions.create（返回带 choices[0].message.content + finish_reason 的响应对象），兼容新 _chat。",
+    "pipeline_config_version_after_T01": "pipeline-v2（.env / .env.example / config.py 同步）",
+    "source_ordering_api_after_T01": {
+      "module": "backend/app/source_ordering.py",
+      "function": "order_blocks(rows, page_by_id, file_key_by_id) -> list[OrderedBlock]",
+      "K1_key": "(file_order, page_key, page_ordinal)；file_order 按 str(file_id) 字典序，file_key 优先 TaskFile.sha256；页内阅读顺序 bbox(top,left) → sequence_index → provider_block_id → global_block_id → sha256(canonical_text)",
+      "K2_content_hash": "sha256(f\"{file_key}|{page_key}|{page_ordinal}|{canonical_text}\")[:64]，不含 UUID、不含 start/end 偏移，跨导入可复算",
+      "ordered_block_fields": [
+        "row",
+        "file_order",
+        "file_key",
+        "page_key",
+        "page_ordinal",
+        "order_source",
+        "canonical_text",
+        "content_hash",
+        "source_page_number",
+        "ocr_page_index"
+      ],
+      "qa_note": "compare_two_imports.py 的 expected 口径已改为直接复用 order_blocks，避免 QA 自写排序与业务实现不一致"
+    },
+    "list_results_new_fields_after_T01": {
+      "coverage_complete": "bool(run.coverage_complete)，review 页走 list_results，刷新后仍可持久提示覆盖不全",
+      "coverage_affected_check_ids": "compute_coverage_summary(...).coverage_affected_check_ids，受影响检查项 id 列表",
+      "no_run_fallback": {
+        "coverage_complete": false,
+        "coverage_affected_check_ids": []
+      }
+    },
+    "create_run_new_fields_after_T01": {
+      "run_mode": "full_rerun",
+      "run_mode_label": "整次重跑（新建 run，不复用上次结果）"
+    },
+    "invalid_block_ref_strong_constraints": {
+      "a": "INVALID_BLOCK_REF 是观测短码：对应 RunStep u:* 的 state 仍应为 SUCCEEDED（不是 FAILED），短码只出现在 last_error_code 与 JSONL",
+      "b": "判别式「该检查项在该窗口是否有可采信的响应」：幻引里模型给了响应（outcome=found + 无效 block_id），HTTP 成功/JSON 合法/schema 通过 → 覆盖达成；无效引用只是候选不可采信，不是窗口没跑",
+      "c": "模型声称 found 但引用无效 → 该检查项零 Result 行落库（防幻觉核心断言）",
+      "d": "已知局限需显式留痕：模型声称 found 但引用不可验证时，系统显示「未找到相关证据」，属输出质量异常，需人工复核该检查项；系统不做合规判断、接受≠合规通过"
+    },
+    "complete_task_code_source_note": "错误码断言字段（complete_task_code / complete_task_expected_code / expected_complete_task_code / complete_409_code）的值一律为纯字面量（^[A-Z][A-Z0-9_]*$），供 #7 用 == 严格相等断言；「架构师定值」等来源说明一律放独立 *_note 字段，不得拼进值里。",
+    "complete_task_code_scenarios": {
+      "_note": "PM 复核要求：两个场景分别验、不合并",
+      "coverage_incomplete_scenario": {
+        "ids": [
+          "x1_window1_hit_window2_timeout (S8)",
+          "batch_missing_item",
+          "truncated_output",
+          "batch_timeout",
+          "invalid_check_id_in_batch",
+          "fault_injection:format_error",
+          "fault_injection:timeout",
+          "Chrome:C9c / C9c-0"
+        ],
+        "run_state": "READY",
+        "coverage_complete": false,
+        "expected_409_code": "COVERAGE_INCOMPLETE"
+      },
+      "fatal_auth_scenario": {
+        "ids": [
+          "fault_injection:auth_401"
+        ],
+        "run_state": "FAILED",
+        "expected_409_code": "RUN_NOT_READY",
+        "coverage_note": "不标覆盖不全；complete_task 第一道拦截即返回"
+      },
+      "fully_covered_scenario": {
+        "ids": [
+          "all_windows_success_no_candidate (S9)"
+        ],
+        "expected_status": 200
+      }
+    },
+    "t02_landed_vs_pending": {
+      "_source": "software-engineer 最终镜像逐条回答（不推断，按此标断言）",
+      "landed_T01_T02": [
+        "SearchOutcome 类与 search_check_item_outcome()（但 _search_stage 仍调兼容 wrapper 的 2-tuple，结构化 outcome 尚未被管线消费，属 T03 接口预留）",
+        "RequestTrace 数据类 + complete_json/_chat 的内存字段写入 + to_dict()（仅内存，未落盘）",
+        "run.model_snapshot.run_config（X / C / 版本 / 分窗策略 / 提示词版本 / 清单 hash / run_mode）",
+        "coverage_complete、coverage_affected_check_ids、409 COVERAGE_INCOMPLETE、run_mode=full_rerun",
+        "K1/K2/K3 稳定排序、bundle_id=w{idx}、source_ordering.order_blocks、prompt_registry",
+        "compute_coverage_summary / _touch_step(input_hash_extra) / _write_run_config",
+        "_complete_run 按覆盖汇总赋值（已修复无条件 true）",
+        "基线脚本失败判定三态",
+        "CHECKS_PER_REQUEST 与 LLM_MAX_IN_FLIGHT 配置项 + 模块级 BoundedSemaphore(LLM_MAX_IN_FLIGHT)"
+      ],
+      "not_landed_T03_T04": [
+        "RunStep.step_key = u:w{wi}:b{bi}（本批只有 stage:*/check:*，没有任何 u: 键）",
+        "/data/perf_traces/{run_id}.jsonl（本批完全没写 JSONL 文件，RequestTrace 只在内存，未写 provider_request_id=trace_id，t_submit/t_http_start/t_http_end 也没进 JSONL）",
+        "timing.progress",
+        "七类批次短码落 RunStep.last_error_code（本批短码位只有致命分支 LLM_FATAL 与阶段级 SEARCH_FAILED:...）",
+        "X 批量分组 / 并发调度 / merge_outcomes / 前端",
+        "CheckExecution.coverage JSONB",
+        "check_results=[] / 非法 ID 单响应 → BATCH_MISSING_CHECK(+INVALID_CHECK_ID) 未覆盖判定（架构师裁决 A：T02 不补校验，T03 占位）"
+      ],
+      "note": "QA 资产按此标断言，不得把 T03/T04 写成已实现；U1–U5 里依赖 JSONL / step_key / 七类短码的断言须等 T03/T04 落地后才能跑。"
+    },
+    "partial_coverage_not_a_shortcode_final_mirror": "工程师最终镜像：PARTIAL_COVERAGE 不是短码、已从 last_error_code 移除；LLM_FATAL 仍写短码位；401 致命分支后 stage:vision RunStep 根本不创建。上一版镜像的 QA 实测中 check step 曾出现 last_error_code=PARTIAL_COVERAGE，新镜像重跑后应不再出现。",
+    "check_results_coverage_discriminator": {
+      "_source": "software-architect 裁决 A（T02 不补校验，T03 占位）",
+      "empty_check_results": "模型没回答该检查项 / 违反「有且仅有一个响应」契约 → 该 (窗口,检查项) 未覆盖 → BATCH_MISSING_CHECK（非法 ID 再加 INVALID_CHECK_ID）→ coverage_incomplete",
+      "explicit_not_found": "check_results=[{outcome:\"not_found\"}] 模型明确回答本窗口无候选 → 覆盖达成 → no_matching_evidence",
+      "found_with_invalid_block_ref": "有响应、只是引用不可验证 → 覆盖达成（S5 不变）",
+      "x1_note": "X=1 视为批大小 1 的特例，契约不按 X 分支；与 BATCH_TIMEOUT 粒度无关，INVALID_CHECK_ID 两变体同源",
+      "t02_gap": "T02 当前对空 check_results 给 no_matching_evidence + 完成放行，属已知缺口，#7 不得判 FAIL",
+      "placeholder_scenario": "x1_empty_check_results_t03_placeholder",
+      "explicit_not_found_t02_status": "T02 就已正确处理为覆盖达成 → no_matching_evidence，不是缺口，不得与 check_results=[] 一起标成问题",
+      "delivery_caveat": "不得宣称覆盖不全已 100% 闭环（连响应都没有的缺口仍存在）"
+    },
+    "t03_mandatory_followups": {
+      "_source": "software-engineer /tmp/t02_evidence/INDEX.json 的 t03_mandatory_followups（QA 解锁 U 系列断言时对照）",
+      "T03-F1": "check_results 存在性校验 / 按批校验「本批每个检查项恰好一项」→ BATCH_MISSING_CHECK（对应占位场景 x1_empty_check_results_t03_placeholder）",
+      "T03-F2": "api complete_task（runs.py:502）当前会实时反推覆盖并与持久化字段 AND —— 属实现偏离；T03 收敛成单条 if not run.coverage_complete: 409 COVERAGE_INCOMPLETE（唯一事实源 = ProcessingRun.coverage_complete）",
+      "T03-F3": "compute_coverage_summary 的 legacy 回退分支，T03 引入 u:* step_key 后需复核命名耦合",
+      "T03-F4": "list_results 的展示调用，T03 引入 u:* step_key 后需复核命名耦合",
+      "note": "F2/F3/F4 属收敛项，不是当前缺陷；QA 在 T03 落地后按此逐项解锁 U 系列断言"
+    }
+  },
+  "placeholder_rules": {
+    "_note": "响应模板里的占位符由 mock_llm_server.py 按「当前请求窗口」渲染，避免 fixture 绑定某次导入生成的随机 OcrBlock UUID。",
+    "{{BLOCK:n}}": "当前窗口 user 文本中第 n 个 block_id（0-based，按出现顺序）",
+    "{{BLOCK:LAST}}": "当前窗口最后一个 block_id",
+    "{{INVALID_BLOCK}}": "固定 UUID 00000000-0000-4000-8000-000000000000，故意不在任何窗口内",
+    "{{BUNDLE}}": "当前窗口的稳定 bundle_id = w{window_index}（T01/T02 已把 window-{idx} 改为 w{idx}）",
+    "{{CHECK_ID}}": "从 user 的「检查项：…（id=…）」解析出的检查项 id",
+    "{{WINDOW_INDEX}}": "按窗口 block_id 序列稳定编号的窗口序号",
+    "{{SEQ}}": "模拟服务的到达序号",
+    "{{ATTEMPT}}": "同一 (schema_name, check_item_id, window_index, batch) 的第几次请求"
+  },
+  "synthetic_windows": {
+    "_note": "合成窗口，非真实 OCR 数据。用于让占位符与物理页有确定含义，便于核对去重与出处顺序。",
+    "synthetic": true,
+    "not_from_real_ocr": true,
+    "windows": [
+      {
+        "window_index": 0,
+        "bundle_id": "w0",
+        "block_placeholders": [
+          "{{BLOCK:0}}",
+          "{{BLOCK:1}}",
+          "{{BLOCK:2}}",
+          "{{BLOCK:3}}"
+        ],
+        "synthetic_pages": [
+          7,
+          7,
+          14,
+          14
+        ],
+        "synthetic_page_inner_seq": [
+          0,
+          1,
+          0,
+          1
+        ]
+      },
+      {
+        "window_index": 1,
+        "bundle_id": "w1",
+        "block_placeholders": [
+          "{{BLOCK:0}}",
+          "{{BLOCK:1}}",
+          "{{BLOCK:2}}",
+          "{{BLOCK:3}}"
+        ],
+        "synthetic_pages": [
+          14,
+          14,
+          15,
+          15
+        ],
+        "synthetic_page_inner_seq": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "overlap_with_window_0": [
+          "{{BLOCK:0}}",
+          "{{BLOCK:1}}"
+        ],
+        "overlap_note": "W1 的 BLOCK:0/1 与 W0 的 BLOCK:2/3 是同一批物理块（500 字符重叠），用于验证相邻窗口重复引用只存一次"
+      }
+    ]
+  },
+  "equivalence_pair": {
+    "id": "x1_vs_x3_equivalence",
+    "title": "X=1 与 X=3 固定响应等价对照",
+    "request_count_note": "用户规格示例口径为 2 窗口×6 检查项 → 12/4 个请求（非实测，见 REVIEW_HANDOFF 第三步）。本 fixture 用 3 个检查项子集便于逐条核对，故为 6/2 个请求；实际对照时按修复后代码的真实窗口数×适用检查项数扩展，实测值以模拟服务统计为准。",
+    "spec_example_request_counts": {
+      "x1": 12,
+      "x3": 4,
+      "measured": false
+    },
+    "fixture_request_counts": {
+      "x1": 6,
+      "x3": 2,
+      "measured": false
+    },
+    "check_items": [
+      "charter.business_scope",
+      "charter.approval_body",
+      "charter.guarantee_restrictions"
+    ],
+    "equivalence_keys": [
+      "check_item_id",
+      "text_sha256",
+      "source_page_number"
+    ],
+    "must_not_use_for_cross_run_compare": [
+      "Result.fingerprint",
+      "window_text_sha256",
+      "messages_sha256",
+      "user_sha256"
+    ],
+    "expected_identical": [
+      "每个检查项保留的候选集合（按 check_item_id + text_sha256 + source_page_number 比对）",
+      "同一 OCR 块被多个检查项引用时各项均保留",
+      "跨检查项的引用关系",
+      "去重后的条目数与稳定出处顺序"
+    ],
+    "expected_different": [
+      "实际搜索请求数",
+      "峰值在途数",
+      "逐请求提交时间与实际 HTTP 发起时间",
+      "单请求的检查项批次构成"
+    ],
+    "x1_requests": [
+      {
+        "key": "x1.w0.c1",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.business_scope",
+          "window_index": 0
+        },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:0}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=1 等价对：窗口0 C1 命中"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "key": "x1.w0.c2",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.approval_body",
+          "window_index": 0
+        },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      {
+        "key": "x1.w0.c3",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.guarantee_restrictions",
+          "window_index": 0
+        },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      {
+        "key": "x1.w1.c1",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.business_scope",
+          "window_index": 1
+        },
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      {
+        "key": "x1.w1.c2",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.approval_body",
+          "window_index": 1
+        },
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:2}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=1 等价对：窗口1 C2 命中"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "key": "x1.w1.c3",
+        "match": {
+          "schema_name": "text_search_output",
+          "check_item_id": "charter.guarantee_restrictions",
+          "window_index": 1
+        },
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:3}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=1 等价对：窗口1 C3 命中"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "x3_requests": [
+      {
+        "key": "x3.w0.batch",
+        "match": {
+          "schema_name": "text_search_output",
+          "window_index": 0,
+          "batch_size": 3
+        },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:0}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=3 等价对：窗口0 C1 命中"
+                }
+              ]
+            },
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "not_found",
+              "evidence": []
+            },
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "not_found",
+              "evidence": []
+            }
+          ]
+        }
+      },
+      {
+        "key": "x3.w1.batch",
+        "match": {
+          "schema_name": "text_search_output",
+          "window_index": 1,
+          "batch_size": 3
+        },
+        "response": {
+          "bundle_id": "w1",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "not_found",
+              "evidence": []
+            },
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:2}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=3 等价对：窗口1 C2 命中"
+                }
+              ]
+            },
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [
+                    {
+                      "block_id": "{{BLOCK:3}}",
+                      "start_char": null,
+                      "end_char": null
+                    }
+                  ],
+                  "relation_status": "matched",
+                  "relevance_reason": "X=3 等价对：窗口1 C3 命中"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "expected_kept_candidates": [
+      {
+        "check_item_id": "charter.business_scope",
+        "block_placeholder": "{{BLOCK:0}}@window-0",
+        "synthetic_page": 7
+      },
+      {
+        "check_item_id": "charter.approval_body",
+        "block_placeholder": "{{BLOCK:2}}@window-1",
+        "synthetic_page": 15
+      },
+      {
+        "check_item_id": "charter.guarantee_restrictions",
+        "block_placeholder": "{{BLOCK:3}}@window-1",
+        "synthetic_page": 15
+      }
+    ],
+    "expected_assertions": [
+      "X=1 与 X=3 的 (check_item_id, text_sha256, source_page_number) 三元组集合完全相等",
+      "两者都保留 3 条候选，跨检查项引用与去重结果一致",
+      "X=3 的实际搜索请求数少于 X=1（实测值由模拟服务统计给出）",
+      "两者的 run.coverage_complete 均为 true，complete_task 均返回 200",
+      "两个 run 的 trace 不串写：逐条核对 run_id / 窗口 / 批次 / 检查项归属（U5）"
+    ],
+    "trace_assertion_note": "U3 的提交时间 vs 实际 HTTP 发起时间取自 /data/perf_traces/{run_id}.jsonl 的 t_submit / t_http_start / t_http_end，不去 DB 找时间字段；模拟服务只提供 arrived_at（≈t_http_start）。"
+  },
+  "scenarios": [
+    {
+      "id": "same_block_multi_check",
+      "title": "同一 OCR 块被多个检查项引用",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s1.w0.batch",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "同块被 C1 引用"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "同块被 C2 引用"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "同块被 C3 引用"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:0}}"
+          },
+          {
+            "check_item_id": "charter.approval_body",
+            "block": "{{BLOCK:0}}"
+          },
+          {
+            "check_item_id": "charter.guarantee_restrictions",
+            "block": "{{BLOCK:0}}"
+          }
+        ],
+        "dedup_must_not_remove_across_check_items": true,
+        "uncovered_check_items": [],
+        "coverage_incomplete_check_items": [],
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "notes": "同出处合法支持多检查项，各项均保留；_dedup_evidence 只在「同一检查项内」做包含关系去重，不得跨检查项删除。",
+        "expected_last_error_codes": [],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）"
+      }
+    },
+    {
+      "id": "one_evidence_multi_block",
+      "title": "一条证据引用多个相邻块",
+      "category": "七类之一",
+      "x": 1,
+      "mock_rules": [
+        {
+          "name": "s2.w0.c1",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:1}}",
+                        "start_char": null,
+                        "end_char": null
+                      },
+                      {
+                        "block_id": "{{BLOCK:2}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "一条证据跨两个相邻块"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:1}}",
+            "synthetic_page": 7
+          },
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:2}}",
+            "synthetic_page": 14
+          }
+        ],
+        "both_sources_locatable": true,
+        "stable_source_order": [
+          "page 7 / seq 1",
+          "page 14 / seq 0"
+        ],
+        "uncovered_check_items": [],
+        "coverage_incomplete_check_items": [],
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "notes": "按现有实现每个 source_ref 生成一条 FoundEvidence；验收重点是「一起保留并分别定位」以及去重后出处顺序按物理页+页内序号稳定（当前排序键含随机 block_id，预期修复）。",
+        "expected_last_error_codes": [],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）"
+      }
+    },
+    {
+      "id": "batch_missing_item",
+      "title": "批内漏返一个检查项",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s3.w0.batch.missing_c3",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "批内漏返用例：C1 有效"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:0}}"
+          }
+        ],
+        "missing_in_batch": [
+          "charter.guarantee_restrictions"
+        ],
+        "uncovered_check_items": [
+          "charter.guarantee_restrictions"
+        ],
+        "coverage_incomplete_check_items": [
+          "charter.guarantee_restrictions"
+        ],
+        "run_coverage_complete": false,
+        "complete_task_allowed": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+        "notes": "批内漏返属于「该窗口该检查项未覆盖」，不得写成 no_matching_evidence；其他检查项的有效结果继续保留。",
+        "expected_last_error_codes": [
+          "BATCH_MISSING_CHECK"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）",
+        "complete_task_expected_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；断言入口统一为纯字面量"
+      }
+    },
+    {
+      "id": "duplicate_item",
+      "title": "重复返回检查项",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s4.w0.batch.duplicate_c1",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "重复项第 1 次"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "重复项第 2 次"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:0}}"
+          }
+        ],
+        "duplicate_result_rows_must_be": 1,
+        "duplicate_signal_recorded": true,
+        "stable_source_order": true,
+        "uncovered_check_items": [],
+        "coverage_incomplete_check_items": [],
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "notes": "重复返回检查项只保留一次，不产生额外 Result 行；去重后出处顺序稳定。",
+        "expected_last_error_codes": [
+          "BATCH_DUPLICATE_CHECK"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）"
+      }
+    },
+    {
+      "id": "invalid_block_ref",
+      "title": "引用无效块",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s5.w0.batch.invalid_ref",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{INVALID_BLOCK}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "故意引用不属于当前窗口的块"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:1}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "同批内另一检查项的有效引用"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.approval_body",
+            "block": "{{BLOCK:1}}"
+          }
+        ],
+        "invalid_ref_count": 1,
+        "invalid_ref_not_persisted": true,
+        "invalid_ref_must_not_erase_other_valid_results": true,
+        "uncovered_check_items": [],
+        "coverage_incomplete_check_items": [],
+        "charter.business_scope_expected_reason": "no_matching_evidence",
+        "reason_note": "架构师定稿（确认不改）：幻引不算未覆盖 → no_matching_evidence / run_coverage_complete=true / 200。判别式是「该检查项在该窗口是否有可采信的响应」，HTTP 成功 + JSON 合法 + schema 通过即覆盖达成；把输出质量异常塞进 coverage_incomplete 会稀释三档语义。",
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "expected_last_error_codes": [
+          "INVALID_BLOCK_REF"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）",
+        "run_step_state_for_invalid_block_ref": "SUCCEEDED（观测短码，不是 FAILED）",
+        "run_step_short_code_location": "last_error_code 与 perf_trace_jsonl，不改 state",
+        "affected_check_zero_result_rows": true,
+        "known_limitation": "模型声称 found 但引用不可验证时，系统显示「未找到相关证据」，属输出质量异常，需人工复核该检查项；需在交接文档显式登记，不得静默降级。"
+      }
+    },
+    {
+      "id": "truncated_output",
+      "title": "输出截断",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s6.w0.batch.truncated",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "inject": "truncated",
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "截断用例：完整模板，模拟服务会截去尾部"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "truncation_signal_recorded": true,
+        "affected_batch_and_check_items_recorded": true,
+        "partial_parsable_results_preserved": true,
+        "unparsable_part_treated_as_uncovered": true,
+        "uncovered_check_items": [
+          "待实现后按可解析部分确定"
+        ],
+        "coverage_incomplete_check_items": [
+          "至少包含不可解析部分对应的检查项"
+        ],
+        "run_coverage_complete": false,
+        "complete_task_allowed": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+        "notes": "模拟服务返回半截 JSON + finish_reason=length + qa_truncation_signal；验收重点是「截断信号 + 受影响项 + 可解析部分保留 + 不可解析部分标未覆盖」，不得把整批静默当成正常未找到。",
+        "expected_last_error_codes": [
+          "OUTPUT_TRUNCATED"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）",
+        "complete_task_expected_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；断言入口统一为纯字面量"
+      }
+    },
+    {
+      "id": "batch_timeout",
+      "title": "整批超时耗尽",
+      "category": "七类之一",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s7.w1.batch.timeout",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 1,
+            "batch_size": 3
+          },
+          "inject": "timeout",
+          "response": {
+            "bundle_id": "w1",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "timeout_prerequisite": "客户端须把该次运行的 LLM_REQUEST_TIMEOUT_SECONDS 调到小于 mock 配置 timeout_hang_seconds（例如 1s vs 3s），否则只会等满挂起时间而不会触发 APITimeoutError；也可用 inject=429 让重试耗尽来复现同一覆盖口径。",
+      "expected": {
+        "all_checks_in_batch_uncovered": [
+          "charter.business_scope",
+          "charter.approval_body",
+          "charter.guarantee_restrictions"
+        ],
+        "previously_saved_candidates_from_other_windows_preserved": true,
+        "retries_counted_in_same_quota": true,
+        "coverage_incomplete_check_items": [
+          "charter.business_scope",
+          "charter.approval_body",
+          "charter.guarantee_restrictions"
+        ],
+        "run_coverage_complete": false,
+        "complete_task_allowed": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+        "notes": "覆盖按「窗口×检查项」记录：整批超时耗尽则该批当前窗口的检查项均为未覆盖；重试计入同一额度；已保存的其他窗口有效候选必须保留。",
+        "expected_last_error_codes": [
+          "BATCH_TIMEOUT"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）",
+        "granularity_note": "区分窗口级 vs 整批级不用短码，用 run_config.X + step_key=u:w{wi}:b{bi} + coverage_incomplete_check_items 项数（X=1 为 1 项、X=3 为 N 项）。BATCH_TIMEOUT 字面量统一，X=1 时批边界与窗口边界重合。",
+        "complete_task_expected_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；断言入口统一为纯字面量"
+      }
+    },
+    {
+      "id": "x1_window1_hit_window2_timeout",
+      "title": "X=1：窗口1命中、窗口2超时耗尽 → 覆盖不全",
+      "category": "第一步前置② 覆盖不全核心用例",
+      "x": 1,
+      "mock_rules": [
+        {
+          "name": "s8.w0.c1.found",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "窗口0 命中，必须保留"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "s8.w1.c1.timeout",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1
+          },
+          "inject": "timeout",
+          "response": {
+            "bundle_id": "w1",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "timeout_prerequisite": "同 batch_timeout：需把 LLM_REQUEST_TIMEOUT_SECONDS 调小，或改用 inject=429 让 LLM_MAX_TRANSIENT_RETRIES 重试耗尽。",
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:0}}@window-0",
+            "synthetic_page": 7
+          }
+        ],
+        "excerpt_must_be_preserved": true,
+        "affected_check_items": [
+          "charter.business_scope"
+        ],
+        "affected_check_reason_must_not_be": "no_matching_evidence",
+        "affected_check_expected_reason": "coverage_incomplete",
+        "run_coverage_complete": false,
+        "run_record_coverage_incomplete": true,
+        "complete_task_allowed": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+        "api_and_workbench_consistent": true,
+        "persists_after_refresh": true,
+        "current_head_known_bugs": [
+          "text_search.search_check_item：有 found 即 return found, None，丢弃 uncovered → 该项被误判覆盖完整",
+          "processing_pipeline._complete_run：无条件 coverage_complete=True → run 仍报覆盖完整",
+          "api/routes/runs.complete_task：完成条件只看人工决策，未纳入 coverage_incomplete → 可正常完成"
+        ],
+        "notes": "这是第一步四项前置里最关键的回归用例：验证「成功窗口摘录与定位保留 + 受影响检查项与 run 记录覆盖不全 + 完成接口 409 + 刷新后仍在」。",
+        "expected_last_error_codes": [
+          "BATCH_TIMEOUT"
+        ],
+        "last_error_code_location": "RunStep.last_error_code / perf_trace_jsonl（架构师 §4 短码，待实现）",
+        "granularity_note": "X=1 时批边界与窗口边界重合，BATCH_TIMEOUT 天然等价窗口级超时耗尽；不新增独立短码（避免工程师在 search_one_unit 按 X 分支写码）。区分窗口级/整批级靠 run_config.X + step_key + coverage_incomplete_check_items 项数。",
+        "complete_task_expected_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；断言入口统一为纯字面量",
+        "complete_task_expected_code_scope_note": "COVERAGE_INCOMPLETE 仅适用于 run 已 READY 但应查窗口未成功完成（覆盖不全/超时耗尽）的场景；401/鉴权失败导致 run 未就绪（run.state=FAILED）时 complete_task 第一道拦截走 RUN_NOT_READY、不标覆盖不全。两个场景分别验、不合并，否则「完成接口 409」的交付口径会指向错误码。",
+        "chrome_c9c_link": "本场景（窗口1命中、窗口2超时耗尽）即 Chrome C9c 的覆盖不全场景，期望码保持 COVERAGE_INCOMPLETE，不要被 auth_401 的 RUN_NOT_READY 定稿连带改错。"
+      }
+    },
+    {
+      "id": "all_windows_success_no_candidate",
+      "title": "对照：应查窗口均成功完成且无候选 → 正常「未找到」",
+      "category": "第一步前置② 对照用例（PM 明确要求）",
+      "x": 1,
+      "mock_rules": [
+        {
+          "name": "s9.w0.c1.not_found",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        },
+        {
+          "name": "s9.w1.c1.not_found",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1
+          },
+          "response": {
+            "bundle_id": "w1",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [],
+        "expected_not_found_reason": "no_matching_evidence",
+        "must_not_be": "coverage_incomplete",
+        "uncovered_check_items": [],
+        "coverage_incomplete_check_items": [],
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "expected_last_error_codes": [],
+        "notes": "与 x1_window1_hit_window2_timeout 成对：同样零候选，只要全部应查窗口成功就必须显示正常「未找到」，不得误标覆盖不全。"
+      }
+    },
+    {
+      "id": "invalid_check_id_in_batch",
+      "title": "批内返回不属于本批的 check_item_id",
+      "category": "架构师 §4 短码覆盖",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s10.w0.batch.invalid_check_id",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "found",
+                "evidence": [
+                  {
+                    "source_refs": [
+                      {
+                        "block_id": "{{BLOCK:0}}",
+                        "start_char": null,
+                        "end_char": null
+                      }
+                    ],
+                    "relation_status": "matched",
+                    "relevance_reason": "同批内有效项"
+                  }
+                ]
+              },
+              {
+                "check_item_id": "charter.voting_ratio",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [
+          {
+            "check_item_id": "charter.business_scope",
+            "block": "{{BLOCK:0}}"
+          }
+        ],
+        "invalid_check_id": "charter.voting_ratio（不属于本批 C1/C2/C3）",
+        "valid_results_preserved": true,
+        "expected_last_error_codes": [
+          "INVALID_CHECK_ID",
+          "BATCH_MISSING_CHECK"
+        ],
+        "coverage_incomplete_check_items": [
+          "charter.approval_body"
+        ],
+        "run_coverage_complete": false,
+        "complete_task_allowed": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+        "notes": "QA 预期：无效 check_item_id 单独记录短码，本批缺失的 C2 视为未覆盖 → 覆盖不全；若工程师判定为「仅丢弃无效项、其余有效项覆盖完整」，需回传并同步修改本断言。",
+        "variant_a_replace": "非法 ID 顶替本批某项 → 漏返 → coverage_incomplete + 409，短码 INVALID_CHECK_ID + BATCH_MISSING_CHECK（本场景）",
+        "variant_b_extra": "非法 ID 是额外多返回一条、本批 N 项全在 → 只记 INVALID_CHECK_ID、丢弃多余响应、不记 BATCH_MISSING_CHECK、不算未覆盖、run_coverage_complete 仍 true（见 S10b 对照场景）",
+        "coverage_priority_note": "即使该检查项在其他窗口已有成功摘录，仍要 coverage_incomplete + 409；覆盖判定优先级高于「有摘录」（PRD 保留摘录并明确显示覆盖不全）。",
+        "discriminator": "漏返 = 该检查项在该窗口根本没被回答 → 契约违反 → 未覆盖；幻引 = 给了响应但候选不可采信 → 覆盖达成",
+        "complete_task_expected_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；断言入口统一为纯字面量"
+      }
+    },
+    {
+      "id": "invalid_check_id_extra_only",
+      "title": "对照：非法 check_item_id 只是额外多返回一条（本批 N 项全在）",
+      "category": "架构师定稿 · S10 对照变体",
+      "x": 3,
+      "mock_rules": [
+        {
+          "name": "s10b.w0.batch.extra_invalid_check_id",
+          "when": {
+            "schema_name": "text_search_output",
+            "window_index": 0,
+            "batch_size": 3
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": [
+              {
+                "check_item_id": "charter.business_scope",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.approval_body",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.guarantee_restrictions",
+                "outcome": "not_found",
+                "evidence": []
+              },
+              {
+                "check_item_id": "charter.voting_ratio",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected": {
+        "kept_candidates": [],
+        "invalid_check_id": "charter.voting_ratio（额外多返回，不属本批 C1/C2/C3）",
+        "extra_response_discarded": true,
+        "expected_last_error_codes": [
+          "INVALID_CHECK_ID"
+        ],
+        "must_not_record": [
+          "BATCH_MISSING_CHECK"
+        ],
+        "coverage_incomplete_check_items": [],
+        "run_coverage_complete": true,
+        "complete_task_allowed": true,
+        "complete_task_expected_status": 200,
+        "notes": "架构师定稿：避免工程师把「出现非法 ID」无条件等价「漏返」。本批 N 项全被回答 → 覆盖达成；只记 INVALID_CHECK_ID、丢弃多余响应，不记 BATCH_MISSING_CHECK、不算未覆盖。"
+      }
+    },
+    {
+      "id": "x1_empty_check_results_t03_placeholder",
+      "title": "T03 占位：X=1 响应 check_results=[]（模型没回答该检查项）",
+      "category": "架构师裁决 A · T03 占位断言（当前待实测 / 后续批次）",
+      "x": 1,
+      "synthetic_placeholder": true,
+      "effective_after": "T03",
+      "status": "待实测 / 后续批次（裁决 A：T02 不补 check_results 存在性校验、不再重建镜像，当前第 3 次 docstring 同步版即交付版）",
+      "annotation_mechanism": "复用 fault_injection.py 的 effective_after 标注机制（与 evidence_preservation_effective_after 同族）；当前只登记预期、不判 PASS/FAIL，#7 不得把 T02 行为判成回归失败。",
+      "mock_rules": [
+        {
+          "name": "t03.x1.empty_check_results",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0
+          },
+          "response": {
+            "bundle_id": "w0",
+            "check_results": []
+          }
+        },
+        {
+          "name": "t03.x1.invalid_id_only",
+          "when": {
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1
+          },
+          "response": {
+            "bundle_id": "w1",
+            "check_results": [
+              {
+                "check_item_id": "charter.voting_ratio",
+                "outcome": "not_found",
+                "evidence": []
+              }
+            ]
+          }
+        }
+      ],
+      "expected_after_T03": {
+        "mechanism": "validate_batch_response / merge_outcomes 按批校验「本批每个检查项恰好一项」→ 缺失记 BATCH_MISSING_CHECK → 未覆盖 → coverage_incomplete + 409",
+        "short_code_reason": "X=1 也用 BATCH_MISSING_CHECK（批 = 单检查项），契约不按 X 分支；非法 ID 顶替再加 INVALID_CHECK_ID",
+        "covered": false,
+        "expected_last_error_codes": [
+          "BATCH_MISSING_CHECK"
+        ],
+        "invalid_id_variant_adds": [
+          "INVALID_CHECK_ID"
+        ],
+        "affected_check_reason": "coverage_incomplete",
+        "run_coverage_complete": false,
+        "complete_task_expected_status": 409,
+        "complete_task_expected_code": "COVERAGE_INCOMPLETE"
+      },
+      "current_t02_behavior": {
+        "mechanism": "search_check_item_outcome 只做 TextSearchOutput.model_validate 通过即 covered_windows += 1 → 判覆盖达成 → no_matching_evidence → run.coverage_complete=true → 完成接口放行",
+        "affected_check_reason": "no_matching_evidence",
+        "run_coverage_complete": true,
+        "complete_task": "放行（200）",
+        "classification": "已知、允许，不是回归失败；#7 在 T02 阶段不得判 FAIL",
+        "not_100_percent_closed": true,
+        "architect_ruling": "A：T02 不补该校验、不再重建镜像，用最终镜像重跑全套，不会有第二次暂停"
+      },
+      "semantic_notes": [
+        "check_results=[] = 模型没回答该检查项 / 违反「每个请求中的检查项必须有且仅有一个响应」契约 → 未覆盖（T03）",
+        "check_results=[{outcome:\"not_found\"}] = 模型明确回答本窗口无候选 → 覆盖达成 → no_matching_evidence；T02 就已正确处理，不是缺口，不要一起标成缺口（S9 不变）",
+        "outcome=found 但 block_id 幻引 = 有响应、只是引用不可验证 → 覆盖达成（S5 不变）",
+        "X=1 视为批大小 1 的特例，契约不按 X 分支；与 BATCH_TIMEOUT 粒度无关、INVALID_CHECK_ID 两变体同源（S10 / S10b）",
+        "现有 S5 / S9 / S10 / S10b / S7 / S8 预期均不改动，本条只作占位",
+        "交付口径：不得宣称覆盖不全已 100% 闭环；本条与 S5 known_limitation 同类但更严重（连响应都没有）"
+      ],
+      "delivery_caveat": {
+        "statement": "不得宣称覆盖不全已 100% 闭环",
+        "severity": "与 S5 known_limitation 同类但更严重：S5 是「有响应但引用不可验证」，本条是「模型根本没回答」",
+        "handoff_note": "docs/REVIEW_HANDOFF.md 按边界本批不动；T05 由工程师落笔时会把这条缺口与 T03-F1~F4 一并列进去，QA 不改交接文档",
+        "no_7_note": "#7 定向验证在 T02 阶段按「已知、允许」处理，不得判 FAIL"
+      }
+    }
+  ],
+  "dedup_expectations": [
+    {
+      "id": "D1_same_item_same_source_same_text_diff_offset",
+      "title": "同检查项/同出处/同原文，不同偏移或相邻窗口重复引用只存一次",
+      "fixture_hint": "对同一 block_id 用两组不同 start_char/end_char 发起两条响应，或让 W0 与 W1 的重叠块被重复引用",
+      "expected_result_rows": 1,
+      "current_head_verdict": "预期 FAIL：_fingerprint 用模型返回的 start/end 算指纹，不同偏移产生不同指纹；摘录正文却回取整块原文，_dedup_evidence 的包含关系去重对完全相同 text 不去重（ev.text != o.text 为 False）",
+      "fix_hint": "指纹改为「检查项 + 稳定出处标识 + 规范化原文 hash」，或先按 (check_item_id, text_sha256, source_page_number) 去重再落库"
+    },
+    {
+      "id": "D2_same_text_different_source",
+      "title": "相同正文不同出处要保留",
+      "fixture_hint": "两个不同 block_id 的 canonical_text 完全相同，均被同一检查项引用",
+      "expected_result_rows": 2,
+      "current_head_verdict": "预期 PASS：不同 block_id → 不同指纹，两条都保留",
+      "fix_hint": "去重键必须含出处（物理页 + 页内稳定序号），不能只按原文 hash"
+    },
+    {
+      "id": "D3_same_source_multiple_checks",
+      "title": "同出处合法支持多检查项，各项均保留",
+      "fixture_hint": "见 scenario same_block_multi_check",
+      "expected_result_rows": 3,
+      "current_head_verdict": "预期 PASS：seen 集合是 search_check_item 的局部变量，每个检查项独立调用，不跨项共享",
+      "fix_hint": "批量（X>1）实现后不得把 seen 提到批次级导致跨检查项误删"
+    },
+    {
+      "id": "D4_stable_source_order",
+      "title": "去重后稳定出处顺序",
+      "fixture_hint": "同一物理页内多个块被引用，比较两次运行的 Result.rank 顺序",
+      "expected": "按 (source_page_number, 页内稳定序号) 排序，两次运行完全一致",
+      "current_head_verdict": "预期 FAIL：_dedup_evidence 排序键 (source_page_number, block_id)，block_id 是每次导入新生成的随机 UUID",
+      "fix_hint": "排序键改用物理页 + 页内稳定序号（provider_block_id / 稳定 sequence），不得含随机 UUID"
+    }
+  ],
+  "assertion_index_pending_implementation": [
+    "【T01/T02 已落地 → 待新镜像实测闭环】409 COVERAGE_INCOMPLETE + 零写入、list_results 新字段、search_check_item PARTIAL_COVERAGE 语义修复、bundle_id=w{idx}、source_ordering.order_blocks、_complete_run 按覆盖汇总赋值、基线失败三态",
+    "【T03/T04 未落地，不得写成已实现】CHECKS_PER_REQUEST 仅配置项落地；X 批量分组 / 并发调度 / merge_outcomes / 前端均未落地",
+    "【T03/T04 未落地】RunStep.step_key=u:w{wi}:b{bi}（本批无 u: 键）、/data/perf_traces/{run_id}.jsonl（本批完全未落盘）、timing.progress、七类批次短码落 last_error_code、CheckExecution.coverage JSONB",
+    "【T03 接口预留】SearchOutcome 类与 search_check_item_outcome() 已落地但管线仍调兼容 wrapper；T03 接入后逐项断言 covered_windows / total_windows / uncovered_window_ids / anomalies / fully_covered",
+    "七类短码落在 RunStep.last_error_code 与 perf_trace_jsonl 后，逐场景断言 expected_last_error_codes（本批短码位只有 LLM_FATAL 与 SEARCH_FAILED:...）",
+    "U1/U2/U5 的提交时间 vs 实际 HTTP 发起时间必须取自 perf_trace_jsonl 的 t_submit / t_http_start / t_http_end，不去 DB 找时间字段；t_http_start - t_submit = 额度等待。JSONL 未落地前这些断言无法跑",
+    "timing.progress {total, succeeded, failed, running, has_stable_denominator} 分母来自 run.model_snapshot.run_config.units_total；无分母只给计数不给百分比",
+    "两个 run 同时执行：合计在途符合共享上限、逐条落库核对 run_id / 窗口 / 批次 / 检查项归属无串写（模拟服务已支持 X-QA-Tag 做 tag 统计）",
+    "U1 的 C=N：改 .env 后 `docker compose up -d --force-recreate api worker`（不需 build；restart 无效、进程内改 settings 无效），U1 跑完改回 2 再 recreate 一次",
+    "超时注入推荐 inject=429 → RateLimitError → LLMTransientError 重试耗尽（LLM_MAX_TRANSIENT_RETRIES=2 即 3 次尝试后未覆盖）；若测真实 APITimeoutError 需 recreate 容器把 LLM_REQUEST_TIMEOUT_SECONDS 调到 < mock timeout_hang_seconds(3s)",
+    "跨 run 结果比对用 text_sha256 + source_page_number + 页内稳定序号，不用 Result.fingerprint；内容 hash 与请求 hash 分栏记录",
+    "list_results 的 coverage_complete / coverage_affected_check_ids 需与 GET run、工作台提示三方一致，刷新后仍在",
+    "所有实测请求数 / 峰值 / 时间差必须来自 mock_llm_server.py 落盘统计或 perf_trace_jsonl，不能引用 fixture 里标注 measured:false 的示例数字",
+    "架构师定稿：S5 幻引零 Result 行落库 + RunStep u:* state 仍 SUCCEEDED；S10 区分顶替/额外多返回（S10b）；BATCH_TIMEOUT 粒度无关；PARTIAL_COVERAGE 不得进 expected_last_error_codes",
+    "401 的 complete_task 错误码为 RUN_NOT_READY；stage:vision 断言形式为「RunStep 中不存在该 step_key 行」；window0_evidence_preserved 标 effective_after=T03",
+    "【T03 占位，当前不判 PASS/FAIL】x1_empty_check_results_t03_placeholder：X=1 且 check_results=[]（或只含非法 ID）→ 未覆盖 → BATCH_MISSING_CHECK(+INVALID_CHECK_ID) → coverage_incomplete / 409 COVERAGE_INCOMPLETE；T02 实际为 no_matching_evidence + 完成放行，属已知缺口",
+    "【T03 交付口径】不得宣称覆盖不全已 100% 闭环：X=1 check_results=[] 在 T02 仍为 no_matching_evidence + 完成放行，与 S5 known_limitation 同类但更严重（连响应都没有）；#7 按「已知、允许」处理，不判 FAIL",
+    "【T03-F2】complete_task 收敛为唯一事实源 ProcessingRun.coverage_complete 的单条 409 拦截（当前实时反推 AND 属实现偏离）",
+    "【T03-F3/F4】引入 u:* step_key 后复核 compute_coverage_summary legacy 回退分支与 list_results 展示调用的命名耦合"
+  ]
+}

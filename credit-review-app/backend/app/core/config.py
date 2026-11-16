@@ -32,7 +32,8 @@ class Settings(BaseSettings):
 
     # --- 存储与流水线 ---
     DATA_DIR: str = "/data"
-    PIPELINE_CONFIG_VERSION: str = "pipeline-v1"
+    # 分窗策略版本标识：pipeline-v2 = K1 稳定排序 + K2 内容 hash + K3 稳定去重。
+    PIPELINE_CONFIG_VERSION: str = "pipeline-v2"
 
     # --- 初始账号 ---
     INITIAL_USERS_JSON: str = "[]"
@@ -66,7 +67,15 @@ class Settings(BaseSettings):
     LLM_VISION_MODEL: str = ""
     LLM_REQUEST_TIMEOUT_SECONDS: int = 120
     LLM_CONNECT_TIMEOUT_SECONDS: int = 10
+    # 兼容别名：本轮**不再**作为限流上限，仅供旧脚本读取。
+    # 唯一在途上限是 LLM_MAX_IN_FLIGHT（模块级 BoundedSemaphore）。
+    # 若调度器再建第二层信号量，会形成双重限流（C=12 时实测仍只有 2 个在途）。
     LLM_MAX_CONCURRENCY: int = 2
+    # C：全局唯一在途上限。llm_client 在模块 import 时固化该值，改值必须重启容器。
+    LLM_MAX_IN_FLIGHT: int = 2
+    # X：单次请求打包的检查项数，与 C 相互独立。
+    # 本轮只冻结到 run.model_snapshot，批量分组由后续批次落地。
+    CHECKS_PER_REQUEST: int = 1
     LLM_MAX_TRANSIENT_RETRIES: int = 2
     LLM_MAX_FORMAT_REPAIRS: int = 1
     LLM_MAX_OUTPUT_TOKENS: int = 4096
@@ -83,6 +92,20 @@ class Settings(BaseSettings):
             if database_url.startswith(scheme):
                 return database_url.replace(scheme, "postgresql+psycopg://", 1)
         return database_url
+
+    @field_validator("CHECKS_PER_REQUEST")
+    @classmethod
+    def _check_checks_per_request(cls, value: int) -> int:
+        if value not in (1, 2, 3, 6):
+            raise ValueError("CHECKS_PER_REQUEST 只能是 1 / 2 / 3 / 6")
+        return value
+
+    @field_validator("LLM_MAX_IN_FLIGHT")
+    @classmethod
+    def _check_llm_max_in_flight(cls, value: int) -> int:
+        if value < 1:
+            raise ValueError("LLM_MAX_IN_FLIGHT 必须 >= 1，否则模块级信号量会把所有请求永久阻塞")
+        return value
 
     @model_validator(mode="after")
     def _warn_default_secret(self) -> Self:

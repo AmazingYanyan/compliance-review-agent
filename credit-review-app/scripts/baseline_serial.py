@@ -1470,7 +1470,42 @@ def main() -> int:
             post_processing_seconds, total_seconds,
         )
         evidence["sample_limitations"] = SAMPLE_LIMITATIONS
-        evidence["status"] = "measured" if not evidence["blockers"] else "measured_with_blockers"
+        # 失败判定纳入 run.state / coverage_complete / 致命错误信号 / 阶段状态矛盾：
+        # 已失败 run 一律不得标 measured。所有信号都来自本次真实读取，不做推算。
+        run_state = run_view.get("state")
+        coverage_complete = run_view.get("coverage_complete")
+        fatal_error_code = run_view.get("error_code")
+        failure_signals: list[str] = []
+        if run_state != "READY":
+            failure_signals.append(f"run.state={run_state}")
+        if not coverage_complete:
+            failure_signals.append(f"run.coverage_complete={coverage_complete}")
+        if fatal_error_code:
+            failure_signals.append(f"run.error_code={fatal_error_code}")
+        if evidence["blockers"]:
+            failure_signals.append(f"blockers={len(evidence['blockers'])}")
+        stage_search_view = next(
+            (s for s in steps if s["step_key"] == "stage:search"), None
+        )
+        state_contradiction = bool(
+            run_state == "FAILED"
+            and stage_search_view
+            and stage_search_view["state"] == "SUCCEEDED"
+        )
+        if state_contradiction:
+            failure_signals.append("contradiction: run=FAILED but stage:search=SUCCEEDED")
+        hard_failed = (
+            run_state != "READY"
+            or bool(fatal_error_code)
+            or state_contradiction
+        )
+        if hard_failed:
+            evidence["status"] = "failed"
+        elif failure_signals:
+            evidence["status"] = "measured_with_blockers"
+        else:
+            evidence["status"] = "measured"
+        evidence["status_signals"] = failure_signals
     except Exception as exc:  # noqa: BLE001
         observer.restore()
         evidence["status"] = "blocked"
@@ -1479,8 +1514,36 @@ def main() -> int:
             "error": f"{type(exc).__name__}: {exc}"[:800],
             "note": "未完成的字段保持缺失，不填推算值",
         })
+        # 失败时保留已采集证据：results / clause_matrix / run / timing / windows 等
+        # 已赋值字段一律不覆盖；缺失的观测字段用真实采集数据补齐（不填推算数字）。
+        try:
+            calls_summary: dict[str, Any] = observer.summarize_calls()
+        except Exception as call_exc:  # noqa: BLE001
+            calls_summary = {
+                "status": "unavailable",
+                "error": f"{type(call_exc).__name__}: {call_exc}"[:300],
+            }
+        evidence.setdefault("model_calls", calls_summary)
+        evidence.setdefault("search_stage_per_check_item", observer.search_events)
+        evidence.setdefault("stage_events", observer.stage_events)
+        evidence.setdefault("chunk_events", observer.chunk_events)
         evidence.setdefault("timing", {})
         evidence["timing"]["total_measured_seconds"] = _round(time.perf_counter() - total_start)
+        evidence["failure_evidence_preservation"] = {
+            "note": (
+                "except 分支不清除任何已赋值字段；缺失字段保持缺失，不填推算值；"
+                "model_calls / search_stage_per_check_item 由 observer 真实采集补齐"
+            ),
+            "present_keys": sorted(
+                key
+                for key in (
+                    "run", "timing", "windows", "model_calls",
+                    "search_stage_per_check_item", "results", "clause_matrix",
+                    "bottleneck", "sample_limitations",
+                )
+                if key in evidence
+            ),
+        }
     finally:
         if task_id is not None and not args.keep_task:
             if "isolation" in evidence and not evidence["isolation"].get("soft_deleted_at"):
@@ -1492,7 +1555,14 @@ def main() -> int:
                 )
 
     _emit(evidence, args.evidence_out)
-    return 0 if evidence["status"] in ("measured", "probe_only") else 1
+    # 三态配套：只有 measured / probe_only 视为成功；
+    # failed / blocked / measured_with_blockers / running 一律非 0 退出码。
+    status = evidence.get("status")
+    if status in ("measured", "probe_only"):
+        return 0
+    if status in ("failed", "blocked", "measured_with_blockers", "running"):
+        return 1
+    return 1
 
 
 def _count_reasons(items: list[dict[str, Any]]) -> dict[str, int]:

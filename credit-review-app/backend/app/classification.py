@@ -2,10 +2,14 @@
 
 分类只判断材料类别（business_license / articles_of_association / audited_financials /
 unknown），不推断企业是否合规。mixed 只在多窗口证据不一致时提出。
+
+K1：``load_file_blocks`` 与 ``text_search.load_source_blocks`` 共用
+``source_ordering.order_blocks`` 的同一套稳定排序键，保证分窗边界一致。
 """
 
 from __future__ import annotations
 
+import hashlib
 import uuid
 from dataclasses import dataclass, field
 
@@ -15,6 +19,7 @@ from app.core.db import engine
 from app.llm_client import LLMClient
 from app.llm_schemas import CLASSIFICATION_SCHEMA, ClassificationOutput
 from app.models import OcrBlock
+from app.source_ordering import load_file_keys, load_page_map, order_blocks
 
 CLASSIFY_SYSTEM = (
     "你是银行信贷资料核对的材料分类助手。你只根据给定文本块判断该文件属于哪类材料，"
@@ -30,12 +35,26 @@ class BlockRef:
     block_id: uuid.UUID
     text: str
     table_html: str | None = None
+    # --- K1 新增字段（带默认值，兼容既有构造与单测） ---
+    file_key: str = ""
+    page_key: int = 0
+    page_ordinal: int = 0
+    content_hash: str = ""
+    order_source: str = ""
 
 
 @dataclass
 class Window:
     bundle_id: str
     blocks: list[BlockRef] = field(default_factory=list)
+    # 请求侧 hash（_window_text 含 block_id=<UUID>），只进 trace / 证据
+    window_text_sha256: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.window_text_sha256:
+            self.window_text_sha256 = hashlib.sha256(
+                _window_text(self.blocks).encode("utf-8")
+            ).hexdigest()
 
     @property
     def char_count(self) -> int:
@@ -43,7 +62,10 @@ class Window:
 
 
 def _window_text(blocks: list[BlockRef]) -> str:
-    """把窗口内块组装成给模型的文本（带 block_id 标注）。"""
+    """把窗口内块组装成给模型的文本（带 block_id 标注）。
+
+    请求 hash 侧含 UUID 符合 K2「两类 hash 分栏」；内容 hash 侧不含 UUID。
+    """
     parts: list[str] = []
     for b in blocks:
         text = b.text.strip()
@@ -59,7 +81,10 @@ def chunk_blocks(
     max_chars: int,
     overlap_chars: int,
 ) -> list[Window]:
-    """按字符预算分窗，块边界对齐，窗口间重叠 overlap_chars 字符。"""
+    """按字符预算分窗，块边界对齐，窗口间重叠 overlap_chars 字符。
+
+    bundle_id 稳定为 ``w{idx}``（与 text_search.chunk_source_blocks 一致）。
+    """
     windows: list[Window] = []
     current: list[BlockRef] = []
     current_chars = 0
@@ -67,13 +92,13 @@ def chunk_blocks(
         text = block.text
         block_chars = len(text)
         if current and current_chars + block_chars > max_chars:
-            windows.append(Window(bundle_id=f"window-{len(windows)}", blocks=list(current)))
+            windows.append(Window(bundle_id=f"w{len(windows)}", blocks=list(current)))
             # 回退 overlap_chars 字符，作为新窗口起点（重叠）
             current, current_chars = _recede(current, overlap_chars)
         current.append(block)
         current_chars += block_chars
     if current:
-        windows.append(Window(bundle_id=f"window-{len(windows)}", blocks=list(current)))
+        windows.append(Window(bundle_id=f"w{len(windows)}", blocks=list(current)))
     return windows
 
 
@@ -90,20 +115,28 @@ def _recede(blocks: list[BlockRef], overlap_chars: int) -> tuple[list[BlockRef],
 
 
 def load_file_blocks(task_id: uuid.UUID, file_id: uuid.UUID) -> list[BlockRef]:
-    """读取文件的 OCR 文本块（按顺序），跳过无文本的纯图块。"""
+    """读取文件的 OCR 文本块（按 K1 稳定键排序），跳过无文本的纯图块。"""
     with Session(engine) as session:
+        page_by_id = load_page_map(session, task_id, [file_id])
+        file_key_by_id = load_file_keys(session, [file_id])
         rows = session.exec(
             select(OcrBlock)
             .where(OcrBlock.task_id == task_id, OcrBlock.file_id == file_id)
-            .order_by(OcrBlock.sequence_index)
         ).all()
-        blocks: list[BlockRef] = []
-        for row in rows:
-            text = (row.canonical_text or "").strip()
-            if not text and not row.table_html:
-                continue  # 纯图块（印章/签名等）不参与文字分类
-            blocks.append(BlockRef(block_id=row.id, text=text, table_html=row.table_html))
-        return blocks
+        ordered = order_blocks(rows, page_by_id, file_key_by_id)
+        return [
+            BlockRef(
+                block_id=item.row.id,
+                text=item.canonical_text,
+                table_html=item.row.table_html,
+                file_key=item.file_key,
+                page_key=item.page_key,
+                page_ordinal=item.page_ordinal,
+                content_hash=item.content_hash,
+                order_source=item.order_source,
+            )
+            for item in ordered
+        ]
 
 
 def _merge_results(results: list[ClassificationOutput]) -> ClassificationOutput:

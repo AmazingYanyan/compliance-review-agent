@@ -1,0 +1,5175 @@
+{
+  "selftest": "T02-3-http-assertions",
+  "real_model_calls": 0,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/7ad696f0-5cd0-4042-bd83-57e60b9b5ede/complete",
+      "status": 409,
+      "csrf_header": true,
+      "origin": "http://localhost:8080",
+      "response": {
+        "detail": {
+          "code": "COVERAGE_INCOMPLETE",
+          "message": "识别覆盖不完整，暂不能完成核对"
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/7ad696f0-5cd0-4042-bd83-57e60b9b5ede/results",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/f7bc940d-380f-4cc2-9716-4dc026e04039/complete",
+      "status": 200,
+      "csrf_header": true,
+      "origin": "http://localhost:8080",
+      "response": {
+        "state": "COMPLETED",
+        "statistics": {
+          "overall": {
+            "total": 1,
+            "unselected": 0,
+            "accepted": 1,
+            "rejected": 0,
+            "missing_reason": 0,
+            "accept_rate": 1.0,
+            "reject_rate": 0.0,
+            "can_complete": true
+          },
+          "materials": [
+            {
+              "material_type": "articles_of_association",
+              "statistics": {
+                "total": 1,
+                "unselected": 0,
+                "accepted": 1,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/ee59108d-e4f1-4aa8-bf2e-afe07d457384/results",
+      "status": 200,
+      "response": {
+        "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+        "is_stale": false,
+        "editable": false,
+        "statistics": {
+          "overall": {
+            "total": 77,
+            "unselected": 0,
+            "accepted": 76,
+            "rejected": 1,
+            "missing_reason": 0,
+            "accept_rate": 0.987012987012987,
+            "reject_rate": 0.012987012987012988,
+            "can_complete": true
+          },
+          "materials": [
+            {
+              "material_type": "articles_of_association",
+              "statistics": {
+                "total": 65,
+                "unselected": 0,
+                "accepted": 64,
+                "rejected": 1,
+                "missing_reason": 0,
+                "accept_rate": 0.9846153846153847,
+                "reject_rate": 0.015384615384615385,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "audited_financials",
+              "statistics": {
+                "total": 9,
+                "unselected": 0,
+                "accepted": 9,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            },
+            {
+              "material_type": "business_license",
+              "statistics": {
+                "total": 3,
+                "unselected": 0,
+                "accepted": 3,
+                "rejected": 0,
+                "missing_reason": 0,
+                "accept_rate": 1.0,
+                "reject_rate": 0.0,
+                "can_complete": true
+              }
+            }
+          ]
+        },
+        "items": [
+          {
+            "id": "32845120-53d0-4511-b294-f9bd15f0be29",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第一百三十七条 董事会应当确定对外投资、收购出售资产、资产抵押、对外担保事项、委托理财、关联交易的权限，建立严格的审查和决策程序；重大投资项目应当组织有关专家、专业人员进行评审，并按本章程规定对需要报股东大会的事项报股东大会批准。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "aa680c0b-4e1c-4980-a373-a0bd4059bf0f",
+                "block_id": "65e456c1-283e-4e1b-92a2-59427e4094e1",
+                "source_page_number": 36,
+                "ocr_page_index": 35,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  551,
+                  1071,
+                  718
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    551.0
+                  ],
+                  [
+                    1071.0,
+                    551.0
+                  ],
+                  [
+                    1071.0,
+                    718.0
+                  ],
+                  [
+                    113.0,
+                    718.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 1000
+              }
+            ],
+            "decision": {
+              "result_id": "32845120-53d0-4511-b294-f9bd15f0be29",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 6,
+              "updated_at": "2026-11-11T08:43:32.250052Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "7fd129fb-093a-4ee5-8530-eaab1ad31e0d",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（九）在股东大会授权范围内，决定本行对外投资、收购出售与核销资产、资产抵押、对外担保事项、委托理财、关联交易、数据治理等事项；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 1,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "1ac90bf9-4afc-435a-86c2-c7ac8f06313b",
+                "block_id": "ba20a9a9-e0dc-4fa8-8e58-8b0f66b84466",
+                "source_page_number": 35,
+                "ocr_page_index": 34,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  324,
+                  1046,
+                  436
+                ],
+                "polygon": [
+                  [
+                    112.11132049560547,
+                    332.00775146484375
+                  ],
+                  [
+                    1044.179931640625,
+                    323.96392822265625
+                  ],
+                  [
+                    1045.1373291015625,
+                    434.90386962890625
+                  ],
+                  [
+                    113.0687255859375,
+                    442.94769287109375
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 1000
+              }
+            ],
+            "decision": {
+              "result_id": "7fd129fb-093a-4ee5-8530-eaab1ad31e0d",
+              "decision": "rejected",
+              "reject_reason": "材料识别有误，需人工复核",
+              "version": 3,
+              "updated_at": "2026-11-11T08:43:51.861034Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "edd51b65-63ad-455c-b3d0-a2999267cf98",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 2,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "65c6516d-2a9b-4f39-95bc-c075c1e4030d",
+                "block_id": "f817b1c9-2ebe-4d5e-957f-babf23d411e1",
+                "source_page_number": 28,
+                "ocr_page_index": 27,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  600,
+                  1049,
+                  679
+                ],
+                "polygon": [
+                  [
+                    107.47130584716797,
+                    607.0039672851562
+                  ],
+                  [
+                    1048.0,
+                    599.9999389648438
+                  ],
+                  [
+                    1048.5286865234375,
+                    670.9960327148438
+                  ],
+                  [
+                    108.0,
+                    678.0000610351562
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 52
+              }
+            ],
+            "decision": {
+              "result_id": "edd51b65-63ad-455c-b3d0-a2999267cf98",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.759655Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c75b864e-c29e-4360-87e5-e5037d2e2e54",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第一百三十四条 董事会行使下列职权：",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 3,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "cc2ff692-5447-4f9c-b197-96537efe27f0",
+                "block_id": "08feb179-8eb9-4cf4-af46-0d520cd2dccd",
+                "source_page_number": 34,
+                "ocr_page_index": 33,
+                "location_precision": "region",
+                "bbox": [
+                  189,
+                  1388,
+                  757,
+                  1428
+                ],
+                "polygon": [
+                  [
+                    189.0,
+                    1388.0
+                  ],
+                  [
+                    757.0,
+                    1388.0
+                  ],
+                  [
+                    757.0,
+                    1428.0
+                  ],
+                  [
+                    189.0,
+                    1428.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 19
+              }
+            ],
+            "decision": {
+              "result_id": "c75b864e-c29e-4360-87e5-e5037d2e2e54",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.778422Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "a85f403f-6411-4002-8d7c-3899bf957afb",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（十二）审议批准第四十七条规定的担保事项；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 4,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "01e85b25-99cd-483f-b44e-6d9a86c79eba",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  180,
+                  460,
+                  829,
+                  498
+                ],
+                "polygon": [
+                  [
+                    180.0,
+                    460.0
+                  ],
+                  [
+                    829.0,
+                    460.0
+                  ],
+                  [
+                    829.0,
+                    498.0
+                  ],
+                  [
+                    180.0,
+                    498.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 21
+              }
+            ],
+            "decision": {
+              "result_id": "a85f403f-6411-4002-8d7c-3899bf957afb",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.795540Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "66ff901c-e3fe-4611-9885-345d713e4227",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.approval_body",
+            "check_label": "借款与担保的决议权限／批准机构",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 5,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "ac477c9a-cfd1-4a78-b672-3ce91e3b5088",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  123,
+                  1228,
+                  1057,
+                  1303
+                ],
+                "polygon": [
+                  [
+                    123.0,
+                    1228.0
+                  ],
+                  [
+                    1057.0,
+                    1228.0
+                  ],
+                  [
+                    1057.0,
+                    1303.0
+                  ],
+                  [
+                    123.0,
+                    1303.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 44
+              }
+            ],
+            "decision": {
+              "result_id": "66ff901c-e3fe-4611-9885-345d713e4227",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.813749Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "0603d7eb-d79f-403e-9379-3576c32e3521",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.business_scope",
+            "check_label": "经营范围条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第十七条 经依法登记，本行的业务范围是：办理人民币存款、贷款；同业拆借业务；国内外结算；办理票据承兑、贴现、转贴现；各类汇兑业务；代理资金清算；提供信用证服务及担保；代理销售业务；代理发行、代理承销、代理兑付政府债券、金融债券、企业短期融资券；代收代付业务；代理证券资金清算业务（银证转账）；代理债券结算；代理保险业务；代理政策性银行、外国政府和国际金融机构贷款业务；保管箱服务；发行金融债券；买卖政府债券、金融债券、企业短期融资券；企业年金托管业务；开放式基金的注册登记、认购、申购和赎回业务；资信调查、咨询、见证业务；贷款承诺；企业、个人财务顾问服务、理财业务；组织或参加银团贷款；外汇存款；外汇贷款；外币兑换；出口托收及进口代收；外汇票据承兑和贴现；外汇借款；外汇担保；买卖或代理买卖股票以外的外币有价证券；自营、代客外汇买卖；金融衍生业务；银行卡业务；电话银行、网上银行、手机银行业务；办理结汇、售汇业务；代客境外理财业务；经国务院银行业监督管理机构核准的其他业务。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "dcb964b5-7082-4833-ad2f-7d1f78b0703e",
+                "block_id": "5943bd45-f5a7-45a7-b9e2-781034f767ac",
+                "source_page_number": 7,
+                "ocr_page_index": 6,
+                "location_precision": "region",
+                "bbox": [
+                  112,
+                  234,
+                  1063,
+                  828
+                ],
+                "polygon": [
+                  [
+                    112.0,
+                    234.0
+                  ],
+                  [
+                    1063.0,
+                    234.0
+                  ],
+                  [
+                    1063.0,
+                    828.0
+                  ],
+                  [
+                    112.0,
+                    828.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 817
+              }
+            ],
+            "decision": {
+              "result_id": "0603d7eb-d79f-403e-9379-3576c32e3521",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.830436Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "54f07dcf-2187-4392-8fef-2a443d11886b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股东以本行股权出质为自己或他人担保的，应当严格遵守法律法规和监管部门要求，并事前书面告知本行董事会。董事会办公室或董事会指",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "63213a2c-45d4-4d35-856d-b5268c3184aa",
+                "block_id": "278d2ef0-6b76-4a07-9197-415c9dafc4dc",
+                "source_page_number": 14,
+                "ocr_page_index": 13,
+                "location_precision": "region",
+                "bbox": [
+                  105,
+                  107,
+                  1047,
+                  276
+                ],
+                "polygon": [
+                  [
+                    105.0001220703125,
+                    115.99996948242188
+                  ],
+                  [
+                    1046.0001220703125,
+                    107.00003051757812
+                  ],
+                  [
+                    1047.521240234375,
+                    266.0428771972656
+                  ],
+                  [
+                    106.521240234375,
+                    275.0428161621094
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 61
+              }
+            ],
+            "decision": {
+              "result_id": "54f07dcf-2187-4392-8fef-2a443d11886b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.848909Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "d0bfdb1d-4edd-48dd-8af6-f53de05058b6",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "拥有本行董、监事席位的股东，或直接、间接、共同持有或控制本行2%以上股份或表决权的股东出质本行股份，事前须向本行董事会申请备案，说明出质的原因、股权数额、质押期限、质押权人等基本情况。凡董事会认定对本行股权稳定、公司治理、风险与关联交易控制等存",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 1,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "63213a2c-45d4-4d35-856d-b5268c3184aa",
+                "block_id": "c80df891-0123-4fa7-8385-c01d2b464ed2",
+                "source_page_number": 14,
+                "ocr_page_index": 13,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  282,
+                  1051,
+                  524
+                ],
+                "polygon": [
+                  [
+                    108.0,
+                    282.0
+                  ],
+                  [
+                    1051.0,
+                    282.0
+                  ],
+                  [
+                    1051.0,
+                    524.0
+                  ],
+                  [
+                    108.0,
+                    524.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 122
+              }
+            ],
+            "decision": {
+              "result_id": "d0bfdb1d-4edd-48dd-8af6-f53de05058b6",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.866531Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "58f61318-a4c0-4a32-9ee3-07b59f135fa5",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "担保事项、委",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 2,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "aa680c0b-4e1c-4980-a373-a0bd4059bf0f",
+                "block_id": "65e456c1-283e-4e1b-92a2-59427e4094e1",
+                "source_page_number": 36,
+                "ocr_page_index": 35,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  551,
+                  1071,
+                  718
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    551.0
+                  ],
+                  [
+                    1071.0,
+                    551.0
+                  ],
+                  [
+                    1071.0,
+                    718.0
+                  ],
+                  [
+                    113.0,
+                    718.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 34,
+                "end_char": 40
+              }
+            ],
+            "decision": {
+              "result_id": "58f61318-a4c0-4a32-9ee3-07b59f135fa5",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.883964Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "5c9a53a6-a644-4508-b734-e063db19621b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "与核销资产、",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 3,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "1ac90bf9-4afc-435a-86c2-c7ac8f06313b",
+                "block_id": "ba20a9a9-e0dc-4fa8-8e58-8b0f66b84466",
+                "source_page_number": 35,
+                "ocr_page_index": 34,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  324,
+                  1046,
+                  436
+                ],
+                "polygon": [
+                  [
+                    112.11132049560547,
+                    332.00775146484375
+                  ],
+                  [
+                    1044.179931640625,
+                    323.96392822265625
+                  ],
+                  [
+                    1045.1373291015625,
+                    434.90386962890625
+                  ],
+                  [
+                    113.0687255859375,
+                    442.94769287109375
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 27,
+                "end_char": 33
+              }
+            ],
+            "decision": {
+              "result_id": "5c9a53a6-a644-4508-b734-e063db19621b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.901534Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c9e4b096-577a-42ed-9cdf-a7159cfc6b7d",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（四）不得违反本章程的规定，未经股东大会或董事会同意，将本行资金借贷给他人或者以本行财产为他人提供担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 4,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "65c6516d-2a9b-4f39-95bc-c075c1e4030d",
+                "block_id": "f817b1c9-2ebe-4d5e-957f-babf23d411e1",
+                "source_page_number": 28,
+                "ocr_page_index": 27,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  600,
+                  1049,
+                  679
+                ],
+                "polygon": [
+                  [
+                    107.47130584716797,
+                    607.0039672851562
+                  ],
+                  [
+                    1048.0,
+                    599.9999389648438
+                  ],
+                  [
+                    1048.5286865234375,
+                    670.9960327148438
+                  ],
+                  [
+                    108.0,
+                    678.0000610351562
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 52
+              }
+            ],
+            "decision": {
+              "result_id": "c9e4b096-577a-42ed-9cdf-a7159cfc6b7d",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.919296Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "87ed7657-2309-4947-b7e5-a92ea1779f46",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（十二）审议批准第四十七条规定的担保事项；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 5,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "01e85b25-99cd-483f-b44e-6d9a86c79eba",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  180,
+                  460,
+                  829,
+                  498
+                ],
+                "polygon": [
+                  [
+                    180.0,
+                    460.0
+                  ],
+                  [
+                    829.0,
+                    460.0
+                  ],
+                  [
+                    829.0,
+                    498.0
+                  ],
+                  [
+                    180.0,
+                    498.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 23
+              }
+            ],
+            "decision": {
+              "result_id": "87ed7657-2309-4947-b7e5-a92ea1779f46",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.937340Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ca370bce-a251-4c4e-84d0-3738872f0a0a",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（五）本行在一年内购买、出售重大资产或者担保金额超过本行最近一期经审计总资产30%的；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 6,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "71cb9d6f-f4ac-4c4f-a071-73aedf62fe98",
+                "block_id": "58f4b1f1-c431-43f4-95dc-92e954d5dba2",
+                "source_page_number": 23,
+                "ocr_page_index": 22,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  582,
+                  1076,
+                  668
+                ],
+                "polygon": [
+                  [
+                    108.0,
+                    582.0
+                  ],
+                  [
+                    1076.0,
+                    582.0
+                  ],
+                  [
+                    1076.0,
+                    668.0
+                  ],
+                  [
+                    108.0,
+                    668.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 43
+              }
+            ],
+            "decision": {
+              "result_id": "ca370bce-a251-4c4e-84d0-3738872f0a0a",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.955159Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "9c6e298e-9bd9-47a1-b628-90a140688883",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第四十七条 本行下列对外担保行为，须经股东大会审议通过（银行正常经营范围内的业务除外）",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 7,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "ac477c9a-cfd1-4a78-b672-3ce91e3b5088",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  123,
+                  1228,
+                  1057,
+                  1303
+                ],
+                "polygon": [
+                  [
+                    123.0,
+                    1228.0
+                  ],
+                  [
+                    1057.0,
+                    1228.0
+                  ],
+                  [
+                    1057.0,
+                    1303.0
+                  ],
+                  [
+                    123.0,
+                    1303.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 43
+              }
+            ],
+            "decision": {
+              "result_id": "9c6e298e-9bd9-47a1-b628-90a140688883",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.972415Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "afd8d248-5ff9-49e5-beda-4041833c69ea",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（一）本行及本行控股子公司（子银行）的对外担保总额，达到或超过最近一期经审计净资产的50%以后提供的任何担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 8,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "2032f8df-b444-424b-8445-19f0561ca8e7",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  1304,
+                  1054,
+                  1380
+                ],
+                "polygon": [
+                  [
+                    108.0,
+                    1304.0
+                  ],
+                  [
+                    1054.0,
+                    1304.0
+                  ],
+                  [
+                    1054.0,
+                    1380.0
+                  ],
+                  [
+                    108.0,
+                    1380.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 57
+              }
+            ],
+            "decision": {
+              "result_id": "afd8d248-5ff9-49e5-beda-4041833c69ea",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:11.990611Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "f724c793-1d2c-478b-abb2-50b75de2addc",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（二）本行的对外担保总额，达到或超过最近一期经审计总资产的30%以后提供的任何担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 9,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "44209bf4-70f0-46f7-a926-325a5e54b562",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  109,
+                  1381,
+                  1054,
+                  1455
+                ],
+                "polygon": [
+                  [
+                    109.0,
+                    1381.0
+                  ],
+                  [
+                    1054.0,
+                    1381.0
+                  ],
+                  [
+                    1054.0,
+                    1455.0
+                  ],
+                  [
+                    109.0,
+                    1455.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 46
+              }
+            ],
+            "decision": {
+              "result_id": "f724c793-1d2c-478b-abb2-50b75de2addc",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.007348Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "5b95e235-698b-4074-8986-82a753a3315c",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（三）为资产负债率超过70%的担保对象提供的担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 10,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "3b4dc6f9-f06e-485f-be6d-88ce41c4fc83",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  180,
+                  1457,
+                  911,
+                  1494
+                ],
+                "polygon": [
+                  [
+                    180.0,
+                    1457.0
+                  ],
+                  [
+                    911.0,
+                    1457.0
+                  ],
+                  [
+                    911.0,
+                    1494.0
+                  ],
+                  [
+                    180.0,
+                    1494.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 25
+              }
+            ],
+            "decision": {
+              "result_id": "5b95e235-698b-4074-8986-82a753a3315c",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.024019Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "fe6484d5-42ff-458c-b729-a54400d782fb",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（四）单笔担保额超过最近一期经审计净资产10%的担保；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 11,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "16bfcd67-f27c-41af-8927-9dce69e17ad7",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  181,
+                  1495,
+                  974,
+                  1533
+                ],
+                "polygon": [
+                  [
+                    181.0,
+                    1495.0
+                  ],
+                  [
+                    974.0,
+                    1495.0
+                  ],
+                  [
+                    974.0,
+                    1533.0
+                  ],
+                  [
+                    181.0,
+                    1533.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 29
+              }
+            ],
+            "decision": {
+              "result_id": "fe6484d5-42ff-458c-b729-a54400d782fb",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.039825Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "3728beaa-b52b-4996-8a51-606f57baa794",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.guarantee_restrictions",
+            "check_label": "对外担保的限制性规定",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（五）对股东、实际控制人及其关联方提供的担保。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 12,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ad841364-a1c9-4e28-b86c-02f0e209a8f2",
+                "block_id": "9206d658-139b-491c-a5d2-569ff4d42699",
+                "source_page_number": 15,
+                "ocr_page_index": 14,
+                "location_precision": "region",
+                "bbox": [
+                  183,
+                  1534,
+                  888,
+                  1571
+                ],
+                "polygon": [
+                  [
+                    183.0,
+                    1534.0
+                  ],
+                  [
+                    888.0,
+                    1534.0
+                  ],
+                  [
+                    888.0,
+                    1571.0
+                  ],
+                  [
+                    183.0,
+                    1571.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 25
+              }
+            ],
+            "decision": {
+              "result_id": "3728beaa-b52b-4996-8a51-606f57baa794",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.056821Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c2ba3ddd-0292-4ee0-854e-702391e070dc",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.legal_representative_signature_authority",
+            "check_label": "法定代表人的签字权限",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "no_matching_evidence",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "c2ba3ddd-0292-4ee0-854e-702391e070dc",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.073809Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "f6b05eee-b9f7-4b80-9f51-524117a8b4f2",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二十三条 本行普通股股份总数为21,142,984,272股，每股面值人民币壹元；本行优先股股份总数为179,000,000股，每股面值人民币壹佰元。本行的股本结构为：普通股和优先股。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "d1df17ca-5077-4ee2-af7d-4583c4efd05f",
+                "block_id": "a725fb18-d3a1-4854-8f17-7c3c3ffc0b31",
+                "source_page_number": 8,
+                "ocr_page_index": 7,
+                "location_precision": "region",
+                "bbox": [
+                  110,
+                  453,
+                  1053,
+                  575
+                ],
+                "polygon": [
+                  [
+                    110.0,
+                    453.0
+                  ],
+                  [
+                    1053.0,
+                    453.0
+                  ],
+                  [
+                    1053.0,
+                    575.0
+                  ],
+                  [
+                    110.0,
+                    575.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 94
+              }
+            ],
+            "decision": {
+              "result_id": "f6b05eee-b9f7-4b80-9f51-524117a8b4f2",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.090488Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "b36921ae-f095-4aa1-bfd6-8627d066f623",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行发行的优先股采用非累积股息支付方式，即在特定年度未向优先股股东足额派发的股息的差额部分，不累积到下一年度，且不构成违约事",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 1,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "5facfd94-404e-4399-8d12-9b010899552a",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  110,
+                  101,
+                  1066,
+                  240
+                ],
+                "polygon": [
+                  [
+                    109.99996948242188,
+                    101.0
+                  ],
+                  [
+                    1067.04345703125,
+                    117.03424072265625
+                  ],
+                  [
+                    1065.0,
+                    239.0
+                  ],
+                  [
+                    107.95651245117188,
+                    222.96575927734375
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 62
+              }
+            ],
+            "decision": {
+              "result_id": "b36921ae-f095-4aa1-bfd6-8627d066f623",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.106798Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "06483836-fd7d-43e6-b525-15ef1fe3d7d1",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "优先股股东按照约定的票面股息率获得分配后，不再同普通股股东一起参加剩余利润分",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 2,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "16eecad6-5d64-4581-a2bd-186036b7abdd",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  112,
+                  246,
+                  1066,
+                  330
+                ],
+                "polygon": [
+                  [
+                    112.0,
+                    246.0
+                  ],
+                  [
+                    1066.0,
+                    246.0
+                  ],
+                  [
+                    1066.0,
+                    330.0
+                  ],
+                  [
+                    112.0,
+                    330.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 38
+              }
+            ],
+            "decision": {
+              "result_id": "06483836-fd7d-43e6-b525-15ef1fe3d7d1",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.124023Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "78a1cf4b-3307-4ecc-9ec9-a45ff2ea02d5",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十六条 本行可根据有关法律、行政法规、部门规章的规定，发行强制转股触发事件发生时强制转换为普通股的优先股。当法律、行政法规、部门规章规定或优先股发行时约定的触发事件发生时，经国家有关主管机关批准，本行发行的优先股将全部或部分强制转换为普通股。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 3,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "72b0a040-2991-44cf-9d09-9d647638a380",
+                "block_id": "c1826cab-88fa-49b5-a0fd-22c111ebf871",
+                "source_page_number": 61,
+                "ocr_page_index": 60,
+                "location_precision": "region",
+                "bbox": [
+                  116,
+                  143,
+                  1077,
+                  350
+                ],
+                "polygon": [
+                  [
+                    116.0,
+                    143.0
+                  ],
+                  [
+                    1077.0,
+                    143.0
+                  ],
+                  [
+                    1077.0,
+                    350.0
+                  ],
+                  [
+                    116.0,
+                    350.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 129
+              }
+            ],
+            "decision": {
+              "result_id": "78a1cf4b-3307-4ecc-9ec9-a45ff2ea02d5",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.140520Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ff79a899-96e2-4f31-815a-c480e96ae62b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十七条 以下事项计算股东持股比例、持股数额时，仅计算普通股和表决权恢复的优先股：",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 4,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "72b0a040-2991-44cf-9d09-9d647638a380",
+                "block_id": "4c5e3104-533a-44ad-b4d2-4f6e9c71020d",
+                "source_page_number": 61,
+                "ocr_page_index": 60,
+                "location_precision": "region",
+                "bbox": [
+                  119,
+                  402,
+                  1054,
+                  481
+                ],
+                "polygon": [
+                  [
+                    119.0,
+                    402.0
+                  ],
+                  [
+                    1054.0,
+                    402.0
+                  ],
+                  [
+                    1054.0,
+                    481.0
+                  ],
+                  [
+                    119.0,
+                    481.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 55
+              }
+            ],
+            "decision": {
+              "result_id": "ff79a899-96e2-4f31-815a-c480e96ae62b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.157146Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "8a5a791a-d02b-4e74-8203-52de36998320",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第五条 本行于2007年8月31日经中国证券监督管理委员会证监发行字[2007]259号文件核准，首次向社会公众发行人民币普通股12亿股，于2007年9月19日在上海证券交易所上市。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 5,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "4a8b2536-6269-4bfb-8afe-9e35fe477d3a",
+                "block_id": "2e7ea299-240f-47a9-bdcb-1fa6a41178e2",
+                "source_page_number": 5,
+                "ocr_page_index": 4,
+                "location_precision": "region",
+                "bbox": [
+                  122,
+                  381,
+                  1074,
+                  497
+                ],
+                "polygon": [
+                  [
+                    122.0,
+                    381.0
+                  ],
+                  [
+                    1074.0,
+                    381.0
+                  ],
+                  [
+                    1074.0,
+                    497.0
+                  ],
+                  [
+                    122.0,
+                    497.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 100
+              }
+            ],
+            "decision": {
+              "result_id": "8a5a791a-d02b-4e74-8203-52de36998320",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.174259Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "d444b107-511d-411f-a920-36288a828c02",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行于2015年11月25日经中国证券监督管理委员会以[2015]2720文核准，首次发行优先股49,000,000股，并于2016年1月4日在上海证券",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 6,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "4a8b2536-6269-4bfb-8afe-9e35fe477d3a",
+                "block_id": "ddce1a90-665e-46c1-93fb-62d34209b5d7",
+                "source_page_number": 5,
+                "ocr_page_index": 4,
+                "location_precision": "region",
+                "bbox": [
+                  124,
+                  515,
+                  1075,
+                  630
+                ],
+                "polygon": [
+                  [
+                    124.0,
+                    515.0
+                  ],
+                  [
+                    1075.0,
+                    515.0
+                  ],
+                  [
+                    1075.0,
+                    630.0
+                  ],
+                  [
+                    124.0,
+                    630.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 76
+              }
+            ],
+            "decision": {
+              "result_id": "d444b107-511d-411f-a920-36288a828c02",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.190873Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "17bb1c42-26ff-41f7-811e-14f39a98d9d3",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "普通股是指本行所发行的《公司法》一般规定的普通种类股份。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 7,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "d1df17ca-5077-4ee2-af7d-4583c4efd05f",
+                "block_id": "3facead0-d1d4-4761-8106-4d8458e0115b",
+                "source_page_number": 8,
+                "ocr_page_index": 7,
+                "location_precision": "region",
+                "bbox": [
+                  176,
+                  589,
+                  1047,
+                  630
+                ],
+                "polygon": [
+                  [
+                    176.0,
+                    589.0
+                  ],
+                  [
+                    1047.0,
+                    589.0
+                  ],
+                  [
+                    1047.0,
+                    630.0
+                  ],
+                  [
+                    176.0,
+                    630.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 28
+              }
+            ],
+            "decision": {
+              "result_id": "17bb1c42-26ff-41f7-811e-14f39a98d9d3",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.208127Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "b45ec031-d19e-4b8a-b86e-6509c49424ed",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "优先股是指依照《公司法》，在一般规定的普通种类股份之外本行所发行的其他种类股份，其股份持有人优先于普通股股东分配本行利润和剩余财产，但参与本行决策管理等权利受到限制。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 8,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "d1df17ca-5077-4ee2-af7d-4583c4efd05f",
+                "block_id": "0fdaef76-83ce-4df6-b70f-5c7091b90952",
+                "source_page_number": 8,
+                "ocr_page_index": 7,
+                "location_precision": "region",
+                "bbox": [
+                  111,
+                  647,
+                  1053,
+                  766
+                ],
+                "polygon": [
+                  [
+                    111.0,
+                    647.0
+                  ],
+                  [
+                    1053.0,
+                    647.0
+                  ],
+                  [
+                    1053.0,
+                    766.0
+                  ],
+                  [
+                    111.0,
+                    766.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 95
+              }
+            ],
+            "decision": {
+              "result_id": "b45ec031-d19e-4b8a-b86e-6509c49424ed",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.225046Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ecee8191-0806-42fd-bf29-e82b1e564440",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十条 本行已发行的优先股不得超过本行普通股股份总数的50%，且筹资金额不得超过发行前净资产的50%，已赎回、转换的优先股不纳入",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 9,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "dafd293b-db3a-4419-847d-deee8e222188",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  121,
+                  464,
+                  1060,
+                  607
+                ],
+                "polygon": [
+                  [
+                    127.0,
+                    464.00006103515625
+                  ],
+                  [
+                    1061.1624755859375,
+                    480.03717041015625
+                  ],
+                  [
+                    1059.0,
+                    606.0000610351562
+                  ],
+                  [
+                    124.8375244140625,
+                    589.9629516601562
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 67
+              }
+            ],
+            "decision": {
+              "result_id": "ecee8191-0806-42fd-bf29-e82b1e564440",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.241819Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "a68dee13-5dc0-475b-9c5b-10eba8e9a131",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十三条 除以下事项外，优先股股东不出席股东大会，所持股份",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 10,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "509d6667-1370-42fd-a398-7529d85b10bf",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  117,
+                  379,
+                  1063,
+                  461
+                ],
+                "polygon": [
+                  [
+                    117.06503295898438,
+                    371.3580322265625
+                  ],
+                  [
+                    1062.0731201171875,
+                    379.400634765625
+                  ],
+                  [
+                    1061.3868408203125,
+                    460.037353515625
+                  ],
+                  [
+                    116.37875366210938,
+                    451.9947509765625
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 32
+              }
+            ],
+            "decision": {
+              "result_id": "a68dee13-5dc0-475b-9c5b-10eba8e9a131",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.258579Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "3b7e38da-5314-4f0f-8c99-597e7282ee9f",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股东质押本行股份数量达到或超过其持有本行股份的50%时，应当限制其在股东大会的表决权，并限制其提名或派出的董事在董事会的表",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 11,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "63213a2c-45d4-4d35-856d-b5268c3184aa",
+                "block_id": "b285f7af-9b95-44b3-bd41-4643d5cc4f25",
+                "source_page_number": 14,
+                "ocr_page_index": 13,
+                "location_precision": "region",
+                "bbox": [
+                  115,
+                  714,
+                  1058,
+                  843
+                ],
+                "polygon": [
+                  [
+                    113.93283081054688,
+                    716.9974365234375
+                  ],
+                  [
+                    1056.0093994140625,
+                    708.9541015625
+                  ],
+                  [
+                    1057.0765380859375,
+                    833.9566650390625
+                  ],
+                  [
+                    115.0,
+                    842.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 61
+              }
+            ],
+            "decision": {
+              "result_id": "3b7e38da-5314-4f0f-8c99-597e7282ee9f",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.275681Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "414047b4-ce53-4cf5-97ae-34ed8c2bfea3",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股东在本行借款余额超过其持有经审计的本行上一年度股权净值的，不得将本行股权",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 12,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "63213a2c-45d4-4d35-856d-b5268c3184aa",
+                "block_id": "ebaef2ad-de4b-4936-89df-281336c0bacc",
+                "source_page_number": 14,
+                "ocr_page_index": 13,
+                "location_precision": "region",
+                "bbox": [
+                  114,
+                  622,
+                  1053,
+                  710
+                ],
+                "polygon": [
+                  [
+                    113.32624816894531,
+                    630.0057983398438
+                  ],
+                  [
+                    1052.0,
+                    621.9999389648438
+                  ],
+                  [
+                    1052.6737060546875,
+                    700.9942016601562
+                  ],
+                  [
+                    114.0,
+                    709.0000610351562
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 37
+              }
+            ],
+            "decision": {
+              "result_id": "414047b4-ce53-4cf5-97ae-34ed8c2bfea3",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.292650Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "eb8fadec-44d0-4fd1-bd80-3018acb9f124",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第三十三条 本行依据证券登记机构提供的凭证建立股东名册，股东名册是证明股东持有本行股份的充分证据。股东按其所持有股份的种类享有权利，承担义务；持有同一种类股份的股东，享有同等权利，承担同种义务。本行发行的优先股在股息分配和剩余财产分配上具有相同优先顺序，但在其他条款上可以具有不同设置。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 13,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "7a55ab32-f0f3-4d94-951e-18488f181723",
+                "block_id": "16a744df-25d2-4743-b25e-9605901396ed",
+                "source_page_number": 10,
+                "ocr_page_index": 9,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  1203,
+                  1071,
+                  1398
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    1203.0
+                  ],
+                  [
+                    1071.0,
+                    1203.0
+                  ],
+                  [
+                    1071.0,
+                    1398.0
+                  ],
+                  [
+                    113.0,
+                    1398.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": null,
+                "end_char": null
+              }
+            ],
+            "decision": {
+              "result_id": "eb8fadec-44d0-4fd1-bd80-3018acb9f124",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.309829Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "275978d2-09d4-430d-ae2f-5101cfde8d0f",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第十九条 本行股份的发行，实行公平、公正的原则，同种类的每一股份应当具有同等权利。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 14,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "dcb964b5-7082-4833-ad2f-7d1f78b0703e",
+                "block_id": "84bc3bfb-70e3-4d3e-9c78-d8cc172ef7bb",
+                "source_page_number": 7,
+                "ocr_page_index": 6,
+                "location_precision": "region",
+                "bbox": [
+                  122,
+                  1193,
+                  1076,
+                  1276
+                ],
+                "polygon": [
+                  [
+                    122.0,
+                    1193.0
+                  ],
+                  [
+                    1076.0,
+                    1193.0
+                  ],
+                  [
+                    1076.0,
+                    1276.0
+                  ],
+                  [
+                    122.0,
+                    1276.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": null,
+                "end_char": null
+              }
+            ],
+            "decision": {
+              "result_id": "275978d2-09d4-430d-ae2f-5101cfde8d0f",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.327162Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "08f04ea3-5387-4457-a9e8-e10020cda328",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "除另有说明外，本章程所称“股份”、“股票”、“股本”、“股东”等，分别指普通股股份、普通股股票、普通股股本、普通股股东。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 15,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "d1df17ca-5077-4ee2-af7d-4583c4efd05f",
+                "block_id": "46fb2759-2f32-4f11-9de8-18fd5335b33e",
+                "source_page_number": 8,
+                "ocr_page_index": 7,
+                "location_precision": "region",
+                "bbox": [
+                  115,
+                  779,
+                  1055,
+                  862
+                ],
+                "polygon": [
+                  [
+                    115.0,
+                    779.0
+                  ],
+                  [
+                    1055.0,
+                    779.0
+                  ],
+                  [
+                    1055.0,
+                    862.0
+                  ],
+                  [
+                    115.0,
+                    862.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": null,
+                "end_char": null
+              }
+            ],
+            "decision": {
+              "result_id": "08f04ea3-5387-4457-a9e8-e10020cda328",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.344866Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "f6578dee-76b7-48cf-b23b-e1bef72e45d0",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（一）优先于普通股股东分配本行利润；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 16,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "00b6c1a8-41e9-4f42-8716-5606ac87fdc6",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  192,
+                  698,
+                  744,
+                  748
+                ],
+                "polygon": [
+                  [
+                    192.10012817382812,
+                    691.9808959960938
+                  ],
+                  [
+                    743.7625732421875,
+                    701.1561889648438
+                  ],
+                  [
+                    742.980712890625,
+                    748.1640014648438
+                  ],
+                  [
+                    191.31826782226562,
+                    738.9887084960938
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": null,
+                "end_char": null
+              }
+            ],
+            "decision": {
+              "result_id": "f6578dee-76b7-48cf-b23b-e1bef72e45d0",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.362365Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ee3bfdde-2ce9-44fd-a63c-e446b70948a0",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（二）本行清算时，优先于普通股股东分配本行剩余财产；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 17,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "165b9b68-8471-4c3d-a39f-2f58413689f9",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  191,
+                  755,
+                  990,
+                  806
+                ],
+                "polygon": [
+                  [
+                    191.00003051757812,
+                    755.0
+                  ],
+                  [
+                    989.4625244140625,
+                    764.0052490234375
+                  ],
+                  [
+                    988.9896240234375,
+                    805.9322509765625
+                  ],
+                  [
+                    190.52713012695312,
+                    796.927001953125
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": null,
+                "end_char": null
+              }
+            ],
+            "decision": {
+              "result_id": "ee3bfdde-2ce9-44fd-a63c-e446b70948a0",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.379323Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "5b52c63b-9b4f-4a01-babe-2a52f5f0d9b2",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股权结构",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 18,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "00683cde-09f4-4c13-b84d-d00aecede3cb",
+                "block_id": "2b9082ba-d7ef-4570-bb8a-8d24a257f26a",
+                "source_page_number": 12,
+                "ocr_page_index": 11,
+                "location_precision": "region",
+                "bbox": [
+                  109,
+                  1348,
+                  1055,
+                  1463
+                ],
+                "polygon": [
+                  [
+                    108.10271453857422,
+                    1356.007568359375
+                  ],
+                  [
+                    1054.0,
+                    1348.0
+                  ],
+                  [
+                    1054.8973388671875,
+                    1453.992431640625
+                  ],
+                  [
+                    109.0,
+                    1462.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 27,
+                "end_char": 31
+              }
+            ],
+            "decision": {
+              "result_id": "5b52c63b-9b4f-4a01-babe-2a52f5f0d9b2",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.396869Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "44de8d70-0dbd-4ab4-84c8-093cf4f99c5b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "除前述事项外，计算股东人数和持股比例时应分别计算普通股和优先股。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 19,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "72b0a040-2991-44cf-9d09-9d647638a380",
+                "block_id": "04a13a79-71a8-4b5b-bdc0-cc2cb4ce2a07",
+                "source_page_number": 61,
+                "ocr_page_index": 60,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  916,
+                  1069,
+                  994
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    916.0
+                  ],
+                  [
+                    1069.0,
+                    916.0
+                  ],
+                  [
+                    1069.0,
+                    994.0
+                  ],
+                  [
+                    113.0,
+                    994.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 34
+              }
+            ],
+            "decision": {
+              "result_id": "44de8d70-0dbd-4ab4-84c8-093cf4f99c5b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.413531Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "64e1b02c-ffb0-47d3-accd-117b32d4b0a7",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十二条 优先股股东按照约定的票面股息率，优先于普通股股东分配利润。本行以现金形式向优先股股东支付股息，在完全支付约定的股息",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 20,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "d6e0e44b-408c-4051-a832-460059a34610",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  119,
+                  1090,
+                  1058,
+                  1216
+                ],
+                "polygon": [
+                  [
+                    119.0,
+                    1090.0
+                  ],
+                  [
+                    1058.0,
+                    1090.0
+                  ],
+                  [
+                    1058.0,
+                    1216.0
+                  ],
+                  [
+                    119.0,
+                    1216.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 65
+              }
+            ],
+            "decision": {
+              "result_id": "64e1b02c-ffb0-47d3-accd-117b32d4b0a7",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.431001Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c93fe188-85e8-48b6-a1eb-92387cfa414b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十四条 本行累计三个会计年度或连续两个会计年度未按约定支付优先股股息的，自股东大会批准当年不按约定分配利润的方案次日起，优先股股东有权出席股东大会与普通股股东共同表决。每一股优先股享有的表决权根据法律、行政法规、",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 21,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "d1868c67-cf54-4410-85da-e4896e67abeb",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  116,
+                  1131,
+                  1059,
+                  1328
+                ],
+                "polygon": [
+                  [
+                    116.0,
+                    1131.0
+                  ],
+                  [
+                    1059.0,
+                    1131.0
+                  ],
+                  [
+                    1059.0,
+                    1328.0
+                  ],
+                  [
+                    116.0,
+                    1328.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 110
+              }
+            ],
+            "decision": {
+              "result_id": "c93fe188-85e8-48b6-a1eb-92387cfa414b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.448186Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "479f7a68-1d28-4070-9cee-01e62a72f032",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第十一条 本行资本划分为股份，同种类股份每股金额相等。股东以其认购股份为限对本行承担责任，本行以全部资产对本行的债务承担责任。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 22,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "4a8b2536-6269-4bfb-8afe-9e35fe477d3a",
+                "block_id": "d99c60fc-f3c6-49f6-95eb-75fc9ab54129",
+                "source_page_number": 5,
+                "ocr_page_index": 4,
+                "location_precision": "region",
+                "bbox": [
+                  122,
+                  1345,
+                  1067,
+                  1456
+                ],
+                "polygon": [
+                  [
+                    122.0,
+                    1345.0
+                  ],
+                  [
+                    1067.0,
+                    1345.0
+                  ],
+                  [
+                    1067.0,
+                    1456.0
+                  ],
+                  [
+                    122.0,
+                    1456.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 63
+              }
+            ],
+            "decision": {
+              "result_id": "479f7a68-1d28-4070-9cee-01e62a72f032",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.465533Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "46328da8-ed9f-4aa1-8476-782f1f419eb9",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（一）控股股东，是指其持有的股份占本行股本总额50%以上的股东；持有股份的比例虽然不足50%，但依其持有的股份所享有的表决权已足以对股东大会的决议产生重大影响的股东。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 23,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "72b0a040-2991-44cf-9d09-9d647638a380",
+                "block_id": "e1cc3054-2466-4a22-8727-12aa1a93a558",
+                "source_page_number": 61,
+                "ocr_page_index": 60,
+                "location_precision": "region",
+                "bbox": [
+                  107,
+                  1212,
+                  1068,
+                  1327
+                ],
+                "polygon": [
+                  [
+                    107.0,
+                    1212.0
+                  ],
+                  [
+                    1068.0,
+                    1212.0
+                  ],
+                  [
+                    1068.0,
+                    1327.0
+                  ],
+                  [
+                    107.0,
+                    1327.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 84
+              }
+            ],
+            "decision": {
+              "result_id": "46328da8-ed9f-4aa1-8476-782f1f419eb9",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.482741Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "7d407a16-d000-4413-a57d-a388d840f762",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（二）实际控制人，是指虽不是本行的股东，但通过投资关系、协议或者其他安排，能够实际支配公司行为的人。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 24,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "72b0a040-2991-44cf-9d09-9d647638a380",
+                "block_id": "1f4cb747-7eac-4db5-bf36-4e06d71fb53a",
+                "source_page_number": 61,
+                "ocr_page_index": 60,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  1341,
+                  1061,
+                  1419
+                ],
+                "polygon": [
+                  [
+                    108.0,
+                    1341.0
+                  ],
+                  [
+                    1061.0,
+                    1341.0
+                  ],
+                  [
+                    1061.0,
+                    1419.0
+                  ],
+                  [
+                    108.0,
+                    1419.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 57
+              }
+            ],
+            "decision": {
+              "result_id": "7d407a16-d000-4413-a57d-a388d840f762",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.499473Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "1b13acd6-aada-4c6a-bf20-40687fa60422",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（八）股东的控股股东、实际控制人、关联方、一致行动人、最终受益人发生变化的，相关股东应当按照法律法规及监管规定，及时将变更情况书面告知本行；",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 25,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "00683cde-09f4-4c13-b84d-d00aecede3cb",
+                "block_id": "466eb81a-c205-4895-a0b8-2668a7aa29fb",
+                "source_page_number": 12,
+                "ocr_page_index": 11,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  1462,
+                  1055,
+                  1581
+                ],
+                "polygon": [
+                  [
+                    108.0,
+                    1462.0
+                  ],
+                  [
+                    1055.0,
+                    1462.0
+                  ],
+                  [
+                    1055.0,
+                    1581.0
+                  ],
+                  [
+                    108.0,
+                    1581.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 74
+              }
+            ],
+            "decision": {
+              "result_id": "1b13acd6-aada-4c6a-bf20-40687fa60422",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.516906Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "24166494-97b7-4cd6-8fef-dbe7df88e7ca",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第八十五条 普通股股东（包括股东代理人）以其所代表的有表决权的股份数额行使表决权，每一普通股股份享有一票表决权。表决权恢复的每股优先股所享有的表决权按具体发行条款中相关约定计算。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 26,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "71cb9d6f-f4ac-4c4f-a071-73aedf62fe98",
+                "block_id": "64c231dc-bfee-4ef6-9213-a82590074bb0",
+                "source_page_number": 23,
+                "ocr_page_index": 22,
+                "location_precision": "region",
+                "bbox": [
+                  114,
+                  1041,
+                  1062,
+                  1201
+                ],
+                "polygon": [
+                  [
+                    114.0,
+                    1041.0
+                  ],
+                  [
+                    1062.0,
+                    1041.0
+                  ],
+                  [
+                    1062.0,
+                    1201.0
+                  ],
+                  [
+                    114.0,
+                    1201.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 96
+              }
+            ],
+            "decision": {
+              "result_id": "24166494-97b7-4cd6-8fef-dbe7df88e7ca",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.533821Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "d3d3108b-c3ab-4f69-b2b9-885b85fcc396",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行发行的优先股采用固定股息率或浮动股息率，固定股息率水平及浮动股息率计算方法由本行根据法律、行政法规、部门规章相关规定确定。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 27,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "5216cf42-7343-4bd8-9043-6444e6814122",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  115,
+                  1227,
+                  1058,
+                  1349
+                ],
+                "polygon": [
+                  [
+                    115.0,
+                    1227.0
+                  ],
+                  [
+                    1058.0,
+                    1227.0
+                  ],
+                  [
+                    1058.0,
+                    1349.0
+                  ],
+                  [
+                    115.0,
+                    1349.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 71
+              }
+            ],
+            "decision": {
+              "result_id": "d3d3108b-c3ab-4f69-b2b9-885b85fcc396",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.551123Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "7ed389ec-ae0a-4204-aefb-d8d271f2e96b",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "优先股表决权恢复直至本行全额支付当年度股息之日终止。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 28,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "cd279ce7-9085-45f0-af55-05b332dd1705",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  175,
+                  1340,
+                  989,
+                  1382
+                ],
+                "polygon": [
+                  [
+                    175.0,
+                    1340.0
+                  ],
+                  [
+                    989.0,
+                    1340.0
+                  ],
+                  [
+                    989.0,
+                    1382.0
+                  ],
+                  [
+                    175.0,
+                    1382.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 28
+              }
+            ],
+            "decision": {
+              "result_id": "7ed389ec-ae0a-4204-aefb-d8d271f2e96b",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.568367Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "597b2c45-eda2-47b0-b4bd-d009769180ad",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行有权全部或部分取消优先股股息的宣派和支付，本行可以自由支配取消的收益用于偿付其他到期债务。取消优先股股息的宣派和支付除构成对普通股的收益分配限制以外，不构成本行的其他限制。本行决定取消优先股股息的宣派和支付的，将在付息日前至少10个工作日通知优先股股东。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 29,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "5e356a04-ec4b-4467-96df-f73a823da960",
+                "block_id": "db2f621d-21ac-4784-9e66-49adbe52083d",
+                "source_page_number": 59,
+                "ocr_page_index": 58,
+                "location_precision": "region",
+                "bbox": [
+                  114,
+                  1360,
+                  1066,
+                  1563
+                ],
+                "polygon": [
+                  [
+                    114.0,
+                    1359.9998779296875
+                  ],
+                  [
+                    1059.9998779296875,
+                    1359.9998779296875
+                  ],
+                  [
+                    1059.9998779296875,
+                    1553.9998779296875
+                  ],
+                  [
+                    114.0,
+                    1553.9998779296875
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 143
+              }
+            ],
+            "decision": {
+              "result_id": "597b2c45-eda2-47b0-b4bd-d009769180ad",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.585367Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "60cf64a0-cc28-4be9-b7d9-f3af6d20472a",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第二百六十五条 经国家有关主管机关批准，本行可按优先股发行时约定的条件赎回已发行的优先股；优先股股东无权向本行回售其所持有的优先股。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 30,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "88a01a70-89a9-4761-85c4-6daadc48ae0f",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  115,
+                  1433,
+                  1059,
+                  1556
+                ],
+                "polygon": [
+                  [
+                    115.00006866455078,
+                    1441.999755859375
+                  ],
+                  [
+                    1058.0001220703125,
+                    1432.999755859375
+                  ],
+                  [
+                    1059.0880126953125,
+                    1546.989501953125
+                  ],
+                  [
+                    116.0880126953125,
+                    1555.989501953125
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 72
+              }
+            ],
+            "decision": {
+              "result_id": "60cf64a0-cc28-4be9-b7d9-f3af6d20472a",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.601972Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "155733ce-5784-4add-a4a4-87e4417ca35c",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 31,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "f7ed8ba4-46b4-4507-9aeb-c0db5982ed83",
+                "block_id": "0ff57e90-b12d-43b8-a85e-073d2eaf8ba3",
+                "source_page_number": 57,
+                "ocr_page_index": 56,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  1316,
+                  1053,
+                  1517
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    1316.0
+                  ],
+                  [
+                    1053.0,
+                    1316.0
+                  ],
+                  [
+                    1053.0,
+                    1517.0
+                  ],
+                  [
+                    113.0,
+                    1517.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 129
+              }
+            ],
+            "decision": {
+              "result_id": "155733ce-5784-4add-a4a4-87e4417ca35c",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.619153Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c31d8548-24e0-451b-8ab7-0203fcdad300",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "## 第三十条 本行不接受本行的普通股和优先股作为质押权的标的",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 32,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "59c93656-40ca-4108-81db-5fc908e996af",
+                "block_id": "cf0b6a43-ca39-4016-b502-2e011d6cb15f",
+                "source_page_number": 9,
+                "ocr_page_index": 8,
+                "location_precision": "region",
+                "bbox": [
+                  117,
+                  1346,
+                  1066,
+                  1426
+                ],
+                "polygon": [
+                  [
+                    117.0,
+                    1346.0
+                  ],
+                  [
+                    1066.0,
+                    1346.0
+                  ],
+                  [
+                    1066.0,
+                    1426.0
+                  ],
+                  [
+                    117.0,
+                    1426.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 31
+              }
+            ],
+            "decision": {
+              "result_id": "c31d8548-24e0-451b-8ab7-0203fcdad300",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.636051Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "2a98dba5-2cbd-4a92-a70d-1d0552394978",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "（五）优先股转换为普通股",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 33,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "d1df17ca-5077-4ee2-af7d-4583c4efd05f",
+                "block_id": "a188687b-4067-4e3e-a0a3-7f0b42f16a85",
+                "source_page_number": 8,
+                "ocr_page_index": 7,
+                "location_precision": "region",
+                "bbox": [
+                  182,
+                  1435,
+                  563,
+                  1474
+                ],
+                "polygon": [
+                  [
+                    182.0,
+                    1435.0
+                  ],
+                  [
+                    563.0,
+                    1435.0
+                  ],
+                  [
+                    563.0,
+                    1474.0
+                  ],
+                  [
+                    182.0,
+                    1474.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 12
+              }
+            ],
+            "decision": {
+              "result_id": "2a98dba5-2cbd-4a92-a70d-1d0552394978",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.652756Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "6d52a5c8-2c42-4ba3-91b4-1df0e966ab10",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "check_label": "股权结构与特殊条款",
+            "group_label": null,
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "本行优先股股东优先于普通股股东分配剩余财产。本行因解散、破产等原因进行清算时，本行财产在按照相关法律规定进行清偿后的剩余财产，应当优先向优先股股东支付当期已宣派且尚未支付的股息和清算金额，其中清算金额为优先股票面金额。本行剩余财产不足以支付的，按照优先股股东持股比例分配。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 34,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "f7ed8ba4-46b4-4507-9aeb-c0db5982ed83",
+                "block_id": "0ff57e90-b12d-43b8-a85e-073d2eaf8ba3",
+                "source_page_number": 57,
+                "ocr_page_index": 56,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  1316,
+                  1053,
+                  1517
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    1316.0
+                  ],
+                  [
+                    1053.0,
+                    1316.0
+                  ],
+                  [
+                    1053.0,
+                    1517.0
+                  ],
+                  [
+                    113.0,
+                    1517.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 145
+              }
+            ],
+            "decision": {
+              "result_id": "6d52a5c8-2c42-4ba3-91b4-1df0e966ab10",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.670096Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "db8fc4f6-c237-482a-add2-15076f4bf2ab",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第一百五十二条 董事会审议以下事项时应当由三分之二以上董事表决通过且不能以书面传签表决方式召开：",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "f48ddbef-18ea-422b-883a-0e1e6b2b0048",
+                "block_id": "3a993824-3f28-452f-9755-555079f6274b",
+                "source_page_number": 39,
+                "ocr_page_index": 38,
+                "location_precision": "region",
+                "bbox": [
+                  108,
+                  137,
+                  1077,
+                  226
+                ],
+                "polygon": [
+                  [
+                    108.00003051757812,
+                    137.00001525878906
+                  ],
+                  [
+                    1076.6610107421875,
+                    145.00547790527344
+                  ],
+                  [
+                    1075.9998779296875,
+                    224.99998474121094
+                  ],
+                  [
+                    107.33889770507812,
+                    216.99452209472656
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 48
+              }
+            ],
+            "decision": {
+              "result_id": "db8fc4f6-c237-482a-add2-15076f4bf2ab",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.687222Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "3822f4c2-796d-4f1a-88d4-d60e41470cf5",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "，以全体董事的过半数选举产",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 1,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "aa680c0b-4e1c-4980-a373-a0bd4059bf0f",
+                "block_id": "7d932a08-3544-4fb5-8b8b-665e60eaff1c",
+                "source_page_number": 36,
+                "ocr_page_index": 35,
+                "location_precision": "region",
+                "bbox": [
+                  117,
+                  772,
+                  1067,
+                  897
+                ],
+                "polygon": [
+                  [
+                    117.0,
+                    772.0
+                  ],
+                  [
+                    1067.0,
+                    772.0
+                  ],
+                  [
+                    1067.0,
+                    897.0
+                  ],
+                  [
+                    117.0,
+                    897.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 41,
+                "end_char": 54
+              }
+            ],
+            "decision": {
+              "result_id": "3822f4c2-796d-4f1a-88d4-d60e41470cf5",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.705116Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "176bae9f-3021-4e78-b169-d096b7be7634",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "决权过半数的股东同意，股东大会可推举一人担任",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 2,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "ca2830c8-9d28-4f36-853a-45cd49953910",
+                "block_id": "26420c36-8df7-4209-a5b4-f6d293899101",
+                "source_page_number": 21,
+                "ocr_page_index": 20,
+                "location_precision": "region",
+                "bbox": [
+                  113,
+                  810,
+                  1057,
+                  937
+                ],
+                "polygon": [
+                  [
+                    113.0,
+                    810.0
+                  ],
+                  [
+                    1057.0,
+                    810.0
+                  ],
+                  [
+                    1057.0,
+                    937.0
+                  ],
+                  [
+                    113.0,
+                    937.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 43,
+                "end_char": 65
+              }
+            ],
+            "decision": {
+              "result_id": "176bae9f-3021-4e78-b169-d096b7be7634",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.722220Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "4924fe91-b6dd-4955-b19e-80dce1ac50a4",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "上述事项除须经出席会议的普通股股东（含表决权恢复的优先股股东）所持表决权的三分之二以上通过之外，还须经出席会议的优先股股东（不含表决权恢复的优先股股东）所持表决权的三分之二以上",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 3,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9227c717-fdc1-4be6-a230-255f8be8c206",
+                "block_id": "fdbc2c64-5d77-4dcc-a81b-53db3e1e503e",
+                "source_page_number": 60,
+                "ocr_page_index": 59,
+                "location_precision": "region",
+                "bbox": [
+                  114,
+                  921,
+                  1060,
+                  1079
+                ],
+                "polygon": [
+                  [
+                    114.0,
+                    921.0
+                  ],
+                  [
+                    1060.0,
+                    921.0
+                  ],
+                  [
+                    1060.0,
+                    1079.0
+                  ],
+                  [
+                    114.0,
+                    1079.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 88
+              }
+            ],
+            "decision": {
+              "result_id": "4924fe91-b6dd-4955-b19e-80dce1ac50a4",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.739632Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "b5d6a4ec-a2f3-445b-8715-8f7f97a5fae9",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股东大会作出普通决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的过半数通过",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 4,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "58e43404-0f7e-4822-ae89-b912ade9aeaf",
+                "block_id": "9d410247-d528-4bfc-b20e-a71cf86dbef6",
+                "source_page_number": 22,
+                "ocr_page_index": 21,
+                "location_precision": "region",
+                "bbox": [
+                  123,
+                  1218,
+                  1068,
+                  1303
+                ],
+                "polygon": [
+                  [
+                    122.28508758544922,
+                    1227.0068359375
+                  ],
+                  [
+                    1067.0,
+                    1218.0
+                  ],
+                  [
+                    1067.7208251953125,
+                    1293.602294921875
+                  ],
+                  [
+                    123.005859375,
+                    1302.609130859375
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 57
+              }
+            ],
+            "decision": {
+              "result_id": "b5d6a4ec-a2f3-445b-8715-8f7f97a5fae9",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.756552Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "a680de20-bb65-411d-9081-95229d625d22",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "股东大会作出特别决议，应当由出席股东大会的普通股股东（含表决权恢复的优先股股东）或股东代理人所持表决权的三分之二以上通",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 5,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "58e43404-0f7e-4822-ae89-b912ade9aeaf",
+                "block_id": "847b36f7-3cac-412f-9cb3-1f806704c4b5",
+                "source_page_number": 22,
+                "ocr_page_index": 21,
+                "location_precision": "region",
+                "bbox": [
+                  124,
+                  1307,
+                  1069,
+                  1427
+                ],
+                "polygon": [
+                  [
+                    124.0,
+                    1307.0
+                  ],
+                  [
+                    1069.0,
+                    1307.0
+                  ],
+                  [
+                    1069.0,
+                    1427.0
+                  ],
+                  [
+                    124.0,
+                    1427.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 59
+              }
+            ],
+            "decision": {
+              "result_id": "a680de20-bb65-411d-9081-95229d625d22",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.773686Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "82b15df4-415e-4b4d-9026-295fe22ff2bd",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "第一百四十六条 董事会会议应有过半数的董事出席方可举行。董事会作出决议，必须经全体董事的过半数通过。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 6,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "e02aa458-b358-48b8-9bca-b884f762f30c",
+                "block_id": "c12b99a8-00f5-44a8-beb7-4c30e23ba266",
+                "source_page_number": 37,
+                "ocr_page_index": 36,
+                "location_precision": "region",
+                "bbox": [
+                  110,
+                  1101,
+                  1071,
+                  1181
+                ],
+                "polygon": [
+                  [
+                    110.0,
+                    1101.0
+                  ],
+                  [
+                    1071.0,
+                    1101.0
+                  ],
+                  [
+                    1071.0,
+                    1181.0
+                  ],
+                  [
+                    110.0,
+                    1181.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 50
+              }
+            ],
+            "decision": {
+              "result_id": "82b15df4-415e-4b4d-9026-295fe22ff2bd",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.791109Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "e821325a-f1f5-48b3-a920-45b7c94cbe98",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "董事会作出决议，必须经全体董事的过半数通过。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 7,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "e02aa458-b358-48b8-9bca-b884f762f30c",
+                "block_id": "c12b99a8-00f5-44a8-beb7-4c30e23ba266",
+                "source_page_number": 37,
+                "ocr_page_index": 36,
+                "location_precision": "region",
+                "bbox": [
+                  110,
+                  1101,
+                  1071,
+                  1181
+                ],
+                "polygon": [
+                  [
+                    110.0,
+                    1101.0
+                  ],
+                  [
+                    1071.0,
+                    1101.0
+                  ],
+                  [
+                    1071.0,
+                    1181.0
+                  ],
+                  [
+                    110.0,
+                    1181.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 28,
+                "end_char": 50
+              }
+            ],
+            "decision": {
+              "result_id": "e821325a-f1f5-48b3-a920-45b7c94cbe98",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.808207Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ec7a02df-844a-4ad7-b59f-57c124155fcc",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "charter.voting_ratio",
+            "check_label": "需要多少表决权比例通过？",
+            "group_label": "借款与担保的决议权限",
+            "material_type": "articles_of_association",
+            "kind": "text",
+            "text": "监事会作出决议，必须经全体监事过半数通过。",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 8,
+            "sources": [
+              {
+                "file_id": "007b18df-9bd6-4e37-9c71-e8cc56ada025",
+                "file_name": "zhangcheng.pdf",
+                "page_id": "9fcbb939-0890-4df5-9272-c89837cedff9",
+                "block_id": "02c9a7b5-5ef1-4618-ad7a-2a9b759228cf",
+                "source_page_number": 48,
+                "ocr_page_index": 47,
+                "location_precision": "region",
+                "bbox": [
+                  181,
+                  1279,
+                  832,
+                  1321
+                ],
+                "polygon": [
+                  [
+                    181.0,
+                    1279.0
+                  ],
+                  [
+                    832.0,
+                    1279.0
+                  ],
+                  [
+                    832.0,
+                    1321.0
+                  ],
+                  [
+                    181.0,
+                    1321.0
+                  ]
+                ],
+                "coordinate_space": "unknown",
+                "page_width_px": null,
+                "page_height_px": null,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 21
+              }
+            ],
+            "decision": {
+              "result_id": "ec7a02df-844a-4ad7-b59f-57c124155fcc",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.825199Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "35d8f409-0142-48ca-ac10-16b9b1a01fd7",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.audit_institution",
+            "check_label": "审计机构",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "35d8f409-0142-48ca-ac10-16b9b1a01fd7",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.842513Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "ceb0c830-5426-49c5-8b16-31c5dcbb23d6",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.audit_opinion",
+            "check_label": "审计意见",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "ceb0c830-5426-49c5-8b16-31c5dcbb23d6",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.859782Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "595ce024-c7dd-4fb0-9422-5f1dff18231a",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.audit_seal",
+            "check_label": "审计单位印章",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "595ce024-c7dd-4fb0-9422-5f1dff18231a",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.878214Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "158409fe-704a-45a3-be8e-61df6ce2c60d",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.balance_sheet",
+            "check_label": "资产负债表",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "158409fe-704a-45a3-be8e-61df6ce2c60d",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.895260Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "2e597005-3962-4ab9-baf7-ec5730f603ba",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.cash_flow_statement",
+            "check_label": "现金流量表",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "2e597005-3962-4ab9-baf7-ec5730f603ba",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.912536Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "d3c8bb5a-5d7f-4ba2-9363-70c8f12b0cb4",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.company_name",
+            "check_label": "报表所属企业",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "d3c8bb5a-5d7f-4ba2-9363-70c8f12b0cb4",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.930245Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "c1761656-2a40-4198-8594-4d20da0a7453",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.cpa_signature",
+            "check_label": "注册会计师签名",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "c1761656-2a40-4198-8594-4d20da0a7453",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.948139Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "7e512e66-4b7e-44b3-8646-b3373455f0bc",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.income_statement",
+            "check_label": "利润表",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "7e512e66-4b7e-44b3-8646-b3373455f0bc",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.965099Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "f4aa3a22-ac1d-45c4-a6a0-3b79beb2fd87",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "financial.reporting_period",
+            "check_label": "报告年度",
+            "group_label": null,
+            "material_type": "audited_financials",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "material_missing",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "f4aa3a22-ac1d-45c4-a6a0-3b79beb2fd87",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:12.982215Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "cfa36ac7-54a6-48ea-8fb8-bb4d33b04195",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "license.business_scope",
+            "check_label": "经营范围",
+            "group_label": null,
+            "material_type": "business_license",
+            "kind": "text",
+            "text": "经营范围 托育服务（不含幼儿园、托儿所），技术开发、技术转让、技术咨询、技术服务、技术推广；组织文化艺术交流活动（不含营业性演出）；设计、制作、代理、发布广告；企业管理；企业管理咨询；经济贸易咨询；文化咨询；教育咨询（中介服务除外），体育咨询；市场调查；文艺创作；承办展览展示活动；翻译服务；公共关系服务；会议服务。（企业依法自主选择经营项目，开展经营活动，托育服务（不含幼儿园、托儿所）以及依法须经批准的项目，经相关部门批准后依批准的内容开展经营活动，不得从事本市产业政策禁止和限制类项目的经营活动。）\n住所 北京市朝阳区师家坟村156号3幢1层",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "19d883e8-b685-498e-9d69-3d526b2cde16",
+                "file_name": "营业执照测试.png",
+                "page_id": "87538907-c0d3-4838-a56a-380433f23485",
+                "block_id": "248286dd-d0ca-4f25-86de-1f95f8dbeed2",
+                "source_page_number": 1,
+                "ocr_page_index": 0,
+                "location_precision": "region",
+                "bbox": [
+                  90,
+                  315,
+                  405,
+                  411
+                ],
+                "polygon": [
+                  [
+                    90.0,
+                    315.0
+                  ],
+                  [
+                    405.0,
+                    315.0
+                  ],
+                  [
+                    405.0,
+                    411.0
+                  ],
+                  [
+                    90.0,
+                    411.0
+                  ]
+                ],
+                "coordinate_space": "ocr_input_image_pixels",
+                "page_width_px": 800,
+                "page_height_px": 600,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 274
+              }
+            ],
+            "decision": {
+              "result_id": "cfa36ac7-54a6-48ea-8fb8-bb4d33b04195",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:13.000179Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "741aded6-a5e6-428d-9353-50b2520cc0ea",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "license.operating_term",
+            "check_label": "营业期限",
+            "group_label": null,
+            "material_type": "business_license",
+            "kind": "text",
+            "text": "营业期限2018年08月29日至长期",
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": "matched",
+            "not_found_reason": null,
+            "rank": 0,
+            "sources": [
+              {
+                "file_id": "19d883e8-b685-498e-9d69-3d526b2cde16",
+                "file_name": "营业执照测试.png",
+                "page_id": "87538907-c0d3-4838-a56a-380433f23485",
+                "block_id": "32849fc5-3f54-4c33-8708-827c23d2889e",
+                "source_page_number": 1,
+                "ocr_page_index": 0,
+                "location_precision": "region",
+                "bbox": [
+                  425,
+                  295,
+                  610,
+                  311
+                ],
+                "polygon": [
+                  [
+                    425.0,
+                    295.0
+                  ],
+                  [
+                    609.0,
+                    295.0
+                  ],
+                  [
+                    609.0,
+                    310.0
+                  ],
+                  [
+                    425.0,
+                    310.0
+                  ]
+                ],
+                "coordinate_space": "ocr_input_image_pixels",
+                "page_width_px": 800,
+                "page_height_px": 600,
+                "raster_asset_id": null,
+                "start_char": 0,
+                "end_char": 18
+              }
+            ],
+            "decision": {
+              "result_id": "741aded6-a5e6-428d-9353-50b2520cc0ea",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:13.017821Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          },
+          {
+            "id": "0ae2ed35-d724-4fd4-9cf4-6b589e8e8a4a",
+            "task_id": "ee59108d-e4f1-4aa8-bf2e-afe07d457384",
+            "run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+            "check_item_id": "license.registration_status",
+            "check_label": "登记状态",
+            "group_label": null,
+            "material_type": "business_license",
+            "kind": "not_found",
+            "text": null,
+            "table_html": null,
+            "crop_id": null,
+            "image_asset_id": null,
+            "image_url": null,
+            "recognition_source": null,
+            "relation_status": null,
+            "not_found_reason": "no_matching_evidence",
+            "rank": 0,
+            "sources": [],
+            "decision": {
+              "result_id": "0ae2ed35-d724-4fd4-9cf4-6b589e8e8a4a",
+              "decision": "accepted",
+              "reject_reason": null,
+              "version": 1,
+              "updated_at": "2026-11-11T08:44:28.496827Z",
+              "carried_from_result_id": null
+            },
+            "editable": true
+          }
+        ],
+        "next_cursor": null,
+        "coverage_complete": true,
+        "coverage_affected_check_ids": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/ee59108d-e4f1-4aa8-bf2e-afe07d457384/runs",
+      "status": 409,
+      "response": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可重新核对"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/tasks/ee59108d-e4f1-4aa8-bf2e-afe07d457384/results/43ffbf8a-b466-41fa-8a17-d31a9de73d54/decision",
+      "status": 409,
+      "response": {
+        "detail": {
+          "code": "TASK_READ_ONLY",
+          "message": "任务已完成，不可修改"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/60f84fbd-ddd1-4f2d-b8da-09fb2a92eb64/complete",
+      "status": 409,
+      "response": {
+        "detail": {
+          "code": "RUN_NOT_READY",
+          "message": "核对结果尚未就绪"
+        }
+      }
+    }
+  ],
+  "login": {
+    "status": 200,
+    "user_id": "fdb34c0f-efdd-415d-ad90-583515d54999",
+    "csrf_token_present": true
+  },
+  "coverage_incomplete_409": {
+    "status": 409,
+    "detail": {
+      "detail": {
+        "code": "COVERAGE_INCOMPLETE",
+        "message": "识别覆盖不完整，暂不能完成核对"
+      }
+    },
+    "code": "COVERAGE_INCOMPLETE",
+    "message": "识别覆盖不完整，暂不能完成核对",
+    "task_before": {
+      "state": "REVIEWING",
+      "completed_at": "NULL",
+      "last_ready_run_id": "NULL",
+      "deleted_at": "NULL"
+    },
+    "task_after": {
+      "state": "REVIEWING",
+      "completed_at": "NULL",
+      "last_ready_run_id": "NULL",
+      "deleted_at": "NULL"
+    },
+    "decisions_count": "2",
+    "zero_writes": true
+  },
+  "list_results_coverage_fields": {
+    "status": 200,
+    "coverage_complete": false,
+    "coverage_affected_check_ids": [
+      "charter.approval_body"
+    ],
+    "statistics_can_complete": true
+  },
+  "coverage_complete_200": {
+    "status": 200,
+    "state": "COMPLETED",
+    "task_after": {
+      "state": "COMPLETED",
+      "completed_at": "2026-11-12 16:00:09.406183+00",
+      "last_ready_run_id": "ddac1ac7-0d8b-4d72-8ca3-105c0cce43b9",
+      "deleted_at": "NULL"
+    }
+  },
+  "historical_completed_readonly": {
+    "read_back_status": 200,
+    "read_back_item_count": 77,
+    "read_back_editable": false,
+    "post_runs_status": 409,
+    "post_runs_code": "TASK_READ_ONLY",
+    "patch_decision_status": 409,
+    "patch_decision_code": "TASK_READ_ONLY",
+    "task_unchanged": true,
+    "task_before": {
+      "state": "COMPLETED",
+      "completed_at": "2026-11-11 08:44:28.627726+00",
+      "last_ready_run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+      "deleted_at": "NULL"
+    },
+    "task_after": {
+      "state": "COMPLETED",
+      "completed_at": "2026-11-11 08:44:28.627726+00",
+      "last_ready_run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+      "deleted_at": "NULL"
+    }
+  },
+  "failed_run_complete_priority": {
+    "status": 409,
+    "code": "RUN_NOT_READY",
+    "response": {
+      "detail": {
+        "code": "RUN_NOT_READY",
+        "message": "核对结果尚未就绪"
+      }
+    }
+  },
+  "delete_readonly_verify_doc": {
+    "path": "docs/delete_readonly_verify.json",
+    "summary": {
+      "total": 40,
+      "passed": 40,
+      "failed": 0,
+      "requests": 14
+    },
+    "combined_summary": {
+      "rounds": 3,
+      "case1_case2_original": {
+        "total": 40,
+        "passed": 40,
+        "failed": 0,
+        "requests": 14
+      },
+      "case3_added": {
+        "total": 27,
+        "passed": 27,
+        "failed": 0,
+        "requests": 7
+      },
+      "total_checks": 67,
+      "passed": 67,
+      "failed": 0,
+      "total_requests": 21
+    },
+    "all_checks_pass": true,
+    "file_unmodified_by_this_batch": true
+  },
+  "create_run_full_rerun_label": {
+    "run_mode": "full_rerun",
+    "run_mode_label": "整次重跑（新建 run，不复用上次结果）",
+    "retry_failed_only": false,
+    "requested_field_ignored": true,
+    "run_config_in_model_snapshot": true
+  },
+  "assertions": {
+    "login_ok_with_csrf": true,
+    "coverage_incomplete_returns_409": true,
+    "coverage_incomplete_code": true,
+    "coverage_incomplete_message": true,
+    "coverage_incomplete_zero_writes": true,
+    "all_visible_excerpts_confirmed": true,
+    "list_results_has_coverage_fields": true,
+    "coverage_complete_returns_200": true,
+    "failed_run_complete_is_RUN_NOT_READY": true,
+    "historical_completed_readable": true,
+    "historical_completed_post_runs_409": true,
+    "historical_completed_patch_409": true,
+    "historical_completed_untouched": true,
+    "delete_readonly_doc_intact": true,
+    "create_run_labelled_full_rerun": true
+  },
+  "status": "pass"
+}

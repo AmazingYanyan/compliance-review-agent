@@ -1,0 +1,144 @@
+{
+  "_note": "本轮三组快速验收 · A 组「并发和结果归属」最小配置。4 个模拟请求、客户端 C=2（LLM_MAX_IN_FLIGHT=2）、刻意打乱放行顺序、一快一慢。本文件是静态配置，不是实测结果：所有 delay_ms / size 都是配置值，实测统计只能来自 mock_llm_server.py 的 --stats-out 落盘 JSON。模拟服务端本身不限流在途数，C=2 由后端调度器的模块级 BoundedSemaphore 保证；因此 stats.peak_inflight 观测到的就是客户端真实同时在途数。",
+  "schema_version": "qa-mock-llm-config-1",
+  "group": "A",
+  "host": "127.0.0.1",
+  "port": 8099,
+  "stats_out": "/tmp/qa_mock_a_c2_refill_4.json",
+  "tag_header": "X-QA-Tag",
+  "default_delay_ms": 60,
+  "timeout_hang_seconds": 3.0,
+  "truncate_ratio": 0.6,
+  "expected_request_count": 4,
+  "default_inject": null,
+  "run_config_note": "实跑前置：run_config.X=1（每请求 1 个检查项）、C=2。4 个单元 = 2 窗口 × 2 检查项（w0.c1 / w0.c2 / w1.c1 / w1.c2）。X 与 C 必须按 README §10 的前置条件生效后再跑，否则峰值断言不成立。",
+  "client_request_setup": [
+    "客户端一次提交全部 4 个搜索单元，由 ThreadPoolExecutor(max_workers=C=2) + 模块级 BoundedSemaphore(LLM_MAX_IN_FLIGHT=2) 限流",
+    "每个请求带请求头 X-QA-Tag: qa-run-A（单 run，供 stats.by_tag 与逐条归属核对；多 run 场景另见 mock_config.u5_two_runs.json）",
+    "as_completed 先回先收：放行顺序故意与到达顺序相反，验证先回先处理时 run_id / 窗口 / 检查项不串写"
+  ],
+  "barrier": {
+    "enabled": true,
+    "size": 2,
+    "release_order": [2, 1],
+    "release_gap_ms": 5,
+    "wait_timeout_seconds": 30,
+    "check_item_order": [
+      "charter.business_scope",
+      "charter.approval_body"
+    ]
+  },
+  "_barrier_note": "size=2 等于 C。第一批到达的是 seq1/seq2，显式 release_order=[2,1] 让 seq2 先放行、seq1 后放行（released_at 顺序 [2,1] 与 arrived_at 顺序 [1,2] 相反，即『刻意打乱放行顺序』）。seq2 虽先放行但 delay_ms=400（慢），seq1 后放行但 delay_ms=20（快），故 responded_at 仍是 seq1 早于 seq2 —— 放行顺序与响应完成顺序双重打乱，专用于验证 as_completed 先回先收不串写。seq1 返回后客户端应立即补发 seq3（此时 seq2 仍在途），这是断言①的观测点。seq3/seq4 的 arrival_seq>size 不进 barrier（barrier.arrive 返回 (0,False)），只走各自 delay_ms。若实跑时把 C 改为 4 做全量并发对照，须把 size 改 4 并把 release_order 扩成 [2,1,4,3]；本配置固定 C=2。",
+  "rules": [
+    {
+      "name": "a.w0.c1.fast",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 0
+      },
+      "delay_ms": 20,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "found",
+            "evidence": [
+              {
+                "source_refs": [
+                  {
+                    "block_id": "{{BLOCK:0}}",
+                    "start_char": null,
+                    "end_char": null
+                  }
+                ],
+                "relation_status": "matched",
+                "relevance_reason": "A 组快请求：w0.c1 命中（用于证明快结束后立即补发）"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w0.c2.slow",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 0
+      },
+      "delay_ms": 400,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w1.c1.mid",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.business_scope",
+        "window_index": 1
+      },
+      "delay_ms": 60,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    },
+    {
+      "name": "a.w1.c2.mid",
+      "when": {
+        "schema_name": "text_search_output",
+        "check_item_id": "charter.approval_body",
+        "window_index": 1
+      },
+      "delay_ms": 60,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "found",
+            "evidence": [
+              {
+                "source_refs": [
+                  {
+                    "block_id": "{{BLOCK:0}}",
+                    "start_char": null,
+                    "end_char": null
+                  }
+                ],
+                "relation_status": "matched",
+                "relevance_reason": "A 组：w1.c2 命中（打乱顺序后归属仍应正确）"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "_assertions_consumed_by_test_script": [
+    "① 快请求结束后下一条立即发出：stats.requests[] 按 arrived_monotonic_ms 找出 fast(seq1) 与随后补发的 seq3，断言 seq3.arrived_at 早于 slow(seq2).responded_at（即慢请求仍在途时新请求已到达）；只用落盘的真实时间戳，不写推算值",
+    "② 峰值在途 = 2：stats.peak_inflight == 2（客户端 C=2 限流的真实结果；模拟服务端不自建限流）",
+    "③ 每条响应写入正确的 run_id / 窗口 / 检查项，无串写：逐条核对 stats.requests[].tag / check_item_id / window_index 与落库导出（results / run_steps / trace JSONL）的归属一致；放行顺序打乱后摘录集合按 text_sha256 + source_page_number + 页内稳定序号比对仍一致",
+    "④ 提交到线程池时间 vs 实际 HTTP 发起时间：模拟服务只提供 arrived_at（≈t_http_start）、released_at、responded_at；t_submit（提交到线程池）与 t_http_start（acquire 到额度后）从模拟服务端『无法取得』，须由客户端 /data/perf_traces/{run_id}.jsonl 提供；未提供 trace 时如实标『无法取得』及原因，不伪造"
+  ],
+  "_trace_fields_note": "④ 的字段来源：t_submit / t_http_start / t_http_end 由客户端写入 /data/perf_traces/{run_id}.jsonl（开发 Agent 本轮实现，只存 hash/时间戳/状态/短码）；t_http_start - t_submit = 额度等待。模拟服务只观测 arrived_at（≈t_http_start），不提供 t_submit。断言脚本对调用端取不到的字段一律标『无法取得』并写明原因。",
+  "_C_injection_final_mirror": "LLM_MAX_IN_FLIGHT 在 llm_client.py 模块 import 时固化。C 生效唯一方式：改 credit-review-app/.env 的 LLM_MAX_IN_FLIGHT=2（代码不变、不需 build）后执行 `docker compose up -d --force-recreate api worker` 让容器重新创建才会重读 env_file；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings 无效（_IN_FLIGHT 已构造）。本组跑完后若改过 .env 必须改回 2 并再 recreate 一次，否则后续用例一直用非 2 的值。",
+  "_concurrency_scheduler_status": "ThreadPoolExecutor 一次提交全部单元 / 先回先处理 / 即时补位的并发调度器由开发 Agent 本轮实现；本配置与断言脚本在该实现落地、镜像重建完成并由团长下发实跑信号后才可实跑。当前为静态准备，未跑。",
+  "status": "静态配置，非实测结果；本轮未实跑（等镜像重建 + 团长实跑信号）"
+}

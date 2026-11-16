@@ -1,0 +1,23 @@
+{
+  "schema_version": "qa-chrome-evidence-1",
+  "status": "measured",
+  "all_pass": true,
+  "summary": {
+    "PASS": 11,
+    "FAIL": 0,
+    "PENDING": 2
+  },
+  "real_ui_mode": true,
+  "not_executed_cases": [
+    "C6",
+    "C7",
+    "C7b",
+    "C8",
+    "C9",
+    "C9b",
+    "C10",
+    "C12"
+  ],
+  "detail": "QA_REAL_UI=1 最终镜像 + 最终前端产物 index-CiFoDBwL.js；C15/C16 本轮范围外保持 PENDING；T02 封版 17/0/4 已留档",
+  "source": "frontend/tests/perf/evidence/coverage_incomplete.skeleton.json"
+}

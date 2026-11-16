@@ -1,0 +1,347 @@
+{
+  "schema_version": "qa-quick-acceptance-1",
+  "status": "静态 fixture，非实测结果。本轮只做宿主机静态准备（配置/固定响应/断言脚本/README/纯本机自检），不跑容器、不跑真实模型、不跑 OCR 跑批。所有 expected 都是「实现落地并实跑后应达到」的预期断言；未实跑的数字一律标「未跑」，不写推算值。",
+  "scope": "本轮三组快速验收（用户收窄后的最小集）：A 并发和结果归属 / B 批量、稳定分窗和去重 / C 部分失败与完成。用模拟 HTTP + 固定响应，不调用真实模型。",
+  "range_note": "性能矩阵、长章程、全文模式、配置面板、真实模型耗时全部留后续，本轮一律标「待测」，不设计用例、不跑、不写数字。",
+  "evidence_provenance": {
+    "_note": "严禁把 T02 既有证据写成本轮新跑结果；沿用项必须标「沿用」，未跑项必须标「未跑」。",
+    "reused_from_T02": [
+      "compare_two_imports.py 两次导入稳定分窗 24/24（content hash 与导入 UUID 无关，A≠B 的 window_text_sha256_run_bound 已排除自比对）—— 本轮 B 组分窗部分直接沿用，不重跑",
+      "fault_injection.py known_gaps_observed=0 / t03_pending=1",
+      "Chrome 骨架 17 PASS / 0 FAIL / 4 PENDING（C7b / C9c-0 / C9c / C9b / C17 / C11 / C12 已覆盖大部分 C 组 UI 事实）",
+      "模拟服务自测 8/8（peak 12、首末到达差约 1.7ms）—— 模拟服务自身能力自测，不是业务链路并发验收",
+      "基线退出码静态 verdict=fixed",
+      "validate_fixtures.py PASS（T02 当时 13 JSON / 23 响应模板 / 12 错误码字段 / 两次导入独立性 checked）—— 本轮新增文件后自检数字会变，以本轮真实实跑为准"
+    ],
+    "not_run_this_round": [
+      "A 组 4 请求 C=2 实跑、B 组 X=1/X=3 实跑、C 组部分失败与完成实跑、Chrome 真实页面操作：全部未跑（静态准备阶段，等镜像重建 + 团长实跑信号）",
+      "所有实际请求数 / 峰值在途 / 时间差 / 首末到达差：未跑，必须由 mock_llm_server.py 的 --stats-out 或 /data/perf_traces/{run_id}.jsonl 落盘给出，不得引用任何标注 measured:false 的示例数字"
+    ],
+    "pending_real_run_dependencies": [
+      "开发 Agent 的 _search_stage 串行→线程池并发、checks_per_request 批量分组、complete_task 收敛、前端 review.tsx 覆盖提示条与完成按钮 disabled 全部实现完成",
+      "api + worker 镜像重建完成、前端 docker cp 同步完成、团长下发「镜像已重建、可以实跑」信号",
+      "X / C 生效：改 .env 后 docker compose up -d --force-recreate api worker（restart 无效），详见 group_A.c_injection_prerequisite"
+    ]
+  },
+
+  "group_A": {
+    "title": "并发和结果归属（4 个模拟请求、C=2、刻意打乱返回顺序）",
+    "config": "backend/tests/perf/mock_config.a_c2_refill_4.json",
+    "stats_source": "mock_llm_server.py --config ... --stats-out /tmp/qa_mock_a_c2_refill_4.json 落盘的 /__stats 统计",
+    "assertion_entry": "verify_quick_acceptance.py --group A --stats <落盘 stats.json> --results <落库结果导出.json> [--trace <perf_traces/{run_id}.jsonl>]",
+    "expected_values": {
+      "request_count": 4,
+      "peak_inflight": 2,
+      "c": 2,
+      "x": 1,
+      "measured": false,
+      "note": "以上为配置/口径定值，不是实测结果；实跑后一律以 stats 落盘为准，逐条核对，不写推算值"
+    },
+    "assertions": [
+      {
+        "id": "A1",
+        "title": "快请求结束后下一条立即发出（慢请求仍在途）",
+        "how": "按 stats.requests[].arrived_monotonic_ms 升序取序列；断言补发的第 3 条 arrived_at 早于慢请求 responded_at（慢请求仍在途时新请求已到达）",
+        "source": "真实到达/响应时间来自 stats 落盘，不写推算值",
+        "status": "未跑"
+      },
+      {
+        "id": "A2",
+        "title": "峰值在途 = 2",
+        "how": "断言 stats.peak_inflight == 2（客户端 C=2 限流的真实结果；模拟服务端不自建限流）",
+        "source": "stats.peak_inflight 落盘实测",
+        "status": "未跑"
+      },
+      {
+        "id": "A3",
+        "title": "每条响应写入正确的 run_id / 窗口 / 检查项，无串写",
+        "how": "逐条核对 stats.requests[].tag / check_item_id / window_index 与落库导出（results / run_steps / trace JSONL）的归属一致；放行顺序打乱后摘录集合按 text_sha256 + source_page_number + 页内稳定序号比对仍一致",
+        "source": "stats + 落库导出 + trace JSONL",
+        "status": "未跑"
+      },
+      {
+        "id": "A4",
+        "title": "分别记录「提交到线程池时间」与「实际 HTTP 发起时间」",
+        "how": "从 trace JSONL 取 t_submit / t_http_start，计算 t_http_start - t_submit = 额度等待；若未提供 trace 则逐字段标「无法取得」及原因，不伪造",
+        "source": "/data/perf_traces/{run_id}.jsonl（开发 Agent 本轮实现，只存 hash/时间戳/状态/短码）",
+        "status": "未跑"
+      }
+    ],
+    "unavailable_fields": {
+      "t_submit": "无法取得。原因：模拟服务只观测「请求实际到达服务端 handler」的 arrived_at（≈t_http_start）、barrier 放行 released_at、写出响应 responded_at；「提交到线程池」发生在调用端进程内，服务端不感知、不记录。该字段只能由客户端写入 /data/perf_traces/{run_id}.jsonl，未提供 trace 时不得伪造。",
+      "t_http_start": "无法从模拟服务直接取得其精确语义值。原因：arrived_at 是服务端收到 HTTP 请求的时间，只近似等于客户端 acquire 到额度后、_chat 前的 t_http_start；两者定义不同（网络/排队开销）。精确 t_http_start 取自 trace JSONL；只拿 stats 时标「无法取得（仅有 arrived_at 近似）」及原因。"
+    },
+    "c_injection_prerequisite": "LLM_MAX_IN_FLIGHT 在 llm_client.py 模块 import 时固化。C 生效唯一方式：改 credit-review-app/.env 的 LLM_MAX_IN_FLIGHT=2（代码不变、不需 build）后 `docker compose up -d --force-recreate api worker` 让容器重新创建才会重读 env_file；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings 无效（_IN_FLIGHT 已构造）。本组跑完若改过 .env 必须改回 2 并再 recreate 一次。详见 README §10。"
+  },
+
+  "group_B": {
+    "title": "批量、稳定分窗和去重（同一 15 页 OCR JSON + 同一组固定返回，对比 X=1 与 X=3）",
+    "ocr_json": {
+      "path": "/Users/eddie/Documents/WorkBuddy/合规审查智能体/《北京银行股份有限公司章程》 切分15页.PDF_by_PaddleOCR-VL-1.6_全参数开启.json",
+      "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+      "note": "与 T02 两次导入对照同一份输入；本轮不重新读取/解析该 JSON 之外的任何 OCR 跑批"
+    },
+    "stable_windowing": {
+      "reuse": "沿用 T02 compare_two_imports.py 24/24 两次导入稳定分窗证据（A/B 有序块清单、分窗边界、内容 hash 与业务 K2 内容 hash 全部一致、176/176 覆盖），本轮不重跑",
+      "conditional_recheck": "仅当开发 Agent 本轮改动了分窗排序（source_ordering / chunk 逻辑）时，才补一次快速两次导入核对（compare_two_imports.py），否则维持沿用"
+    },
+    "dedup_and_reference_cases": [
+      {
+        "id": "B1_repeat_ref",
+        "title": "重复引用：同检查项/同出处/同原文，不同偏移 → 只存 1 条",
+        "construct": "x1_requests[0] / x3_requests[0] 中 charter.business_scope 对同一 {{BLOCK:0}} 给出两条 evidence，start_char/end_char 分别为 0-50 与 10-60（同出处同原文、不同偏移）",
+        "expected_result_rows": 1,
+        "note": "对应 fixed_responses.json::dedup_expectations.D1；去重键须含 (check_item_id, text_sha256, source_page_number)，不得用含随机 UUID/偏移的 fingerprint"
+      },
+      {
+        "id": "B2_same_text_diff_source",
+        "title": "不同出处的同文 → 保留多条",
+        "construct": "x1_requests[1] / x3_requests[0] 中 charter.approval_body 引用 {{BLOCK:1}} 与 {{BLOCK:2}} 两个不同 block_id，声明 canonical_text 相同（同文不同出处）",
+        "expected_result_rows": 2,
+        "note": "对应 fixed_responses.json::dedup_expectations.D2；去重键必须含出处（物理页 + 页内稳定序号），不能只按原文 hash 把两条删成一条"
+      },
+      {
+        "id": "B3_same_block_multi_check",
+        "title": "同一块被多个检查项合法引用 → 各项均保留",
+        "construct": "x1_requests[2] / x3_requests[0] 中 charter.guarantee_restrictions 也引用 {{BLOCK:0}}，与 B1 的 charter.business_scope 引用同一块；即 BLOCK:0 被 c1 与 c3 两个检查项合法引用",
+        "expected_result_rows": 2,
+        "note": "对应 fixed_responses.json::dedup_expectations.D3 与 scenarios[0] same_block_multi_check；批量（X>1）实现后不得把 seen 去重集合提到批次级导致跨检查项误删"
+      }
+    ],
+    "compare_key": ["check_item_id", "text_sha256", "source_page_number", "页内稳定序号"],
+    "must_not_use_for_cross_run_compare": ["Result.fingerprint", "window_text_sha256", "messages_sha256", "user_sha256"],
+    "x1_requests": [
+      {
+        "key": "b.x1.w0.c1",
+        "match": { "schema_name": "text_search_output", "check_item_id": "charter.business_scope", "window_index": 0 },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": 0, "end_char": 50 }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B1 重复引用第 1 条（同出处同原文，偏移 0-50）"
+                },
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": 10, "end_char": 60 }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B1 重复引用第 2 条（同出处同原文，偏移 10-60）→ 应只存 1 条"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "key": "b.x1.w0.c2",
+        "match": { "schema_name": "text_search_output", "check_item_id": "charter.approval_body", "window_index": 0 },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:1}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B2 同文出处 A（{{BLOCK:1}}）"
+                },
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:2}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B2 同文出处 B（{{BLOCK:2}}，不同 block_id、canonical_text 相同）→ 应保留 2 条"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "key": "b.x1.w0.c3",
+        "match": { "schema_name": "text_search_output", "check_item_id": "charter.guarantee_restrictions", "window_index": 0 },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B3 c3 引用 {{BLOCK:0}}（与 c1 同块，多检查项合法引用）→ 各项均保留"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "x3_requests": [
+      {
+        "key": "b.x3.w0.batch",
+        "match": { "schema_name": "text_search_output", "window_index": 0, "batch_size": 3 },
+        "response": {
+          "bundle_id": "w0",
+          "check_results": [
+            {
+              "check_item_id": "charter.business_scope",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": 0, "end_char": 50 }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B1 重复引用第 1 条（同出处同原文，偏移 0-50）"
+                },
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": 10, "end_char": 60 }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B1 重复引用第 2 条（同出处同原文，偏移 10-60）→ 应只存 1 条"
+                }
+              ]
+            },
+            {
+              "check_item_id": "charter.approval_body",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:1}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B2 同文出处 A（{{BLOCK:1}}）"
+                },
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:2}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B2 同文出处 B（{{BLOCK:2}}，不同 block_id、canonical_text 相同）→ 应保留 2 条"
+                }
+              ]
+            },
+            {
+              "check_item_id": "charter.guarantee_restrictions",
+              "outcome": "found",
+              "evidence": [
+                {
+                  "source_refs": [{ "block_id": "{{BLOCK:0}}", "start_char": null, "end_char": null }],
+                  "relation_status": "matched",
+                  "relevance_reason": "B3 c3 引用 {{BLOCK:0}}（与 c1 同块，多检查项合法引用）→ 各项均保留"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "expected": {
+      "request_count_x1": "未跑（实测；由 stats 或 trace JSONL 请求计数给出）",
+      "request_count_x3": "未跑（实测；由 stats 或 trace JSONL 请求计数给出）",
+      "request_count_relation": "X=3 实际请求数应少于 X=1（本 fixture 口径 3 → 1，标 measured:false；实跑值以落盘为准）",
+      "kept_candidates_equal_between_x1_and_x3": true,
+      "compare_key": ["check_item_id", "text_sha256", "source_page_number", "页内稳定序号"],
+      "expected_kept_rows": {
+        "charter.business_scope": 1,
+        "charter.approval_body": 2,
+        "charter.guarantee_restrictions": 1,
+        "total": 4,
+        "cross_check_note": "BLOCK:0 被 c1 与 c3 引用 → 两项各 1 条、合计 2 条，不跨检查项去重"
+      },
+      "dedup": {
+        "B1_repeat_ref": 1,
+        "B2_same_text_diff_source": 2,
+        "B3_same_block_multi_check": 2,
+        "status": "未跑（上述为预期值，不是实测）"
+      },
+      "run_config_x_differs": "X=1 与 X=3 两次运行除 run_config.X 外配置全等（实跑核对 model_snapshot.run_config）"
+    }
+  },
+
+  "group_C": {
+    "title": "部分失败与完成（一个窗口成功、另一个超时 → 覆盖不全 → 完成接口 409；再用正常样本确认 200）",
+    "partial_failure": {
+      "reuse": "复用 backend/tests/perf/fixtures/fixed_responses.json::scenarios[7] x1_window1_hit_window2_timeout（窗口0命中、窗口1超时耗尽），本轮不重复造响应",
+      "assertions": [
+        "成功窗口摘录与原文定位保留（kept_candidates 1 条，page 7）",
+        "受影响检查项 not_found_reason=coverage_incomplete（不得为 no_matching_evidence / material_missing）",
+        "run.coverage_complete=false",
+        "直接调 POST /tasks/{tid}/complete 返回 409 COVERAGE_INCOMPLETE + 零写入（即使可见摘录全确认也拦）",
+        "两档场景分别验：auth_401（run FAILED）走 409 RUN_NOT_READY，不合并进 COVERAGE_INCOMPLETE"
+      ],
+      "complete_task_expected_code": "COVERAGE_INCOMPLETE",
+      "complete_task_expected_code_note": "来源：架构师定值；run READY + coverage_complete=false 场景。断言入口纯字面量，说明不拼进值里。",
+      "expected_complete_status": 409,
+      "zero_write": true,
+      "status": "未跑"
+    },
+    "normal_complete": {
+      "reuse": "复用 backend/tests/perf/fixtures/fixed_responses.json::scenarios[8] all_windows_success_no_candidate（应查窗口全成功且无候选 → 正常 no_matching_evidence），本轮不重复造响应",
+      "assertions": [
+        "run.coverage_complete=true",
+        "完成接口返回 200",
+        "not_found_reason=no_matching_evidence，不得标 coverage_incomplete"
+      ],
+      "expected_complete_status": 200,
+      "status": "未跑"
+    },
+    "chrome": {
+      "script": "frontend/tests/perf/coverage_incomplete.verify.mjs",
+      "one_task_only": true,
+      "note": "Chrome 只走一条部分失败任务；真实页面操作留到团长下发实跑信号后再跑。",
+      "cases": [
+        "确认覆盖提示（条目级提示已由 C1 覆盖；任务级 banner 由 C13 在 QA_REAL_UI 模式下断言）",
+        "已有摘录可确认：接受/拒绝与出处点击仍可用，不整体只读（C3/C4/C5/C6/C17 已 PASS，沿用）",
+        "完成按钮 disabled + 「暂不能完成核对」说明（C14 在 QA_REAL_UI 模式下接成可实跑断言）",
+        "刷新后提示仍在（C11/C12 已 PASS，沿用）",
+        "C9c 绕过 UI 直接 POST /complete：fetch 带 X-CSRF-Token + Origin + credentials:include，token 从 /auth/me 取、不硬编码，零写入 predicate 加目标任务 ID 过滤（避 5s 轮询串扰）"
+      ],
+      "reused_cases": ["C7b 三方一致性", "C9c-0 先排 403", "C9c 绕过 UI 409", "C17 覆盖不全 ≠ 只读", "C11/C12 刷新后仍在"],
+      "status": "未跑（真实页面操作）"
+    },
+    "assertion_entry": "verify_quick_acceptance.py --group C --complete <完成接口响应导出.json> --results <落库结果导出.json>",
+    "error_code_note": "complete_task 错误码断言值一律纯字面量（^[A-Z][A-Z0-9_]*$），来源说明放独立 note 字段，供 #7 用 == 严格相等断言。"
+  },
+
+  "rules": [
+    {
+      "name": "b.x1.w0.c1",
+      "when": { "schema_name": "text_search_output", "check_item_id": "charter.business_scope", "window_index": 0, "batch_size": 1 },
+      "response_ref": { "file": "fixtures/quick_acceptance.json", "path": ["group_B", "x1_requests", 0, "response"] }
+    },
+    {
+      "name": "b.x1.w0.c2",
+      "when": { "schema_name": "text_search_output", "check_item_id": "charter.approval_body", "window_index": 0, "batch_size": 1 },
+      "response_ref": { "file": "fixtures/quick_acceptance.json", "path": ["group_B", "x1_requests", 1, "response"] }
+    },
+    {
+      "name": "b.x1.w0.c3",
+      "when": { "schema_name": "text_search_output", "check_item_id": "charter.guarantee_restrictions", "window_index": 0, "batch_size": 1 },
+      "response_ref": { "file": "fixtures/quick_acceptance.json", "path": ["group_B", "x1_requests", 2, "response"] }
+    },
+    {
+      "name": "b.x3.w0.batch",
+      "when": { "schema_name": "text_search_output", "window_index": 0, "batch_size": 3 },
+      "response_ref": { "file": "fixtures/quick_acceptance.json", "path": ["group_B", "x3_requests", 0, "response"] }
+    },
+    {
+      "name": "b.classify",
+      "when": { "schema_name": "classification_output" },
+      "response": {
+        "bundle_id": "merged",
+        "material_type": "articles_of_association",
+        "mixed": false,
+        "confidence": 0.9,
+        "reason": "B 组固定分类响应",
+        "source_block_ids": []
+      }
+    }
+  ],
+  "_rules_note": "以上 rules 是 B 组实跑时可合并进模拟服务配置的最小片段；response_ref.file 相对 backend/tests/perf 解析，占位符 {{BLOCK:n}} 渲染成当前窗口真实 block_id，不绑定某次导入生成的随机 OcrBlock UUID。validate_fixtures.py 会校验这 4 条 response_ref 路径可解析且响应结构合法。",
+  "assertion_entry_index": {
+    "A": "verify_quick_acceptance.py --group A --stats ... --results ... [--trace ...]",
+    "B": "verify_quick_acceptance.py --group B --x1-results ... --x3-results ... --x1-stats ... --x3-stats ...",
+    "C": "verify_quick_acceptance.py --group C --complete ... --results ..."
+  }
+}

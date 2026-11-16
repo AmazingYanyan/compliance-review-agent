@@ -1,0 +1,75 @@
+{
+  "_note": "第三步短用例矩阵 U5「两个 run 同时执行」。size=8 / 两 run 各 4 请求是示例口径，非实测；实际窗口×批次数与共享上限 C 以修复后代码为准，跑前按实际值改并如实记录。模拟服务不限制在途（限流由后端模块级 BoundedSemaphore 保证），只负责记录每个请求的 tag / 到达时间 / 放行时间 / 在途峰值。",
+  "schema_version": "qa-mock-llm-config-1",
+  "host": "127.0.0.1",
+  "port": 8099,
+  "stats_out": "/tmp/qa_mock_u5_two_runs.json",
+  "tag_header": "X-QA-Tag",
+  "default_delay_ms": 30,
+  "timeout_hang_seconds": 3.0,
+  "truncate_ratio": 0.6,
+  "expected_request_count": null,
+  "default_inject": null,
+  "barrier": {
+    "enabled": true,
+    "size": 8,
+    "release_order": "by_check_item",
+    "release_gap_ms": 5,
+    "wait_timeout_seconds": 30,
+    "check_item_order": [
+      "charter.business_scope",
+      "charter.approval_body",
+      "charter.voting_ratio",
+      "charter.guarantee_restrictions"
+    ]
+  },
+  "rules": [
+    {
+      "name": "u5_classify",
+      "when": {
+        "schema_name": "classification_output"
+      },
+      "delay_ms": 5,
+      "response": {
+        "bundle_id": "merged",
+        "material_type": "articles_of_association",
+        "mixed": false,
+        "confidence": 0.9,
+        "reason": "U5 两 run 隔离用例固定分类响应",
+        "source_block_ids": []
+      }
+    },
+    {
+      "name": "u5_search",
+      "when": {
+        "schema_name": "text_search_output"
+      },
+      "delay_ms": 5,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    }
+  ],
+  "client_setup": [
+    "run-A 的请求统一带请求头 X-QA-Tag: run-A，run-B 带 X-QA-Tag: run-B（tag_header 可配）",
+    "两个 run 同时启动；后端调度器 ThreadPoolExecutor(max_workers=C) + 模块级 BoundedSemaphore(LLM_MAX_IN_FLIGHT=C) 保证合计在途不超过 C",
+    "模拟服务统计里 by_tag 给出每个 run 的请求数，requests[].tag 给出逐请求归属"
+  ],
+  "_assertions_consumed_by_test_script": [
+    "stats.by_tag 应同时出现 run-A / run-B，且各自请求数与预期窗口×批次数一致",
+    "stats.peak_inflight 为两 run 合计在途峰值；应与共享上限 C 一致（实测值以落盘为准，不写推算值）",
+    "逐条核对 /data/perf_traces/{run_id}.jsonl：run / 窗口 / 批次 / 检查项归属无跨 run 串写",
+    "逐条核对落库：Result.run_id、RunStep.run_id、ResultSource 均属于各自 run，无跨 run / 窗口 / 检查项串写",
+    "提交时间 t_submit 与实际 HTTP 发起时间 t_http_start 取自 trace JSONL，不去 DB 找时间字段；t_http_start - t_submit = 额度等待",
+    "跨 run 结果比对用 text_sha256 + source_page_number + 页内稳定序号，不用 Result.fingerprint"
+  ],
+  "_C_injection_final_mirror": "LLM_MAX_IN_FLIGHT 在模块 import 时固化（llm_client.py:117）。U1 的 C=N：改 .env（代码不变、不需 build）后 `docker compose up -d --force-recreate api worker` 让容器重建才会重读 env_file；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings 无效。U1 跑完必须把 .env 改回 2 并再 recreate 一次。工程师实测现状 C=2 X=1 VER=pipeline-v2 ALIAS=2 TIMEOUT=180。",
+  "_concurrency_scheduler_status": "ThreadPoolExecutor 一次提交全部单元 / 先回先处理 / 即时补位的并发调度器属 T03/T04 未落地；本批只有模块级 BoundedSemaphore 限流。"
+}

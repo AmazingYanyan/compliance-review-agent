@@ -1,0 +1,123 @@
+{
+  "schema_version": "qa-quick-acceptance-setup-1",
+  "ran_at": "2026-11-12T18:18:06.745295+00:00",
+  "scope": "qa-perf 独立实跑：HTTP 模拟服务 + 真实 pipeline，零真实模型/零外部 OCR",
+  "protected_tasks": [
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+  ],
+  "config_observed": {
+    "CHECKS_PER_REQUEST": 1,
+    "LLM_MAX_IN_FLIGHT": 2,
+    "LLM_API_BASE": "http://127.0.0.1:8099/v1",
+    "LLM_REQUEST_TIMEOUT_SECONDS": 180,
+    "note": "LLM_API_BASE 在进程内指向 HTTP 模拟服务；.env 与配置文件均未改动；LLM_MAX_IN_FLIGHT 沿用 .env 的 2（模块 import 时固化，未改）"
+  },
+  "protected_before": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "exists": true,
+      "state": "REVIEWING",
+      "deleted_at": null,
+      "input_revision": 0
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "exists": true,
+      "state": "COMPLETED",
+      "deleted_at": null,
+      "input_revision": 0
+    }
+  },
+  "cases": {
+    "A-concurrency": {
+      "task_id": "ce837c81-aef2-4e2e-b678-292f90b3b672",
+      "run_id": "af96e278-cf93-4ba0-b270-6119521cbfad",
+      "input_revision": 0,
+      "x": 1,
+      "trace_jsonl_path": "/data/perf_traces/af96e278-cf93-4ba0-b270-6119521cbfad.jsonl"
+    },
+    "B-real-x1": {
+      "task_id": "322cd48d-591f-40fc-ad77-497b8ce20b8a",
+      "run_id": "eaf89ad3-2cdd-4197-bf69-0793e98f19a8",
+      "input_revision": 0,
+      "x": 1
+    },
+    "B-real-x3": {
+      "task_id": "7fdf4c5a-913d-4e80-80fd-ccfc2671c593",
+      "run_id": "6b7fcaca-eef9-49ce-8405-55276a3eed72",
+      "input_revision": 0,
+      "x": 3
+    },
+    "B-dedup-x1": {
+      "task_id": "675b39b2-ea15-40fb-877a-e06f61c8d15d",
+      "run_id": "9de99937-7630-41d0-ad94-e6e86728bb64",
+      "input_revision": 0,
+      "x": 1
+    },
+    "B-dedup-x3": {
+      "task_id": "ad9047b6-4249-4f46-82fd-73b231d43622",
+      "run_id": "21c6fbfe-85a9-4e1d-93ef-7761d9292b14",
+      "input_revision": 0,
+      "x": 3
+    },
+    "C-partial": {
+      "task_id": "a4b1b266-ee7c-442b-aa2a-75e2426fc047",
+      "run_id": "a57196f0-05a3-4f8f-9f3f-eebb49a17c42",
+      "input_revision": 0,
+      "x": 1
+    },
+    "C-ok": {
+      "task_id": "56a45622-60f6-48d9-a603-f496bdf61620",
+      "run_id": "8ae6689a-1a60-4222-9db0-ec2647bd33bf",
+      "input_revision": 0,
+      "x": 1
+    }
+  },
+  "soft_delete_pending": [
+    "ce837c81-aef2-4e2e-b678-292f90b3b672",
+    "322cd48d-591f-40fc-ad77-497b8ce20b8a",
+    "7fdf4c5a-913d-4e80-80fd-ccfc2671c593",
+    "675b39b2-ea15-40fb-877a-e06f61c8d15d",
+    "ad9047b6-4249-4f46-82fd-73b231d43622",
+    "a4b1b266-ee7c-442b-aa2a-75e2426fc047",
+    "56a45622-60f6-48d9-a603-f496bdf61620"
+  ],
+  "blockers": [],
+  "ocr_json": {
+    "path": "/tmp/qa_perf/ocr15.json",
+    "exists": true,
+    "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+    "sha256_matches_fixed_constant": true
+  },
+  "B_real_ocr": {
+    "x1_request_count": 6,
+    "x3_request_count": 2,
+    "result_sets_equal": true
+  },
+  "C_partial": {
+    "task_id": "a4b1b266-ee7c-442b-aa2a-75e2426fc047",
+    "run_id": "a57196f0-05a3-4f8f-9f3f-eebb49a17c42",
+    "input_revision": 0
+  },
+  "C_ok": {
+    "task_id": "56a45622-60f6-48d9-a603-f496bdf61620",
+    "run_id": "8ae6689a-1a60-4222-9db0-ec2647bd33bf",
+    "input_revision": 0
+  },
+  "status": "measured",
+  "protected_after": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "exists": true,
+      "state": "REVIEWING",
+      "deleted_at": null,
+      "input_revision": 0
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "exists": true,
+      "state": "COMPLETED",
+      "deleted_at": null,
+      "input_revision": 0
+    }
+  },
+  "protected_unchanged": true,
+  "soft_delete_note": "隔离任务暂不软删：C 组 HTTP 完成接口断言与 Chrome 真实页面需要任务可读；由宿主机在两者完成后统一 psql 软删（deleted_at），ocr_* / run / results 保留可追溯"
+}

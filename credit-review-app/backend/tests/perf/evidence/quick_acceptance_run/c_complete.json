@@ -1,0 +1,44 @@
+{
+  "schema_version": "qa-complete-spec-1",
+  "status": "pass",
+  "source": "run_complete_http.py 真实 8080 HTTP + 落库导出 c_*_results.json",
+  "partial_failure": {
+    "status": 409,
+    "detail_code": "COVERAGE_INCOMPLETE",
+    "zero_write": true,
+    "task_id_filtered": true,
+    "kept_candidates": 1,
+    "not_found_reason": "coverage_incomplete",
+    "run_coverage_complete": false,
+    "task_state": "REVIEWING",
+    "unit_short_codes": [
+      "BATCH_TIMEOUT"
+    ]
+  },
+  "normal_complete": {
+    "status": 200,
+    "state": "COMPLETED",
+    "run_coverage_complete": true,
+    "not_found_reason": null,
+    "text_rows": 2
+  },
+  "list_results_partial": {
+    "status": 200,
+    "coverage_complete": false,
+    "coverage_affected_check_ids": [
+      "charter.business_scope"
+    ],
+    "editable": true,
+    "item_count": 2
+  },
+  "http_assertions": {
+    "login_ok_with_csrf": true,
+    "partial_409_COVERAGE_INCOMPLETE": true,
+    "partial_zero_write": true,
+    "ok_200_COMPLETED": true,
+    "list_results_coverage_false": true,
+    "list_results_editable_true": true,
+    "list_results_affected_check_ids": true
+  },
+  "note": "所有字段来自真实 HTTP 响应 / 真实落库行；未跑的字段保持缺失，不填推算值。"
+}

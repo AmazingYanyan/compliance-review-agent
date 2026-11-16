@@ -1,0 +1,894 @@
+{
+  "schema_version": "qa-fault-injection-1",
+  "ran_at": "2026-11-12T15:56:36.665522+00:00",
+  "status": "measured",
+  "scope": "401 / 格式失败 / 超时三种注入；全部 LLM 调用由本地 monkeypatch 接管，未调用真实模型、未调用外部 OCR、未改业务代码",
+  "protected_real_tasks": [
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384"
+  ],
+  "cases": {
+    "auth_401": {
+      "injection": "auth_401",
+      "expected": {
+        "verdict": "待实现后补跑（当前 HEAD 存在已知缺口，observed 为实测值，非验收结论）",
+        "failure_must_preserve_window0_evidence": true,
+        "evidence_preservation_effective_after": "T03",
+        "evidence_preservation_note": "T02 阶段只能断言「JSONL trace / 基线脚本 evidence 保留观测证据」；T03 接入先回先存后，window0 单元完成即独立短会话写 Result+ResultSource，断言才落到 results/result_sources。",
+        "failure_must_not_be_labeled": [
+          "no_matching_evidence"
+        ],
+        "stage_and_check_step_states_consistent": true,
+        "retries_counted_in_same_quota": true,
+        "expected_run_state": "FAILED",
+        "expected_run_error_code_contains": "SEARCH_FAILED",
+        "expected_stage_search_state": "FAILED",
+        "expected_stage_vision_step_absent": true,
+        "expected_check_step_state": "FAILED",
+        "expected_check_step_last_error_code": "LLM_FATAL",
+        "expected_complete_task_status": 409,
+        "expected_complete_task_code": "RUN_NOT_READY",
+        "complete_task_code_note": "致命失败（run FAILED）优先于覆盖判定；COVERAGE_INCOMPLETE 仅在 run READY 且 coverage_complete=false 时出现。",
+        "note": "致命错误应立即停止该检查项后续派发；已采集的窗口 0 证据仍需保留。"
+      },
+      "observed": {
+        "task_id": "0fb2f06a-3d2d-4aed-8844-437d50a91114",
+        "file_id": "a70e8fb0-23a2-4b1f-add4-6370243e1696",
+        "run_id": "41c53cf0-55a6-40b4-a3a0-4ac04216ca1b",
+        "pipeline_elapsed_seconds": 0.061,
+        "pipeline_raised": null,
+        "run": {
+          "state": "FAILED",
+          "stage": null,
+          "coverage_complete": false,
+          "error_code": "SEARCH_FAILED:RuntimeError"
+        },
+        "run_steps": [
+          {
+            "step_key": "stage:classify",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.016
+          },
+          {
+            "step_key": "stage:search",
+            "state": "FAILED",
+            "attempt": 0,
+            "last_error_code": "SEARCH_FAILED:RuntimeError",
+            "elapsed_seconds": 0.02
+          },
+          {
+            "step_key": "check:license.business_scope",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.003
+          },
+          {
+            "step_key": "check:license.operating_term",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:license.registration_status",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:charter.business_scope",
+            "state": "FAILED",
+            "attempt": 0,
+            "last_error_code": "LLM_FATAL",
+            "elapsed_seconds": 0.007
+          }
+        ],
+        "target_check_result_rows": [],
+        "target_hit_row_count": 0,
+        "window0_evidence_preserved": false,
+        "target_not_found_reasons": [],
+        "total_result_rows": 3,
+        "chat_call_log": [
+          {
+            "seq": 1,
+            "case": "auth_401",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 2,
+            "case": "auth_401",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 3,
+            "case": "auth_401",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 4,
+            "case": "auth_401",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "injected_401"
+          },
+          {
+            "seq": 5,
+            "case": "auth_401",
+            "schema_name": "json_object",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0,
+            "block_id_count": 51,
+            "result": "injected_401_downgrade"
+          }
+        ],
+        "chat_call_count": 5,
+        "retry_call_count": 1
+      },
+      "verdict": "待实现后补跑"
+    },
+    "format_error": {
+      "injection": "format_error",
+      "expected": {
+        "verdict": "待实现后补跑（当前 HEAD 存在已知缺口，observed 为实测值，非验收结论）",
+        "failure_must_preserve_window0_evidence": true,
+        "evidence_preservation_effective_after": "T03",
+        "evidence_preservation_note": "T02 阶段只能断言「JSONL trace / 基线脚本 evidence 保留观测证据」；T03 接入先回先存后，window0 单元完成即独立短会话写 Result+ResultSource，断言才落到 results/result_sources。",
+        "failure_must_not_be_labeled": [
+          "no_matching_evidence"
+        ],
+        "stage_and_check_step_states_consistent": true,
+        "retries_counted_in_same_quota": true,
+        "expected_run_state": "READY",
+        "expected_run_coverage_complete": false,
+        "expected_run_record_coverage_incomplete": true,
+        "expected_affected_check_reason": "coverage_incomplete",
+        "expected_stage_search_state": "SUCCEEDED（但 run 覆盖不全，需有独立标识）",
+        "expected_check_step_state": "需记录未覆盖窗口，不得与全成功同态",
+        "expected_complete_task_status": 409,
+        "expected_complete_task_code": "COVERAGE_INCOMPLETE",
+        "complete_task_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；仅在 run READY 且 coverage_complete=false 时出现。",
+        "note": "格式失败 / 超时耗尽属于「技术失败导致窗口未覆盖」，不得写成正常「未找到」；只要存在未覆盖窗口，run.coverage_complete 必须为 false。"
+      },
+      "observed": {
+        "task_id": "49348a3e-fdc9-48d0-a8e9-5a7f25b6a116",
+        "file_id": "95bce588-5f36-4857-86c2-082c02401bf2",
+        "run_id": "300c4b4f-86d7-45e6-bf1f-8036544b86bd",
+        "pipeline_elapsed_seconds": 0.104,
+        "pipeline_raised": null,
+        "run": {
+          "state": "READY",
+          "stage": "done",
+          "coverage_complete": false,
+          "error_code": null
+        },
+        "run_steps": [
+          {
+            "step_key": "stage:classify",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "stage:search",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.084
+          },
+          {
+            "step_key": "check:license.business_scope",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:license.operating_term",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:license.registration_status",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:charter.business_scope",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.009
+          },
+          {
+            "step_key": "check:charter.approval_body",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.009
+          },
+          {
+            "step_key": "check:charter.voting_ratio",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "check:charter.guarantee_restrictions",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "check:charter.legal_representative_signature_authority",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.009
+          },
+          {
+            "step_key": "check:charter.ownership_and_special_terms",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.007
+          },
+          {
+            "step_key": "check:financial.company_name",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.reporting_period",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:financial.balance_sheet",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.income_statement",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:financial.cash_flow_statement",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.audit_institution",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:financial.audit_opinion",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "stage:vision",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.004
+          }
+        ],
+        "target_check_result_rows": [
+          {
+            "check_item_id": "charter.business_scope",
+            "kind": "text",
+            "not_found_reason": null,
+            "rank": 0,
+            "text_length": 15,
+            "text_sha256": "852e73979e607610fed442f31a12cffcbc5d432054ad474c20eaccfc6eec462b",
+            "sources": [
+              {
+                "source_page_number": 1,
+                "location_precision": "region",
+                "block_id": "02b21540-13f7-43ef-ab75-dc12aed18426"
+              }
+            ]
+          },
+          {
+            "check_item_id": "charter.business_scope",
+            "kind": "not_found",
+            "not_found_reason": "coverage_incomplete",
+            "rank": 0,
+            "text_length": 0,
+            "text_sha256": null,
+            "sources": []
+          }
+        ],
+        "target_hit_row_count": 1,
+        "window0_evidence_preserved": true,
+        "target_not_found_reasons": [
+          "coverage_incomplete"
+        ],
+        "total_result_rows": 19,
+        "chat_call_log": [
+          {
+            "seq": 1,
+            "case": "format_error",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 2,
+            "case": "format_error",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 3,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 4,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "injected_format_error"
+          },
+          {
+            "seq": 5,
+            "case": "format_error",
+            "schema_name": "json_object",
+            "check_item_id": null,
+            "window_index": 0,
+            "block_id_count": 0,
+            "result": "format_error_repair"
+          },
+          {
+            "seq": 6,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.approval_body",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 7,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.approval_body",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 8,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.voting_ratio",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 9,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.voting_ratio",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 10,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.guarantee_restrictions",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 11,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.guarantee_restrictions",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 12,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.legal_representative_signature_authority",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 13,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.legal_representative_signature_authority",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 14,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 15,
+            "case": "format_error",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          }
+        ],
+        "chat_call_count": 15,
+        "retry_call_count": 1
+      },
+      "verdict": "待实现后补跑"
+    },
+    "timeout": {
+      "injection": "timeout",
+      "expected": {
+        "verdict": "待实现后补跑（当前 HEAD 存在已知缺口，observed 为实测值，非验收结论）",
+        "failure_must_preserve_window0_evidence": true,
+        "evidence_preservation_effective_after": "T03",
+        "evidence_preservation_note": "T02 阶段只能断言「JSONL trace / 基线脚本 evidence 保留观测证据」；T03 接入先回先存后，window0 单元完成即独立短会话写 Result+ResultSource，断言才落到 results/result_sources。",
+        "failure_must_not_be_labeled": [
+          "no_matching_evidence"
+        ],
+        "stage_and_check_step_states_consistent": true,
+        "retries_counted_in_same_quota": true,
+        "expected_run_state": "READY",
+        "expected_run_coverage_complete": false,
+        "expected_run_record_coverage_incomplete": true,
+        "expected_affected_check_reason": "coverage_incomplete",
+        "expected_stage_search_state": "SUCCEEDED（但 run 覆盖不全，需有独立标识）",
+        "expected_check_step_state": "需记录未覆盖窗口，不得与全成功同态",
+        "expected_complete_task_status": 409,
+        "expected_complete_task_code": "COVERAGE_INCOMPLETE",
+        "complete_task_code_note": "COVERAGE_INCOMPLETE 由架构师定值（PM 明确以架构师定值为准）；仅在 run READY 且 coverage_complete=false 时出现。",
+        "note": "格式失败 / 超时耗尽属于「技术失败导致窗口未覆盖」，不得写成正常「未找到」；只要存在未覆盖窗口，run.coverage_complete 必须为 false。"
+      },
+      "observed": {
+        "task_id": "72e0f179-f569-4fa8-8ebd-66915d71a3bf",
+        "file_id": "4dce0d95-5ba8-4ccc-9be3-489657771781",
+        "run_id": "bcbdcbe5-d992-4811-bc1e-0cb8184c77bc",
+        "pipeline_elapsed_seconds": 0.136,
+        "pipeline_raised": null,
+        "run": {
+          "state": "READY",
+          "stage": "done",
+          "coverage_complete": false,
+          "error_code": null
+        },
+        "run_steps": [
+          {
+            "step_key": "stage:classify",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "stage:search",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.117
+          },
+          {
+            "step_key": "check:license.business_scope",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:license.operating_term",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:license.registration_status",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:charter.business_scope",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "check:charter.approval_body",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.046
+          },
+          {
+            "step_key": "check:charter.voting_ratio",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.008
+          },
+          {
+            "step_key": "check:charter.guarantee_restrictions",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.007
+          },
+          {
+            "step_key": "check:charter.legal_representative_signature_authority",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.007
+          },
+          {
+            "step_key": "check:charter.ownership_and_special_terms",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.007
+          },
+          {
+            "step_key": "check:financial.company_name",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:financial.reporting_period",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.003
+          },
+          {
+            "step_key": "check:financial.balance_sheet",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.income_statement",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.cash_flow_statement",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.002
+          },
+          {
+            "step_key": "check:financial.audit_institution",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "check:financial.audit_opinion",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.001
+          },
+          {
+            "step_key": "stage:vision",
+            "state": "SUCCEEDED",
+            "attempt": 0,
+            "last_error_code": null,
+            "elapsed_seconds": 0.003
+          }
+        ],
+        "target_check_result_rows": [
+          {
+            "check_item_id": "charter.business_scope",
+            "kind": "text",
+            "not_found_reason": null,
+            "rank": 0,
+            "text_length": 15,
+            "text_sha256": "852e73979e607610fed442f31a12cffcbc5d432054ad474c20eaccfc6eec462b",
+            "sources": [
+              {
+                "source_page_number": 1,
+                "location_precision": "region",
+                "block_id": "9c239995-5bbc-41d3-8711-c65364882615"
+              }
+            ]
+          },
+          {
+            "check_item_id": "charter.business_scope",
+            "kind": "not_found",
+            "not_found_reason": "coverage_incomplete",
+            "rank": 0,
+            "text_length": 0,
+            "text_sha256": null,
+            "sources": []
+          }
+        ],
+        "target_hit_row_count": 1,
+        "window0_evidence_preserved": true,
+        "target_not_found_reasons": [
+          "coverage_incomplete"
+        ],
+        "total_result_rows": 19,
+        "chat_call_log": [
+          {
+            "seq": 1,
+            "case": "timeout",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 2,
+            "case": "timeout",
+            "schema_name": "classification_output",
+            "check_item_id": null,
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 3,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 4,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "injected_timeout"
+          },
+          {
+            "seq": 5,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "injected_timeout"
+          },
+          {
+            "seq": 6,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.business_scope",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "injected_timeout"
+          },
+          {
+            "seq": 7,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.approval_body",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 8,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.approval_body",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 9,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.voting_ratio",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 10,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.voting_ratio",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 11,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.guarantee_restrictions",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 12,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.guarantee_restrictions",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 13,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.legal_representative_signature_authority",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 14,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.legal_representative_signature_authority",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          },
+          {
+            "seq": 15,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "window_index": 0,
+            "block_id_count": 133,
+            "result": "ok"
+          },
+          {
+            "seq": 16,
+            "case": "timeout",
+            "schema_name": "text_search_output",
+            "check_item_id": "charter.ownership_and_special_terms",
+            "window_index": 1,
+            "block_id_count": 51,
+            "result": "ok"
+          }
+        ],
+        "chat_call_count": 16,
+        "retry_call_count": 3
+      },
+      "verdict": "待实现后补跑"
+    }
+  },
+  "blockers": [],
+  "protected_before": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "state": "REVIEWING",
+      "deleted_at": null
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "state": "COMPLETED",
+      "deleted_at": null
+    }
+  },
+  "ocr_json": {
+    "container_path": "/tmp/qa_fault_ocr_slice.json",
+    "sha256": "8879c8a2d9ba8e702890f1fbf504f8f2ff4f0d08c8bc72366e10365ef0ebe60b",
+    "page_count": 15
+  },
+  "known_gaps_observed": {
+    "status": "以下均由本次实跑的真实 DB 读取得出，非推算；按架构师定稿分流断言口径",
+    "count": 0,
+    "gaps": []
+  },
+  "t03_pending": {
+    "status": "T02 阶段的预期局限，不计入缺口；T03 接入先回先存后需重跑闭环",
+    "count": 1,
+    "items": [
+      {
+        "case": "auth_401",
+        "item": "window0 已采集证据保留（T03 先回先存后才成立）",
+        "effective_after": "T03",
+        "evidence": "target_result_rows=0, run.state=FAILED"
+      }
+    ]
+  },
+  "soft_deleted_at": {
+    "0fb2f06a-3d2d-4aed-8844-437d50a91114": "2026-11-12T15:56:37.234893+00:00",
+    "49348a3e-fdc9-48d0-a8e9-5a7f25b6a116": "2026-11-12T15:56:37.235509+00:00",
+    "72e0f179-f569-4fa8-8ebd-66915d71a3bf": "2026-11-12T15:56:37.235892+00:00"
+  },
+  "protected_after": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "state": "REVIEWING",
+      "deleted_at": null
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "state": "COMPLETED",
+      "deleted_at": null
+    }
+  },
+  "protected_unchanged": true
+}

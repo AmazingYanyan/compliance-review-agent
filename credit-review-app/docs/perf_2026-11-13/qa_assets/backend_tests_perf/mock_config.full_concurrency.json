@@ -1,0 +1,74 @@
+{
+  "_note": "第三步短用例矩阵：「X=1 全量并发」。barrier 先收齐 N 个请求再按 reverse 顺序放行，用于证明请求确实发出与峰值在途数。size=12 / expected_request_count=12 来自用户规格的 2 窗口×6 检查项示例口径，非实测；实际窗口与适用检查项以修复后代码为准，跑前请按实际值改这两个数字并如实记录。",
+  "schema_version": "qa-mock-llm-config-1",
+  "host": "127.0.0.1",
+  "port": 8099,
+  "stats_out": "/tmp/qa_mock_full_concurrency.json",
+  "tag_header": "X-QA-Tag",
+  "default_delay_ms": 30,
+  "timeout_hang_seconds": 3.0,
+  "truncate_ratio": 0.6,
+  "expected_request_count": 12,
+  "default_inject": null,
+  "barrier": {
+    "enabled": true,
+    "size": 12,
+    "release_order": "reverse",
+    "release_gap_ms": 5,
+    "wait_timeout_seconds": 30,
+    "check_item_order": [
+      "charter.business_scope",
+      "charter.approval_body",
+      "charter.voting_ratio",
+      "charter.guarantee_restrictions",
+      "charter.legal_representative_signature_authority",
+      "charter.ownership_and_special_terms"
+    ]
+  },
+  "rules": [
+    {
+      "name": "full_concurrency_classify",
+      "when": {
+        "schema_name": "classification_output"
+      },
+      "delay_ms": 5,
+      "response": {
+        "bundle_id": "merged",
+        "material_type": "articles_of_association",
+        "mixed": false,
+        "confidence": 0.9,
+        "reason": "全量并发用例固定分类响应",
+        "source_block_ids": []
+      }
+    },
+    {
+      "name": "full_concurrency_search",
+      "when": {
+        "schema_name": "text_search_output"
+      },
+      "delay_ms": 5,
+      "response": {
+        "bundle_id": "{{BUNDLE}}",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    }
+  ],
+  "_assertions_consumed_by_test_script": [
+    "stats.request_count >= 12（请求确实发出）",
+    "stats.peak_inflight == 12（12 个请求同时在途）",
+    "stats.first_last_arrival_gap_ms 应接近 0（全部同时派发，实测值以落盘为准）",
+    "stats.barrier.ready == true 且 barrier.release_order_actual_arrival_seqs 为 reverse",
+    "客户端另记每个任务的 submit_at，与 stats.requests[].arrived_at 相减得到排队开销",
+    "按 perf_trace_jsonl 的 t_submit / t_http_start 逐条算额度等待，不去 DB 找时间字段"
+  ],
+  "_trace_fields_note": "U1 的「提交时间 vs 实际 HTTP 发起时间」取自 /data/perf_traces/{run_id}.jsonl 的 t_submit / t_http_start / t_http_end；t_http_start - t_submit = 额度等待。模拟服务只记录 arrived_at（≈t_http_start）、released_at、responded_at，不提供 t_submit。",
+  "_limiting_contract": "架构设计：llm_client.py 模块级 BoundedSemaphore(LLM_MAX_IN_FLIGHT=C) + 调度器 ThreadPoolExecutor(max_workers=C) 一次提交全部单元、不自建第二层信号量。因此 C=N 时 N 个请求应同时在途；mock 端「先收齐再放行」用于证明请求确实发出。",
+  "_C_injection_final_mirror": "LLM_MAX_IN_FLIGHT 在模块 import 时固化（llm_client.py:117）。U1 的 C=N：改 .env（代码不变、不需 build）后 `docker compose up -d --force-recreate api worker` 让容器重建才会重读 env_file；`docker compose restart worker` 沿用旧 env 无效；进程内改 settings 无效。U1 跑完必须把 .env 改回 2 并再 recreate 一次。工程师实测现状 C=2 X=1 VER=pipeline-v2 ALIAS=2 TIMEOUT=180。",
+  "_concurrency_scheduler_status": "ThreadPoolExecutor 一次提交全部单元 / 先回先处理 / 即时补位的并发调度器属 T03/T04 未落地；本批只有模块级 BoundedSemaphore 限流。"
+}

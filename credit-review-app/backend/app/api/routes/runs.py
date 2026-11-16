@@ -31,7 +31,11 @@ from app.models import (
     TaskFile,
     TaskState,
 )
-from app.processing_pipeline import run_pipeline
+from app.processing_pipeline import (
+    build_run_config,
+    compute_coverage_summary,
+    run_pipeline,
+)
 from app.queue import enqueue_in_session
 
 router = APIRouter(tags=["runs"])
@@ -40,6 +44,8 @@ BORROWER_CHECKLIST_VERSION = "borrower-wcl-v1"
 
 
 class RunCreate(BaseModel):
+    # 兼容字段：本轮**被忽略**。create_run 每次新建 run_id，跨 run 幂等键不成立，
+    # 补跑一律如实标注「整次重跑」，不得宣称「只重试失败段」。
     retry_failed_only: bool = True
 
 
@@ -107,14 +113,17 @@ def create_run(
         )
 
     checklist = get_checklist(BORROWER_CHECKLIST_VERSION)
+    frozen_checklist_hash = checklist_hash(BORROWER_CHECKLIST_VERSION)
     run = ProcessingRun(
         task_id=task.id,
         input_revision=task.input_revision,
         checklist_snapshot=checklist,
-        checklist_hash=checklist_hash(BORROWER_CHECKLIST_VERSION),
+        checklist_hash=frozen_checklist_hash,
         model_snapshot={
             "text_model": settings.LLM_TEXT_MODEL,
             "vision_model": settings.LLM_VISION_MODEL,
+            # 静态 run_config：X / C / 版本 / 清单 hash / 分窗策略 / 批次状态
+            "run_config": build_run_config(frozen_checklist_hash),
         },
         state=RunState.QUEUED.value,
     )
@@ -134,7 +143,16 @@ def create_run(
     session.commit()
     session.refresh(run)
 
-    return _run_to_view(session, run)
+    view = _run_to_view(session, run)
+    # 如实标注「整次重跑」：响应与前端文案都不得宣称「只重试失败段」
+    view["run_mode"] = "full_rerun"
+    view["run_mode_label"] = "整次重跑（新建 run，不复用上次结果）"
+    view["retry_failed_only"] = False
+    view["retry_failed_only_requested"] = body.retry_failed_only
+    view["retry_failed_only_note"] = (
+        "retry_failed_only 字段已忽略：每次补跑都新建 run_id，跨 run 幂等键不成立"
+    )
+    return view
 
 
 @router.get("/tasks/{task_id}/runs/{run_id}")
@@ -190,7 +208,16 @@ def list_results(task: OwnedTask, session: SessionDep) -> dict:
         .order_by(ProcessingRun.created_at.desc())
     ).first()
     if not run:
-        return {"run_id": None, "is_stale": False, "editable": False, "statistics": None, "items": [], "next_cursor": None}
+        return {
+            "run_id": None,
+            "is_stale": False,
+            "editable": False,
+            "statistics": None,
+            "items": [],
+            "next_cursor": None,
+            "coverage_complete": False,
+            "coverage_affected_check_ids": [],
+        }
 
     results = session.exec(
         select(Result)
@@ -217,6 +244,15 @@ def list_results(task: OwnedTask, session: SessionDep) -> dict:
         for r in results
     ]
     statistics = compute_statistics(session, task.id, run.id, meta)
+    # F4/G3：coverage_affected_check_ids 直接读已查出的 results（零额外查询），
+    # 彻底不依赖 step_key.startswith("check:")；新引入的 u: 窗口/批次 step_key 不影响展示。
+    coverage_affected_check_ids = sorted(
+        {
+            r.check_item_id
+            for r in results
+            if r.not_found_reason == "coverage_incomplete"
+        }
+    )
     return {
         "run_id": str(run.id),
         "is_stale": run.input_revision != task.input_revision,
@@ -224,6 +260,9 @@ def list_results(task: OwnedTask, session: SessionDep) -> dict:
         "statistics": statistics,
         "items": items,
         "next_cursor": None,
+        # review 页走 list_results：刷新后仍可持久提示覆盖不全
+        "coverage_complete": bool(run.coverage_complete),
+        "coverage_affected_check_ids": coverage_affected_check_ids,
     }
 
 
@@ -415,7 +454,10 @@ def update_decision(
 
 
 def _incomplete_items(session: Session, task_id: uuid.UUID, run_id: uuid.UUID, meta: dict[str, dict]) -> dict:
-    """返回未完成的具体条目：未确认项 + 拒绝缺原因项。"""
+    """返回未完成的具体条目：未确认项 + 拒绝缺原因项。
+
+    覆盖拦截与本函数相互独立：COVERAGE_INCOMPLETE 不混进 NOT_COMPLETE。
+    """
     results = session.exec(
         select(Result).where(Result.run_id == run_id, Result.task_id == task_id)
     ).all()
@@ -459,6 +501,20 @@ def complete_task(body: CompleteRequest, task: OwnedTask, session: SessionDep) -
         raise HTTPException(
             status_code=409,
             detail={"code": "REVISION_CONFLICT", "message": "资料已变更，请刷新后重新核对"},
+        )
+
+    # 覆盖拦截：插在 REVISION_CONFLICT 之后、compute_statistics 之前。
+    # F2/G1：收敛为单条，唯一事实源 = ProcessingRun.coverage_complete。
+    # 删除 api 侧实时反推（原 `or not coverage.coverage_complete` 双事实源 AND）——
+    # 删的是反推，不是覆盖拦截本身；worker _complete_run 是唯一写库事实源。
+    # 即使「可见摘录全部确认」也必须拦（人工决策不替代覆盖事实）。
+    if not run.coverage_complete:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "COVERAGE_INCOMPLETE",
+                "message": "识别覆盖不完整，暂不能完成核对",
+            },
         )
 
     meta = _check_meta_map(run.checklist_snapshot or {})

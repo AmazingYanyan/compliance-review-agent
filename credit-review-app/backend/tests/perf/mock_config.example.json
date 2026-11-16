@@ -1,0 +1,113 @@
+{
+  "_note": "资产 1 模拟服务的基础示例配置。所有数字均为配置值（不是实测结果）；实测统计由 --stats-out 落盘的 JSON 给出。",
+  "schema_version": "qa-mock-llm-config-1",
+  "host": "127.0.0.1",
+  "port": 8099,
+  "stats_out": "/tmp/qa_mock_stats.json",
+  "tag_header": "X-QA-Tag",
+  "default_delay_ms": 20,
+  "timeout_hang_seconds": 3.0,
+  "truncate_ratio": 0.6,
+  "expected_request_count": null,
+  "default_inject": null,
+  "barrier": {
+    "enabled": false,
+    "size": 0,
+    "release_order": "as_arrived",
+    "release_gap_ms": 0,
+    "wait_timeout_seconds": 30,
+    "check_item_order": []
+  },
+  "rules": [
+    {
+      "name": "classify_default",
+      "when": {
+        "schema_name": "classification_output"
+      },
+      "delay_ms": 10,
+      "response": {
+        "bundle_id": "merged",
+        "material_type": "articles_of_association",
+        "mixed": false,
+        "confidence": 0.9,
+        "reason": "模拟服务固定分类响应",
+        "source_block_ids": []
+      }
+    },
+    {
+      "name": "search_window0_found",
+      "when": {
+        "schema_name": "text_search_output",
+        "window_index": 0
+      },
+      "delay_ms": 20,
+      "response": {
+        "bundle_id": "w0",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "found",
+            "evidence": [
+              {
+                "source_refs": [
+                  {
+                    "block_id": "{{BLOCK:0}}",
+                    "start_char": null,
+                    "end_char": null
+                  }
+                ],
+                "relation_status": "matched",
+                "relevance_reason": "固定响应：窗口 0 命中"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "search_window1_not_found",
+      "when": {
+        "schema_name": "text_search_output",
+        "window_index": 1
+      },
+      "delay_ms": 20,
+      "response": {
+        "bundle_id": "w1",
+        "check_results": [
+          {
+            "check_item_id": "{{CHECK_ID}}",
+            "outcome": "not_found",
+            "evidence": []
+          }
+        ]
+      }
+    }
+  ],
+  "_fault_injection_examples": [
+    "把任一 rule 的 inject 改为下列值即可注入；无需改业务代码：",
+    "401         -> OpenAI AuthenticationError -> LLMFatalError",
+    "429 / 500   -> LLMTransientError（触发窗口级重试，重试计入同一额度）",
+    "format_error-> 非法 JSON -> _parse/validator 失败 -> LLMFormatError（注意 complete_json 会再发一次 _repair 请求）",
+    "truncated   -> 返回半截 JSON 且 finish_reason=length，记录 qa_truncation_signal",
+    "timeout     -> 服务端挂起 timeout_hang_seconds；客户端须把 LLM_REQUEST_TIMEOUT_SECONDS 调到小于该值才会触发 APITimeoutError"
+  ],
+  "_response_ref_example": {
+    "name": "from_fixture",
+    "when": {
+      "schema_name": "text_search_output",
+      "check_item_id": "charter.business_scope",
+      "window_index": 0
+    },
+    "response_ref": {
+      "file": "fixtures/fixed_responses.json",
+      "path": [
+        "equivalence_pair",
+        "x1_requests",
+        0,
+        "response"
+      ]
+    }
+  },
+  "_injection_point": "真实 HTTP 请求点是 backend/app/llm_client.py::LLMClient._chat 里的 self._client.chat.completions.create(**kwargs)。本模拟服务通过把 LLM_API_BASE 指向它来接管；容器内 fault_injection.py 则 monkeypatch OpenAI 的 Completions.create（等效、且保留 _classify 的真实错误映射）。",
+  "_timeout_injection_recommendation": "优先 inject=429 让 LLMTransientError 重试耗尽复现同一覆盖口径；本批故障注入都在 complete_json/_chat 层直接抛业务异常、绕过 HTTP，不依赖真实 APITimeoutError。若必须测真实超时，需 recreate 容器把 LLM_REQUEST_TIMEOUT_SECONDS 调到 < timeout_hang_seconds。"
+}

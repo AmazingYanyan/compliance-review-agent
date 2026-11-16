@@ -1,0 +1,31 @@
+{
+  "before": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "exists": true,
+      "state": "REVIEWING",
+      "deleted_at": null,
+      "input_revision": 0
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "exists": true,
+      "state": "COMPLETED",
+      "deleted_at": null,
+      "input_revision": 0
+    }
+  },
+  "after": {
+    "607e6d41-4d47-4582-a5ad-07313b6c17bd": {
+      "exists": true,
+      "state": "REVIEWING",
+      "deleted_at": null,
+      "input_revision": 0
+    },
+    "ee59108d-e4f1-4aa8-bf2e-afe07d457384": {
+      "exists": true,
+      "state": "COMPLETED",
+      "deleted_at": null,
+      "input_revision": 0
+    }
+  },
+  "unchanged": true
+}

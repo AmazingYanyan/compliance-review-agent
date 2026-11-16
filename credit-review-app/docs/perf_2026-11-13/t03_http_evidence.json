@@ -1,0 +1,337 @@
+{
+  "selftest": "T03-三组验收-HTTP层",
+  "generated_at": "2026-11-12T17:45:03.186073+00:00",
+  "real_model_calls": 0,
+  "external_ocr_calls": 0,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/ac8c9f98-4382-47a4-b19f-fc44ae483bb9/complete",
+      "status": 409,
+      "code": "RUN_NOT_READY"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/33fe62fc-4dae-4643-9f8b-d3398367205c/complete",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/ed2e664b-f3c6-4dfe-a7a1-71337e7fb2ce/complete",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/aa8c1093-a0fd-4f3d-929f-a134075340a0/complete",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/3556c67d-0908-4118-8871-00ba30812649/complete",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/4945ba45-1f7f-4333-bffc-c48fc5d8b0fc/complete",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/28b46a30-73d2-40e0-b709-e5be9b23c83e/complete",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/0d11a47c-2dcb-45f4-be49-3d5a7421e608/complete",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/2666b08f-9166-4981-8827-cedf8e8a1612/complete",
+      "status": 200,
+      "code": null
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/607e6d41-4d47-4582-a5ad-07313b6c17bd/results",
+      "status": 200
+    }
+  ],
+  "results": {
+    "G2_failed": {
+      "case": "G2_failed",
+      "task_id": "ac8c9f98-4382-47a4-b19f-fc44ae483bb9",
+      "run_id": "291f49ee-d1a3-4322-a2af-23603e0dc0e9",
+      "status": 409,
+      "code": "RUN_NOT_READY",
+      "state": null,
+      "message": "核对结果尚未就绪",
+      "task_before": {
+        "state": "PROCESSING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "PROCESSING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": true,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "G2_ready_false": {
+      "case": "G2_ready_false",
+      "task_id": "33fe62fc-4dae-4643-9f8b-d3398367205c",
+      "run_id": "d09975d9-ce59-4eeb-990b-9e66d85856cc",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE",
+      "state": null,
+      "message": "识别覆盖不完整，暂不能完成核对",
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": true,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "G2_ready_true": {
+      "case": "G2_ready_true",
+      "task_id": "ed2e664b-f3c6-4dfe-a7a1-71337e7fb2ce",
+      "run_id": "e9337bf9-423d-4dbe-9dfa-5903b20e15ed",
+      "status": 200,
+      "code": null,
+      "state": "COMPLETED",
+      "message": null,
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "COMPLETED",
+        "completed_at": "2026-11-12 17:45:03.615183+00",
+        "last_ready_run_id": "e9337bf9-423d-4dbe-9dfa-5903b20e15ed",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": false,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "C_partial": {
+      "case": "C_partial",
+      "task_id": "aa8c1093-a0fd-4f3d-929f-a134075340a0",
+      "run_id": "dbc8d234-8247-46d6-a311-39bc76f76fc2",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE",
+      "state": null,
+      "message": "识别覆盖不完整，暂不能完成核对",
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": true,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "C_ok": {
+      "case": "C_ok",
+      "task_id": "3556c67d-0908-4118-8871-00ba30812649",
+      "run_id": "f689550f-a465-40c6-b74c-8468dadd3ab4",
+      "status": 200,
+      "code": null,
+      "state": "COMPLETED",
+      "message": null,
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "COMPLETED",
+        "completed_at": "2026-11-12 17:45:03.847761+00",
+        "last_ready_run_id": "f689550f-a465-40c6-b74c-8468dadd3ab4",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": false,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "F1_empty": {
+      "case": "F1_empty",
+      "task_id": "4945ba45-1f7f-4333-bffc-c48fc5d8b0fc",
+      "run_id": "0e1e0ff8-ce82-4957-b6be-4775610e96e1",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE",
+      "state": null,
+      "message": "识别覆盖不完整，暂不能完成核对",
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": true,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "F1_invalid": {
+      "case": "F1_invalid",
+      "task_id": "28b46a30-73d2-40e0-b709-e5be9b23c83e",
+      "run_id": "012210ea-d4dc-4de3-919e-ed8ab636a7be",
+      "status": 409,
+      "code": "COVERAGE_INCOMPLETE",
+      "state": null,
+      "message": "识别覆盖不完整，暂不能完成核对",
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": true,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "F1_notfound": {
+      "case": "F1_notfound",
+      "task_id": "0d11a47c-2dcb-45f4-be49-3d5a7421e608",
+      "run_id": "978581b8-b2a9-4eb1-9e5e-8a2456d273e6",
+      "status": 200,
+      "code": null,
+      "state": "COMPLETED",
+      "message": null,
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "COMPLETED",
+        "completed_at": "2026-11-12 17:45:04.186995+00",
+        "last_ready_run_id": "978581b8-b2a9-4eb1-9e5e-8a2456d273e6",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": false,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    },
+    "HIST_reviewing_clone": {
+      "case": "HIST_reviewing_clone",
+      "task_id": "2666b08f-9166-4981-8827-cedf8e8a1612",
+      "run_id": "5cb6dc71-bbba-4fdf-967b-7160c38f6e6a",
+      "status": 200,
+      "code": null,
+      "state": "COMPLETED",
+      "message": null,
+      "task_before": {
+        "state": "REVIEWING",
+        "completed_at": "NULL",
+        "last_ready_run_id": "NULL",
+        "deleted_at": "NULL"
+      },
+      "task_after": {
+        "state": "COMPLETED",
+        "completed_at": "2026-11-12 17:45:04.301243+00",
+        "last_ready_run_id": "5cb6dc71-bbba-4fdf-967b-7160c38f6e6a",
+        "deleted_at": "NULL"
+      },
+      "zero_writes": false,
+      "csrf_header": true,
+      "origin": "http://localhost:8080"
+    }
+  },
+  "assertions": {
+    "login_ok_with_csrf": true,
+    "G2_failed_RUN_NOT_READY": true,
+    "G2_ready_false_COVERAGE_INCOMPLETE_zero_write": true,
+    "G2_ready_true_200_COMPLETED": true,
+    "C_partial_409_COVERAGE_INCOMPLETE_zero_write": true,
+    "C_ok_200_COMPLETED": true,
+    "F1_empty_409": true,
+    "F1_invalid_409": true,
+    "F1_notfound_not_coverage_blocked_200": true,
+    "historical_read_back_200": true,
+    "historical_run_coverage_true_no_unit_steps": true,
+    "historical_clone_200_COMPLETED": true
+  },
+  "login": {
+    "status": 200,
+    "csrf_token_present": true,
+    "username": "liyanyan"
+  },
+  "f1_notfound_decision_seeded": true,
+  "historical_real_task": {
+    "task_id": "607e6d41-4d47-4582-a5ad-07313b6c17bd",
+    "read_back_status": 200,
+    "read_back_items": 18,
+    "task_state": "REVIEWING",
+    "input_revision": "0",
+    "run_state": "READY",
+    "run_coverage_complete": "t",
+    "run_stage": "done",
+    "unit_step_count": 0,
+    "note": "只读核对，未对真实任务执行任何写操作（硬边界）"
+  },
+  "status": "pass",
+  "isolated_tasks_soft_deleted": 14,
+  "protected_task_state_after": {
+    "state": "REVIEWING",
+    "completed_at": "NULL",
+    "last_ready_run_id": "NULL",
+    "deleted_at": "NULL"
+  },
+  "protected_task_state_ee59108d_after": {
+    "state": "COMPLETED",
+    "completed_at": "2026-11-11 08:44:28.627726+00",
+    "last_ready_run_id": "fad721d5-a179-40c3-9203-04822ce84350",
+    "deleted_at": "NULL"
+  },
+  "assertions_failed": []
+}

@@ -1,0 +1,58 @@
+{
+  "run_id": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+  "tag": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+  "rows": [
+    {
+      "check_item_id": "charter.approval_body",
+      "text_sha256": "19ba6f90775d35c02dcb046b6509d95722dd87db8da957781def1c7bd9f4d721",
+      "source_page_number": 7,
+      "page_inner_seq": 1,
+      "run_id": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+      "window_index": 0,
+      "x": 1
+    },
+    {
+      "check_item_id": "charter.approval_body",
+      "text_sha256": "18b17d7fa72d7ded2677a3431b69d3e25fae01283c8c30a3f51823cd4dcfefde",
+      "source_page_number": 7,
+      "page_inner_seq": 2,
+      "run_id": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+      "window_index": 0,
+      "x": 1
+    },
+    {
+      "check_item_id": "charter.business_scope",
+      "text_sha256": "aab0b38a11c0afae4f8baf34af27cba531a930c2c12f22d4d8444347d956939a",
+      "source_page_number": 7,
+      "page_inner_seq": 0,
+      "run_id": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+      "window_index": 0,
+      "x": 1
+    },
+    {
+      "check_item_id": "charter.business_scope",
+      "text_sha256": "19ba6f90775d35c02dcb046b6509d95722dd87db8da957781def1c7bd9f4d721",
+      "source_page_number": 7,
+      "page_inner_seq": 1,
+      "run_id": "c0854b82-a373-44f6-98ba-a7d7552300a6",
+      "window_index": 0,
+      "x": 1
+    }
+  ],
+  "run_config": {
+    "X": 1,
+    "C": 2,
+    "version": "pipeline-v2",
+    "search_prompt_version": "text-search-batch-v2",
+    "checklist_hash": "5f0c164276cf0fe8b68a758785cb984226dd4339e790e02e8b9773a036702337",
+    "text_model": "qwen3.8-max-0902",
+    "window_strategy": {
+      "bundle_id": "w{idx}",
+      "max_chars": 45,
+      "content_hash": "sha256(file_key|page_key|page_ordinal|canonical_text)[:64]",
+      "overlap_chars": 10,
+      "stable_sort_key": "(file_order, page_key, page_ordinal)"
+    },
+    "note": "静态配置：X=1 与 X=3 两次运行除 X 外全等（QA B4 断言口径）"
+  }
+}

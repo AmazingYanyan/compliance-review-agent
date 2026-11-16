@@ -240,6 +240,9 @@ function Review() {
         </div>
       </div>
 
+      {/* 持久覆盖提示条：数据来自 list_results，刷新后仍在；历史只读态也显示 */}
+      <CoverageBanner results={results} />
+
       {/* 统计条 */}
       {stat && (
         <StatBar
@@ -517,6 +520,45 @@ function StatBar({
   )
 }
 
+/**
+ * 顶部持久覆盖提示条：数据来自 list_results 的 coverage_complete /
+ * coverage_affected_check_ids，刷新后仍在、历史已完成任务只读态也显示。
+ * 「覆盖不全 ≠ 整体只读」：这里只做提示，不改动 editable 判定；已有摘录仍可
+ * 接受/拒绝、出处仍可点击，被挡的只有「完成核对」这一个动作。
+ */
+function CoverageBanner({ results }: { results: ResultList | undefined }) {
+  if (!results || results.coverage_complete !== false) return null
+  const affected = results.coverage_affected_check_ids ?? []
+  const labelById = new Map(
+    (results.items ?? []).map((i) => [i.check_item_id, i.check_label]),
+  )
+  return (
+    <div
+      role="status"
+      data-testid="coverage-banner"
+      className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800"
+    >
+      <div className="font-medium">识别覆盖不完整，暂不能完成核对</div>
+      <div className="mt-0.5 text-xs">
+        部分检查项的识别窗口未全部完成，已找到的摘录仍可继续核对（接受／拒绝、定位原文），
+        仅「完成核对」暂不可用。请人工复核下列受影响检查项：
+      </div>
+      {affected.length > 0 && (
+        <div className="mt-1 flex flex-wrap gap-1">
+          {affected.map((id) => (
+            <span
+              key={id}
+              className="rounded bg-amber-100 px-1.5 py-0.5 text-xs"
+            >
+              {labelById.get(id) ?? id}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function CompleteButton({
   taskId,
   task,
@@ -528,6 +570,8 @@ function CompleteButton({
 }) {
   const queryClient = useQueryClient()
   const [blockMsg, setBlockMsg] = useState("")
+  // 覆盖不全时前端即禁用「完成」；后端 409 COVERAGE_INCOMPLETE 是并列的纵深防御。
+  const coverageBlocked = results?.coverage_complete === false
 
   const complete = useMutation({
     mutationFn: () => completeTask(taskId, results!.run_id!, task!.input_revision),
@@ -565,9 +609,20 @@ function CompleteButton({
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <Button size="sm" onClick={() => { setBlockMsg(""); complete.mutate() }} disabled={complete.isPending}>
+      <Button
+        size="sm"
+        onClick={() => { setBlockMsg(""); complete.mutate() }}
+        disabled={complete.isPending || coverageBlocked}
+      >
         完成核对
       </Button>
+      {coverageBlocked && (
+        <span className="max-w-[320px] text-right text-xs text-amber-700">
+          识别覆盖不完整，
+          {/* 固定字面量「暂不能完成核对」：供 QA 精确断言 / 正则兜底 / testid 定位 */}
+          <span data-testid="complete-blocked-label">暂不能完成核对</span>
+        </span>
+      )}
       {blockMsg && <span className="max-w-[320px] text-right text-xs text-red-600">{blockMsg}</span>}
     </div>
   )

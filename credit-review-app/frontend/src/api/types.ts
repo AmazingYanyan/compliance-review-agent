@@ -148,6 +148,8 @@ export interface ResultList {
   statistics: { overall: Statistics; materials: { material_type: string; statistics: Statistics }[] } | null
   items: Result[]
   next_cursor: string | null
+  coverage_complete: boolean
+  coverage_affected_check_ids: string[]
 }
 
 export interface RunView {
