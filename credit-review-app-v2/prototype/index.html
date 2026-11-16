@@ -3,27 +3,87 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>公司章程核对 · V2 线框</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="./workbench.css">
-<header>
-  <div><small>设计评审 · 固定样本</small><h1>公司章程核对</h1></div>
-  <label>评审场景 <select id="scenario">
-    <option value="normal">正常核对</option><option value="processing">处理中</option>
-    <option value="missing">缺材料</option><option value="invalid">覆盖不全 · 无效出处</option>
-    <option value="truncated">覆盖不全 · 输出截断</option><option value="complete">已完成只读</option>
-  </select></label>
-  <button id="complete" class="primary">完成核对</button>
+<body>
+<header class="task-bar">
+  <div class="task-id">
+    <small>设计评审 · 固定样本</small>
+    <h1>公司章程核对</h1>
+    <p class="task-meta">
+      <span class="meta-tag meta-tag--name" id="task-name">示例对公客户 · 流动资金贷款</span>
+      <span class="meta-tag" id="customer-role">借款人</span>
+      <span class="meta-tag" id="revision">输入版本 v1</span>
+    </p>
+  </div>
+  <div class="task-state">
+    <span class="badge" id="status-badge" data-status="ready">正常核对</span>
+    <span class="progress" id="progress">已确认 0 / 4</span>
+  </div>
+  <div class="task-controls">
+    <label class="field">
+      <span class="field-label">评审场景</span>
+      <select id="scenario" class="control">
+        <option value="normal">正常核对</option>
+        <option value="processing">处理中</option>
+        <option value="missing">缺材料</option>
+        <option value="invalid">覆盖不全 · 无效出处</option>
+        <option value="truncated">覆盖不全 · 输出截断</option>
+        <option value="complete">已完成只读</option>
+      </select>
+    </label>
+    <div class="complete-block">
+      <button id="complete" class="btn btn-primary" aria-disabled="true" title="无法完成：尚未满足完成条件">完成核对</button>
+      <span class="complete-reason" id="complete-reason" role="status" aria-live="polite">无法完成：尚未满足完成条件</span>
+    </div>
+  </div>
 </header>
-<nav aria-label="核对材料"><button data-tab="charter" aria-pressed="true">公司章程</button><button data-tab="license" aria-pressed="false">营业执照</button><button data-tab="financial" aria-pressed="false">审计财报</button></nav>
-<p id="banner" role="status"></p>
+
+<nav class="material-tabs" aria-label="核对材料">
+  <button class="btn btn-secondary" data-tab="charter" aria-pressed="true">公司章程</button>
+  <button class="btn btn-secondary" data-tab="license" aria-pressed="false">营业执照</button>
+  <button class="btn btn-secondary" data-tab="financial" aria-pressed="false">审计财报</button>
+</nav>
+
+<p id="banner" class="banner" role="status" aria-live="polite"></p>
+
 <main>
-  <section aria-labelledby="preview-title">
-    <h2 id="preview-title">原件预览 <small id="page-number"></small></h2>
-    <div class="scroll" id="source"></div>
+  <section class="pane" aria-labelledby="preview-title">
+    <div class="pane-head">
+      <h2 id="preview-title">原件预览 <small id="page-number"></small></h2>
+      <div class="toolbar">
+        <div class="tool-group" role="group" aria-label="页面跳转">
+          <button id="page-prev" class="btn btn-secondary">上一页</button>
+          <label class="field field--inline">
+            <span class="field-label">页码</span>
+            <input id="page-input" class="control control--page" type="number" min="14" max="15" step="1" value="14" aria-label="跳转页码（样本仅含第 14、15 页）">
+          </label>
+          <button id="page-next" class="btn btn-secondary">下一页</button>
+        </div>
+        <div class="tool-group" role="group" aria-label="缩放">
+          <button class="btn btn-ghost zoom-btn" data-zoom="fit" aria-pressed="true">适应宽度</button>
+          <button class="btn btn-ghost zoom-btn" data-zoom="1" aria-pressed="false">100%</button>
+          <button class="btn btn-ghost zoom-btn" data-zoom="1.5" aria-pressed="false">150%</button>
+          <button class="btn btn-ghost zoom-btn" data-zoom="2" aria-pressed="false">200%</button>
+        </div>
+      </div>
+    </div>
+    <div class="scroll source" id="source"></div>
+    <p class="pane-note" id="prototype-note">原型边界：文字坐标线框，非真实 PDF 渲染；真实 PDF 缩放、定位与高亮精度在阶段 B 用本地批准样本验证。</p>
   </section>
-  <section aria-labelledby="evidence-title">
-    <h2 id="evidence-title">原文摘录 <small id="count"></small><button id="next">下一条待办</button></h2>
+
+  <section class="pane" aria-labelledby="evidence-title">
+    <div class="pane-head">
+      <h2 id="evidence-title">原文摘录 <small id="count"></small></h2>
+      <button id="next" class="btn btn-secondary">下一条待办</button>
+    </div>
     <div class="scroll cards" id="results"></div>
   </section>
 </main>
+
+<footer class="demo-note">
+  演示状态说明：本页的核对决定仅保存在当前浏览器本地（localStorage），用于设计评审；阶段 B 的权威存储为 V2 API + 数据库。样本第 14–15 页内容为公开样本的坐标文字线框，非真实 PDF。
+</footer>
+
 <script type="module" src="./workbench.js"></script>
 </html>

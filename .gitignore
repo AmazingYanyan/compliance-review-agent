@@ -5,3 +5,9 @@
 playwright-report/
 test-results/
 node_modules/
+
+# V1 应用工作树：只从固定提交 e525205 取回，不进入 V2 发布树
+credit-review-app/
+
+# IDE 生成的 HTML 分享包
+.trae-html-share-packages/
